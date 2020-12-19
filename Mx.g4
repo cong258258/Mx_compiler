@@ -88,14 +88,14 @@ var_def: (var_multi_def | var_def_and_init) SEMICOLON;
 statement: var_def | LEFT_BIGBRACE statement* RIGHT_BIGBRACE
             | IF LEFT_PAREN expression RIGHT_PAREN statement (ELSE statement)?
             | FOR LEFT_PAREN statement? SEMICOLON expression? SEMICOLON statement? RIGHT_PAREN statement
-            | WHILE LEFT_PAREN statement RIGHT_PAREN statement
+            | WHILE LEFT_PAREN expression RIGHT_PAREN statement
             | RETURN expression? SEMICOLON
             | BREAK SEMICOLON
             | CONTINUE SEMICOLON
             | expression SEMICOLON;
 
 program: program_part* EOF;
-program_part: class_def | func_def | statement;
+program_part: class_def | func_def | var_def;
 type: IDENTIFIER | INT | BOOL | STRING | VOID;
 class_def: CLASS IDENTIFIER LEFT_BIGBRACE (var_def | func_def)* RIGHT_BIGBRACE SEMICOLON;
 param: type IDENTIFIER;
