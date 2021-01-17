@@ -3,21 +3,17 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
 public class Mxcompiler
 {
-    public static void main(String args[])
+    public static void main(String args[]) throws IOException
     {
-        String filename = new String("1.in");
-//        try
-//        {
-//            InputStream f = new FileInputStream(filename);
-//            System.out.println(f.read());
-//        }
-//        catch (Exception e)
-//        {
-//            e.printStackTrace();
-//        }
-        CharStream filename_charstream = CharStreams.fromString(filename);
+        File file = new File("1.in");
+        FileInputStream file_input_stream = new FileInputStream(file);
+        CharStream filename_charstream = CharStreams.fromStream(file_input_stream);
         MxLexer mx_lexer = new MxLexer(filename_charstream);
         CommonTokenStream mx_token_stream = new CommonTokenStream(mx_lexer);
         MxParser mx_parser = new MxParser(mx_token_stream);
