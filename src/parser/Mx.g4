@@ -71,31 +71,36 @@ CONST: BOOL_CONST | INT_CONST | STRING_CONST | NULL_CONST;
 
 IDENTIFIER: [A-Za-z] [A-Za-z0-9_]*;
 expression_list: expression (COMMA expression)*;
-expression: CONST | IDENTIFIER | THIS
-			| expression DOT IDENTIFIER 
-			| expression LEFT_BRACKET expression RIGHT_BRACKET
-			| expression LEFT_PAREN expression_list? RIGHT_PAREN
-			| expression (ZIZENG_OP | ZIJIAN_OP)
-			| <assoc=right> (ADD_OP | MINUS_OP | ZIZENG_OP | ZIJIAN_OP | NOT_OP) expression
-			| (MULTI_OP | DIV_OP | MOD_OP | LOGIC_NOT_OP) expression
-			| expression (ADD_OP | MINUS_OP | MULTI_OP | DIV_OP | MOD_OP | LEFT_SHIFT_OP | RIGHT_SHIFT_OP | XIAOYU_OP | XIAOYUDENGYU_OP | DAYU_OP | DAYUDENGYU_OP | EQUAL_OP | NOT_EQUAL_OP | AND_OP | OR_OP | XOR_OP | LOGIC_AND_OP | LOGIC_OR_OP) expression
-			| NEW var_malloc
-			| expression ASSIGN expression;
-
+expression:
+    CONST                                                                               #Const
+    | IDENTIFIER                                                                        #IdentifierExpr
+    | THIS                                                                              #This
+    | expression DOT IDENTIFIER                                                         #Member
+    | expression LEFT_BRACKET expression RIGHT_BRACKET                                  #Index
+    | expression LEFT_PAREN expression_list? RIGHT_PAREN                                #FunctionParam
+    | expression (ZIZENG_OP | ZIJIAN_OP)                                                #UnaryPos
+    | <assoc=right> (ADD_OP | MINUS_OP | ZIZENG_OP | ZIJIAN_OP | NOT_OP) expression     #UnaryPre
+    | (MULTI_OP | DIV_OP | MOD_OP | LOGIC_NOT_OP) expression                            #UnaryPre
+    | expression (ADD_OP | MINUS_OP | MULTI_OP | DIV_OP | MOD_OP | LEFT_SHIFT_OP | RIGHT_SHIFT_OP | XIAOYU_OP | XIAOYUDENGYU_OP | DAYU_OP | DAYUDENGYU_OP | EQUAL_OP | NOT_EQUAL_OP | AND_OP | OR_OP | XOR_OP | LOGIC_AND_OP | LOGIC_OR_OP) expression   #Binary
+    | NEW var_malloc                                                                    #New
+    | expression ASSIGN expression                                                      #Binary
+    ;
 
 var_multi_def: type IDENTIFIER (COMMA IDENTIFIER)*;
 var_def_and_init: type IDENTIFIER ASSIGN expression;
 var_def: (var_multi_def | var_def_and_init) SEMICOLON;
 var_malloc: type (LEFT_BRACKET CONST RIGHT_BRACKET)* (LEFT_BRACKET RIGHT_BRACKET)* (LEFT_PAREN RIGHT_PAREN)?;
-statement: var_def | LEFT_BIGBRACE statement* RIGHT_BIGBRACE
-            | IF LEFT_PAREN expression RIGHT_PAREN statement (ELSE statement)?
-            | FOR LEFT_PAREN statement? SEMICOLON expression? SEMICOLON statement? RIGHT_PAREN statement
-            | WHILE LEFT_PAREN expression RIGHT_PAREN statement
-            | RETURN expression? SEMICOLON
-            | BREAK SEMICOLON
-            | CONTINUE SEMICOLON
-            | expression SEMICOLON;
-
+statement:
+    var_def                                                                                             #VardefStatement
+    | LEFT_BIGBRACE statement* RIGHT_BIGBRACE                                                           #Statements
+    | IF LEFT_PAREN expression RIGHT_PAREN statement (ELSE statement)?                                  #IfStatement
+    | FOR LEFT_PAREN statement? SEMICOLON expression? SEMICOLON statement? RIGHT_PAREN statement        #ForStatement
+    | WHILE LEFT_PAREN expression RIGHT_PAREN statement                                                 #WhileStatement
+    | RETURN expression? SEMICOLON                                                                      #ReturnStatement
+    | BREAK SEMICOLON                                                                                   #BreakStatement
+    | CONTINUE SEMICOLON                                                                                #ContinueStatement
+    | expression SEMICOLON                                                                              #ExprStatement
+    ;
 program: program_part* EOF;
 program_part: class_def | func_def | var_def;
 type: type LEFT_BRACKET RIGHT_BRACKET | IDENTIFIER | INT | BOOL | STRING | VOID;

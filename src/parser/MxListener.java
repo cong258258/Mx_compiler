@@ -18,15 +18,125 @@ public interface MxListener extends ParseTreeListener {
 	 */
 	void exitExpression_list(MxParser.Expression_listContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MxParser#expression}.
+	 * Enter a parse tree produced by the {@code New}
+	 * labeled alternative in {@link MxParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterExpression(MxParser.ExpressionContext ctx);
+	void enterNew(MxParser.NewContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MxParser#expression}.
+	 * Exit a parse tree produced by the {@code New}
+	 * labeled alternative in {@link MxParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitExpression(MxParser.ExpressionContext ctx);
+	void exitNew(MxParser.NewContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code UnaryPre}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterUnaryPre(MxParser.UnaryPreContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code UnaryPre}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitUnaryPre(MxParser.UnaryPreContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code UnaryPos}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterUnaryPos(MxParser.UnaryPosContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code UnaryPos}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitUnaryPos(MxParser.UnaryPosContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code IdentifierExpr}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdentifierExpr(MxParser.IdentifierExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IdentifierExpr}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdentifierExpr(MxParser.IdentifierExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Const}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterConst(MxParser.ConstContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Const}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitConst(MxParser.ConstContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code This}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterThis(MxParser.ThisContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code This}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitThis(MxParser.ThisContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Index}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterIndex(MxParser.IndexContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Index}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitIndex(MxParser.IndexContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Binary}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterBinary(MxParser.BinaryContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Binary}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitBinary(MxParser.BinaryContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Member}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterMember(MxParser.MemberContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Member}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitMember(MxParser.MemberContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FunctionParam}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionParam(MxParser.FunctionParamContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FunctionParam}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionParam(MxParser.FunctionParamContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MxParser#var_multi_def}.
 	 * @param ctx the parse tree
@@ -68,15 +178,113 @@ public interface MxListener extends ParseTreeListener {
 	 */
 	void exitVar_malloc(MxParser.Var_mallocContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MxParser#statement}.
+	 * Enter a parse tree produced by the {@code VardefStatement}
+	 * labeled alternative in {@link MxParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void enterStatement(MxParser.StatementContext ctx);
+	void enterVardefStatement(MxParser.VardefStatementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MxParser#statement}.
+	 * Exit a parse tree produced by the {@code VardefStatement}
+	 * labeled alternative in {@link MxParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void exitStatement(MxParser.StatementContext ctx);
+	void exitVardefStatement(MxParser.VardefStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Statements}
+	 * labeled alternative in {@link MxParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatements(MxParser.StatementsContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Statements}
+	 * labeled alternative in {@link MxParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatements(MxParser.StatementsContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code IfStatement}
+	 * labeled alternative in {@link MxParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfStatement(MxParser.IfStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IfStatement}
+	 * labeled alternative in {@link MxParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfStatement(MxParser.IfStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForStatement}
+	 * labeled alternative in {@link MxParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterForStatement(MxParser.ForStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForStatement}
+	 * labeled alternative in {@link MxParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitForStatement(MxParser.ForStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code WhileStatement}
+	 * labeled alternative in {@link MxParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhileStatement(MxParser.WhileStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code WhileStatement}
+	 * labeled alternative in {@link MxParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhileStatement(MxParser.WhileStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ReturnStatement}
+	 * labeled alternative in {@link MxParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterReturnStatement(MxParser.ReturnStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ReturnStatement}
+	 * labeled alternative in {@link MxParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitReturnStatement(MxParser.ReturnStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code BreakStatement}
+	 * labeled alternative in {@link MxParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterBreakStatement(MxParser.BreakStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code BreakStatement}
+	 * labeled alternative in {@link MxParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitBreakStatement(MxParser.BreakStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ContinueStatement}
+	 * labeled alternative in {@link MxParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterContinueStatement(MxParser.ContinueStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ContinueStatement}
+	 * labeled alternative in {@link MxParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitContinueStatement(MxParser.ContinueStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprStatement}
+	 * labeled alternative in {@link MxParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprStatement(MxParser.ExprStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprStatement}
+	 * labeled alternative in {@link MxParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprStatement(MxParser.ExprStatementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MxParser#program}.
 	 * @param ctx the parse tree

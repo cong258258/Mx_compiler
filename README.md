@@ -36,31 +36,30 @@ package parser
   	- **UnaryPosAST** 后缀++
   	- **BinaryAST**
   	- **NewAST**
-  	
-- **StatementAST**
-  
-  - **StatementsAST**
-  
-  - **VardefStatementAST**
-  
-    - **VardefandinitStatementAST**;
-    - **VarmultidefStatementAST**;
-  
-  - **IfStatementAST**
-  
-  - **ForStatementAST**
-  
-  - **WhileStatementAST**
-  
-  - **ReturnStatementAST**
-  
-  - **BreakStatementAST**
-  
+  	- **ThisAST**
+	
+  - **StatementAST**
+
+    - **StatementsAST**
+
+    - **VardefStatementAST**
+
+      - **VardefandinitStatementAST**;
+  - **VarmultidefStatementAST**;
+    
+- **IfStatementAST**
+    
+- **ForStatementAST**
+    
+- **WhileStatementAST**
+    
+- **ReturnStatementAST**
+    
+- **BreakStatementAST**
+    
   - **ContinueStatementAST**
     
     - **ExprStatementAST**
-    
-    - **ThisStatementAST**
     
       
 

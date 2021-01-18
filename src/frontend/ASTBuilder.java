@@ -18,9 +18,63 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     }
 
     @Override
-    public AST visitExpression(MxParser.ExpressionContext ctx)
+    public AST visitNew(MxParser.NewContext ctx)
     {
-        return super.visitExpression(ctx);
+        return super.visitNew(ctx);
+    }
+
+    @Override
+    public AST visitUnaryPre(MxParser.UnaryPreContext ctx)
+    {
+        return super.visitUnaryPre(ctx);
+    }
+
+    @Override
+    public AST visitUnaryPos(MxParser.UnaryPosContext ctx)
+    {
+        return super.visitUnaryPos(ctx);
+    }
+
+    @Override
+    public AST visitIdentifierExpr(MxParser.IdentifierExprContext ctx)
+    {
+        return super.visitIdentifierExpr(ctx);
+    }
+
+    @Override
+    public AST visitConst(MxParser.ConstContext ctx)
+    {
+        return super.visitConst(ctx);
+    }
+
+    @Override
+    public AST visitThis(MxParser.ThisContext ctx)
+    {
+        return super.visitThis(ctx);
+    }
+
+    @Override
+    public AST visitIndex(MxParser.IndexContext ctx)
+    {
+        return super.visitIndex(ctx);
+    }
+
+    @Override
+    public AST visitBinary(MxParser.BinaryContext ctx)
+    {
+        return super.visitBinary(ctx);
+    }
+
+    @Override
+    public AST visitMember(MxParser.MemberContext ctx)
+    {
+        return super.visitMember(ctx);
+    }
+
+    @Override
+    public AST visitFunctionParam(MxParser.FunctionParamContext ctx)
+    {
+        return super.visitFunctionParam(ctx);
     }
 
     @Override
@@ -48,9 +102,57 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     }
 
     @Override
-    public AST visitStatement(MxParser.StatementContext ctx)
+    public AST visitVardefStatement(MxParser.VardefStatementContext ctx)
     {
-        return super.visitStatement(ctx);
+        return super.visitVardefStatement(ctx);
+    }
+
+    @Override
+    public AST visitStatements(MxParser.StatementsContext ctx)
+    {
+        return super.visitStatements(ctx);
+    }
+
+    @Override
+    public AST visitIfStatement(MxParser.IfStatementContext ctx)
+    {
+        return super.visitIfStatement(ctx);
+    }
+
+    @Override
+    public AST visitForStatement(MxParser.ForStatementContext ctx)
+    {
+        return super.visitForStatement(ctx);
+    }
+
+    @Override
+    public AST visitWhileStatement(MxParser.WhileStatementContext ctx)
+    {
+        return super.visitWhileStatement(ctx);
+    }
+
+    @Override
+    public AST visitReturnStatement(MxParser.ReturnStatementContext ctx)
+    {
+        return super.visitReturnStatement(ctx);
+    }
+
+    @Override
+    public AST visitBreakStatement(MxParser.BreakStatementContext ctx)
+    {
+        return super.visitBreakStatement(ctx);
+    }
+
+    @Override
+    public AST visitContinueStatement(MxParser.ContinueStatementContext ctx)
+    {
+        return super.visitContinueStatement(ctx);
+    }
+
+    @Override
+    public AST visitExprStatement(MxParser.ExprStatementContext ctx)
+    {
+        return super.visitExprStatement(ctx);
     }
 
     @Override
