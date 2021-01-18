@@ -1,8 +1,11 @@
 package AST;
 
+import utility.Position;
+
 public class ConstAST extends ExprAST
 {
-    ConstAST()
+    public ConstAST(Position positionn)
     {
+        super(positionn);
     }
 }

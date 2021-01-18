@@ -1,10 +1,17 @@
 package AST;
 
+import utility.Position;
+
 public class ConstStringAST extends ConstAST
 {
-    public String val;
-    ConstStringAST(String Val)
+    String val;
+    public ConstStringAST(Position positionn, String Val)
     {
+        super(positionn);
         this.val = Val;
+    }
+    public String get_val()
+    {
+        return val;
     }
 }

@@ -18,8 +18,8 @@ Mx_compiler
   - ExprAST
   	
   	- ConstAST
-  	  - ConstIntAST
-  	  - ConstBoolAST
+  	  - ConstIntAST			1
+  	    - ConstBoolAST 
   	  - ConstStringAST
   	  - ConstNullAST
   	- IdentifierExprAST

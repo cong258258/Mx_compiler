@@ -1,13 +1,28 @@
 package AST;
 
+import utility.Position;
+
 public class BinaryAST extends ExprAST
 {
-    public Optype optype;
+    Optype optype;
     ExprAST lhs, rhs;
-    BinaryAST(Optype optypee, ExprAST lhss, ExprAST rhss)
+    public BinaryAST(Position positionn, Optype optypee, ExprAST lhss, ExprAST rhss)
     {
+        super(positionn);
         this.optype = optypee;
         this.lhs = lhss;
         this.rhs = rhss;
+    }
+    public Optype get_optype()
+    {
+        return this.optype;
+    }
+    public ExprAST get_lhs()
+    {
+        return this.lhs;
+    }
+    public ExprAST get_rhs()
+    {
+        return this.rhs;
     }
 }
