@@ -57,6 +57,16 @@ public interface MxListener extends ParseTreeListener {
 	 */
 	void exitVar_def(MxParser.Var_defContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MxParser#var_malloc}.
+	 * @param ctx the parse tree
+	 */
+	void enterVar_malloc(MxParser.Var_mallocContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MxParser#var_malloc}.
+	 * @param ctx the parse tree
+	 */
+	void exitVar_malloc(MxParser.Var_mallocContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MxParser#statement}.
 	 * @param ctx the parse tree
 	 */

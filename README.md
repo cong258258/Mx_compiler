@@ -7,49 +7,55 @@ Mx_compiler
 
 （层级表示派生）
 
-- AST
+- **AST**
 
-  - ProgramPartAST
+  - **ProgramPartAST**
 
-    - ClassdefAST
-    - FunctiondefAST
-    - GlobalVardefAST
+    - **ClassdefAST**
+    - **FunctiondefAST**
+    - GlobalVardefAST   ????
 
-  - ExprAST
+  - **ExprAST**
   	
-  	- ConstAST
-  	  - ConstIntAST			1
-  	    - ConstBoolAST 
-  	  - ConstStringAST
-  	  - ConstNullAST
-  	- IdentifierExprAST
-  	- MemberAST      .
-  	- IndexAST      []
-  	- FunctionParamAST   gcd(6,8)
-  	- UnaryPreAST  前缀++
-  	- UnaryPosAST 后缀++
-  	- BinaryAST
+  	- **ConstAST**
+  	  - **ConstIntAST**
+  	  - **ConstBoolAST**
+  	  - **ConstStringAST**
+  	  - **ConstNullAST**
+  	- **IdentifierExprAST**
+  	- **MemberAST**      .
+  	- **IndexAST**      []
+  	- **FunctionParamAST**   gcd(6,8)
+  	- **UnaryPreAST**  前缀++
+  	- **UnaryPosAST** 后缀++
+  	- **BinaryAST**
+  	- **NewAST**
   	
-  - StatementAST
-
-    - StatementsAST
-
-    - VardefStatementAST
-
-    - IfStatementAST
-
-    - ForStatementAST
-
-    - WhileStatementAST
-
-    - ReturnStatementAST
-
-    - BreakStatementAST
-
-    - ContinueStatementAST
-
-    - ExprStatementAST
-
+- **StatementAST**
+  
+  - **StatementsAST**
+  
+  - **VardefStatementAST**
+  
+    - **VardefandinitStatementAST**;
+    - **VarmultidefStatementAST**;
+  
+  - **IfStatementAST**
+  
+  - **ForStatementAST**
+  
+  - **WhileStatementAST**
+  
+  - **ReturnStatementAST**
+  
+  - **BreakStatementAST**
+  
+  - **ContinueStatementAST**
+    
+    - **ExprStatementAST**
+    
+    - **ThisStatementAST**
+    
       
 
-
+int a = new int()()

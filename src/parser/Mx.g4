@@ -71,7 +71,7 @@ CONST: BOOL_CONST | INT_CONST | STRING_CONST | NULL_CONST;
 
 IDENTIFIER: [A-Za-z] [A-Za-z0-9_]*;
 expression_list: expression (COMMA expression)*;
-expression: CONST | IDENTIFIER
+expression: CONST | IDENTIFIER | THIS
 			| expression DOT IDENTIFIER 
 			| expression LEFT_BRACKET expression RIGHT_BRACKET
 			| expression LEFT_PAREN expression_list? RIGHT_PAREN
@@ -79,12 +79,14 @@ expression: CONST | IDENTIFIER
 			| <assoc=right> (ADD_OP | MINUS_OP | ZIZENG_OP | ZIJIAN_OP | NOT_OP) expression
 			| (MULTI_OP | DIV_OP | MOD_OP | LOGIC_NOT_OP) expression
 			| expression (ADD_OP | MINUS_OP | MULTI_OP | DIV_OP | MOD_OP | LEFT_SHIFT_OP | RIGHT_SHIFT_OP | XIAOYU_OP | XIAOYUDENGYU_OP | DAYU_OP | DAYUDENGYU_OP | EQUAL_OP | NOT_EQUAL_OP | AND_OP | OR_OP | XOR_OP | LOGIC_AND_OP | LOGIC_OR_OP) expression
+			| NEW var_malloc
 			| expression ASSIGN expression;
 
 
 var_multi_def: type IDENTIFIER (COMMA IDENTIFIER)*;
 var_def_and_init: type IDENTIFIER ASSIGN expression;
 var_def: (var_multi_def | var_def_and_init) SEMICOLON;
+var_malloc: type (LEFT_BRACKET CONST RIGHT_BRACKET)* (LEFT_BRACKET RIGHT_BRACKET)* (LEFT_PAREN RIGHT_PAREN)?;
 statement: var_def | LEFT_BIGBRACE statement* RIGHT_BIGBRACE
             | IF LEFT_PAREN expression RIGHT_PAREN statement (ELSE statement)?
             | FOR LEFT_PAREN statement? SEMICOLON expression? SEMICOLON statement? RIGHT_PAREN statement
@@ -96,7 +98,7 @@ statement: var_def | LEFT_BIGBRACE statement* RIGHT_BIGBRACE
 
 program: program_part* EOF;
 program_part: class_def | func_def | var_def;
-type: IDENTIFIER | INT | BOOL | STRING | VOID;
+type: type LEFT_BRACKET RIGHT_BRACKET | IDENTIFIER | INT | BOOL | STRING | VOID;
 class_def: CLASS IDENTIFIER LEFT_BIGBRACE (var_def | func_def)* RIGHT_BIGBRACE SEMICOLON;
 param: type IDENTIFIER;
 paramlist: param (COMMA param)*;
