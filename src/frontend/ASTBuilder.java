@@ -6,12 +6,39 @@ import parser.MxBaseVisitor;
 import parser.MxParser;
 import utility.Position;
 import java.util.ArrayList;
+import static java.lang.Integer.parseInt;
 
 public class ASTBuilder extends MxBaseVisitor<AST>
 {
     public ASTBuilder()
     {
 
+    }
+
+    @Override
+    public AST visitConstant(MxParser.ConstantContext ctx)
+    {
+        Position tmp_pos = new Position(ctx);
+        String tmp_val = ctx.getText();
+        System.out.println("!!!!!test getText" + tmp_val);
+        if(ctx.BOOL_CONST() != null)
+        {
+            if(tmp_val.equals("true"))
+                return new ConstBoolAST(tmp_pos, true);
+            else
+                return new ConstBoolAST(tmp_pos, false);
+        }
+        else if(ctx.NULL_CONST() != null)
+            return new ConstNullAST(tmp_pos);
+        else if(ctx.STRING_CONST() != null)
+            return new ConstStringAST(tmp_pos, tmp_val);
+        else if(ctx.INT_CONST() != null)
+            return new ConstIntAST(tmp_pos, parseInt(tmp_val));
+        else
+        {
+            System.out.println("visitConstant?????");
+            return null;
+        }
     }
 
     @Override
@@ -79,13 +106,7 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     @Override
     public AST visitConst(MxParser.ConstContext ctx)
     {
-        Position tmp_pos = new Position(ctx);
-        String tmp_val = ctx.getText();
-        if(tmp_val.equals("true"))
-            return new ConstBoolAST(tmp_pos, true);
-        else if(tmp_val.equals("false"))
-            return new ConstBoolAST(tmp_pos, false);
-        return super.visitConst(ctx);
+        return visit(ctx.constant());
     }
 
     @Override
@@ -211,7 +232,11 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     @Override
     public AST visitStatements(MxParser.StatementsContext ctx)
     {
-        return super.visitStatements(ctx);
+        Position tmp_pos = new Position(ctx);
+        ArrayList<StatementAST> tmp_statements = new ArrayList<>();
+        for(ParserRuleContext i: ctx.statement())
+            tmp_statements.add((StatementAST) visit(i));
+        return new StatementsAST(tmp_pos, tmp_statements);
     }
 
     @Override
@@ -329,24 +354,37 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     @Override
     public AST visitClass_def(MxParser.Class_defContext ctx)
     {
-        return super.visitClass_def(ctx);
+        Position tmp_pos = new Position(ctx);
+        String tmp_identifier = ctx.IDENTIFIER().getText();
+        ArrayList<VarmultidefStatementAST> tmp_members = new ArrayList<>();
+//        for(ParserRuleContext i: ctx.var_def())
+        return null;
     }
 
     @Override
     public AST visitParam(MxParser.ParamContext ctx)
     {
-        return super.visitParam(ctx);
+        Position tmp_pos = new Position(ctx);
+        TypeAST tmp_param_type = (TypeAST) visit(ctx.type());
+        String tmp_param_name = ctx.IDENTIFIER().getText();
+        return new ParamAST(tmp_pos, tmp_param_type, tmp_param_name);
     }
 
     @Override
     public AST visitParamlist(MxParser.ParamlistContext ctx)
     {
-        return super.visitParamlist(ctx);
+        Position tmp_pos = new Position(ctx);
+        ArrayList<ParamAST> tmp_param_name_list = new ArrayList<>();
+        for(ParserRuleContext i: ctx.param())
+            tmp_param_name_list.add((ParamAST) visit(i));
+        return new ParamlistAST(tmp_pos, tmp_param_name_list);
     }
 
     @Override
     public AST visitFunc_def(MxParser.Func_defContext ctx)
     {
+        TypeAST tmp_return_vartype = (TypeAST) visit(ctx.type());
+        
         return super.visitFunc_def(ctx);
     }
 }

@@ -8,6 +8,16 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface MxListener extends ParseTreeListener {
 	/**
+	 * Enter a parse tree produced by {@link MxParser#constant}.
+	 * @param ctx the parse tree
+	 */
+	void enterConstant(MxParser.ConstantContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MxParser#constant}.
+	 * @param ctx the parse tree
+	 */
+	void exitConstant(MxParser.ConstantContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MxParser#expression_list}.
 	 * @param ctx the parse tree
 	 */

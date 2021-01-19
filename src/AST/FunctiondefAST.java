@@ -5,11 +5,11 @@ import java.util.ArrayList;
 
 public class FunctiondefAST extends ProgramPartAST
 {
-    String return_vartype;
+    TypeAST return_vartype;
     String function_name;
     ArrayList<VarmultidefStatementAST> params = new ArrayList<VarmultidefStatementAST>();
     StatementAST statements;
-    public FunctiondefAST(Position positionn, String retvartp, String funcname, ArrayList<VarmultidefStatementAST> pa, StatementAST sts)
+    public FunctiondefAST(Position positionn, TypeAST retvartp, String funcname, ArrayList<VarmultidefStatementAST> pa, StatementAST sts)
     {
         super(positionn);
         this.return_vartype = retvartp;

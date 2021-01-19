@@ -61,18 +61,17 @@ WHITE: [ \t\n\r]+ -> skip;
 //BLOCKCOMMENT: '/*' [\s\S]*? '*/' -> skip;
 LINECOMMENT: '//' ~[\\r\n]* ('\n' | '\r\n' | EOF) -> skip;
 
-
-fragment BOOL_CONST: TRUE | FALSE;
-fragment INT_CONST: [0-9]+;
+BOOL_CONST: TRUE | FALSE;
+INT_CONST: [0-9]+;
 fragment STRING_CHAR_CONST: '\\n' | '\\\\' | '\\"' | ~['\\\r\n];
-fragment STRING_CONST: '"' STRING_CHAR_CONST+ '"';
-fragment NULL_CONST: NULL;
-CONST: BOOL_CONST | INT_CONST | STRING_CONST | NULL_CONST;
+STRING_CONST: '"' STRING_CHAR_CONST+ '"';
+NULL_CONST: NULL;
+constant: BOOL_CONST | INT_CONST | STRING_CONST | NULL_CONST;
 
 IDENTIFIER: [A-Za-z] [A-Za-z0-9_]*;
 expression_list: expression (COMMA expression)*;
 expression:
-    CONST                                                                                               #Const
+    constant                                                                                            #Const
     | IDENTIFIER                                                                                        #IdentifierExpr
     | THIS                                                                                              #This
     | expression DOT IDENTIFIER                                                                         #Member
@@ -88,7 +87,8 @@ expression:
 var_multi_def: type IDENTIFIER (COMMA IDENTIFIER)*;
 var_def_and_init: type IDENTIFIER ASSIGN expression;
 var_def: (var_multi_def | var_def_and_init) SEMICOLON;
-var_malloc: type (LEFT_BRACKET CONST RIGHT_BRACKET)* (LEFT_BRACKET RIGHT_BRACKET)* (LEFT_PAREN RIGHT_PAREN)?;
+var_malloc: type (LEFT_BRACKET INT_CONST RIGHT_BRACKET)* (LEFT_BRACKET RIGHT_BRACKET)* (LEFT_PAREN RIGHT_PAREN)?;
+
 statement:
     var_def                                                                                             #VardefStatement
     | LEFT_BIGBRACE statement* RIGHT_BIGBRACE                                                           #Statements
@@ -100,6 +100,7 @@ statement:
     | CONTINUE SEMICOLON                                                                                #ContinueStatement
     | expression SEMICOLON                                                                              #ExprStatement
     ;
+
 program: program_part* EOF;
 program_part: class_def | func_def | var_def;
 type: type LEFT_BRACKET RIGHT_BRACKET | IDENTIFIER | INT | BOOL | STRING | VOID;
