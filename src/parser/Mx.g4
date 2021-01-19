@@ -62,11 +62,11 @@ WHITE: [ \t\n\r]+ -> skip;
 LINECOMMENT: '//' ~[\\r\n]* ('\n' | '\r\n' | EOF) -> skip;
 
 
-fragment BOOL_CONST: 'True' | 'False';
+fragment BOOL_CONST: TRUE | FALSE;
 fragment INT_CONST: [0-9]+;
 fragment STRING_CHAR_CONST: '\\n' | '\\\\' | '\\"' | ~['\\\r\n];
 fragment STRING_CONST: '"' STRING_CHAR_CONST+ '"';
-fragment NULL_CONST: 'null';
+fragment NULL_CONST: NULL;
 CONST: BOOL_CONST | INT_CONST | STRING_CONST | NULL_CONST;
 
 IDENTIFIER: [A-Za-z] [A-Za-z0-9_]*;

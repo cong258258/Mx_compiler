@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 public class NewAST extends ExprAST
 {
-    String vartype;
+    TypeAST vartype;
     ArrayList<ExprAST> init_expr;
     int cnt;
-    public NewAST(Position positionn, String vartp, ArrayList<ExprAST> ini, int cntt)
+    public NewAST(Position positionn, TypeAST vartp, ArrayList<ExprAST> ini, int cntt)
     {
         super(positionn);
         this.vartype = vartp;

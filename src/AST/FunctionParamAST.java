@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class FunctionParamAST extends ExprAST
 {
     ExprAST function_name;
-    ArrayList<ExprAST> params = new ArrayList<ExprAST>();
+    ArrayList<ExprAST> params;
     public FunctionParamAST(Position positionn, ExprAST funcname, ArrayList<ExprAST> pa)
     {
         super(positionn);

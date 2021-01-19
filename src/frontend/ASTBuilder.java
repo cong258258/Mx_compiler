@@ -17,7 +17,7 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     @Override
     public AST visitExpression_list(MxParser.Expression_listContext ctx)
     {
-        return super.visitExpression_list(ctx);
+        return null;
     }
 
     @Override
@@ -79,37 +79,103 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     @Override
     public AST visitConst(MxParser.ConstContext ctx)
     {
+        Position tmp_pos = new Position(ctx);
+        String tmp_val = ctx.getText();
+        if(tmp_val.equals("true"))
+            return new ConstBoolAST(tmp_pos, true);
+        else if(tmp_val.equals("false"))
+            return new ConstBoolAST(tmp_pos, false);
         return super.visitConst(ctx);
     }
 
     @Override
     public AST visitThis(MxParser.ThisContext ctx)
     {
-        return super.visitThis(ctx);
+        Position tmp_pos = new Position(ctx);
+        return new ThisAST(tmp_pos);
     }
 
     @Override
     public AST visitIndex(MxParser.IndexContext ctx)
     {
-        return super.visitIndex(ctx);
+        Position tmp_pos = new Position(ctx);
+        ExprAST tmp_mainExprAST = (ExprAST) visit(ctx.expression(0));
+        ExprAST tmp_indexExprAST = (ExprAST) visit(ctx.expression(1));
+        return new IndexAST(tmp_pos, tmp_mainExprAST, tmp_indexExprAST);
     }
 
     @Override
     public AST visitBinary(MxParser.BinaryContext ctx)
     {
-        return super.visitBinary(ctx);
+        Position tmp_pos = new Position(ctx);
+        Optype tmp_op;
+        if(ctx.ADD_OP() != null)
+            tmp_op = Optype.op_add;
+        else if(ctx.MINUS_OP() != null)
+            tmp_op = Optype.op_minus;
+        else if(ctx.MULTI_OP() != null)
+            tmp_op = Optype.op_multi;
+        else if(ctx.DIV_OP() != null)
+            tmp_op = Optype.op_divide;
+        else if(ctx.MOD_OP() != null)
+            tmp_op = Optype.op_mod;
+        else if(ctx.LEFT_SHIFT_OP() != null)
+            tmp_op = Optype.op_left_shift;
+        else if(ctx.RIGHT_SHIFT_OP() != null)
+            tmp_op = Optype.op_right_shift;
+        else if(ctx.XIAOYU_OP() != null)
+            tmp_op = Optype.op_xiaoyu;
+        else if(ctx.XIAOYUDENGYU_OP() != null)
+            tmp_op = Optype.op_xiaoyudengyu;
+        else if(ctx.DAYU_OP() != null)
+            tmp_op = Optype.op_dayu;
+        else if(ctx.DAYUDENGYU_OP() != null)
+            tmp_op = Optype.op_dayudengyu;
+        else if(ctx.EQUAL_OP() != null)
+            tmp_op = Optype.op_equal;
+        else if(ctx.NOT_EQUAL_OP() != null)
+            tmp_op = Optype.op_not_equal;
+        else if(ctx.AND_OP() != null)
+            tmp_op = Optype.op_and;
+        else if(ctx.OR_OP() != null)
+            tmp_op = Optype.op_or;
+        else if(ctx.XOR_OP() != null)
+            tmp_op = Optype.op_xor;
+        else if(ctx.LOGIC_AND_OP() != null)
+            tmp_op = Optype.op_logic_and;
+        else if(ctx.LOGIC_OR_OP() != null)
+            tmp_op = Optype.op_logic_or;
+        else if(ctx.ASSIGN() != null)
+            tmp_op = Optype.op_assign;
+        else
+        {
+            tmp_op = Optype.op_empty;
+            System.out.println("visitBinary??????");
+        }
+        ExprAST tmp_lhs = (ExprAST) visit(ctx.expression(0));
+        ExprAST tmp_rhs = (ExprAST) visit(ctx.expression(1));
+        return new BinaryAST(tmp_pos, tmp_op, tmp_lhs, tmp_rhs);
     }
 
     @Override
     public AST visitMember(MxParser.MemberContext ctx)
     {
-        return super.visitMember(ctx);
+        Position tmp_pos = new Position(ctx);
+        ExprAST tmp_exprAST = (ExprAST) visit(ctx.expression());
+        IdentifierExprAST tmp_identifierExprAST = (IdentifierExprAST) visit(ctx.IDENTIFIER());
+        return new MemberAST(tmp_pos, tmp_exprAST, tmp_identifierExprAST);
     }
 
     @Override
     public AST visitFunctionParam(MxParser.FunctionParamContext ctx)
     {
-        return super.visitFunctionParam(ctx);
+        Position tmp_pos = new Position(ctx);
+        ExprAST tmp_function_name = (ExprAST) visit(ctx.expression());
+        ArrayList<ExprAST> tmp_params = new ArrayList<>();
+        if(ctx.expression_list() != null)
+            for(ParserRuleContext i : ctx.expression_list().expression())
+                tmp_params.add((ExprAST) visit(i));
+        return new FunctionParamAST(tmp_pos, tmp_function_name, tmp_params);
     }
 
     @Override
@@ -232,7 +298,7 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     public AST visitProgram(MxParser.ProgramContext ctx)
     {
         Position tmp_pos = new Position(ctx);
-        ArrayList<ProgramPartAST> tmp_program_parts = new ArrayList<ProgramPartAST>();
+        ArrayList<ProgramPartAST> tmp_program_parts = new ArrayList<>();
         for(ParserRuleContext i: ctx.program_part())
             tmp_program_parts.add((ProgramPartAST) visit(i));
         return new ProgramAST(tmp_pos, tmp_program_parts);
