@@ -7,5 +7,5 @@ public enum Optype
     op_xiaoyu, op_xiaoyudengyu, op_dayu, op_dayudengyu, op_equal, op_not_equal,
     op_logic_and, op_logic_or, op_logic_not,
     op_left_shift, op_right_shift, op_and, op_or, op_xor, op_not,
-    op_assign, op_zizeng, op_zijian
+    op_assign, op_zizeng, op_zijian, op_zheng, op_fu
 }

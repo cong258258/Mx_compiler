@@ -72,18 +72,17 @@ CONST: BOOL_CONST | INT_CONST | STRING_CONST | NULL_CONST;
 IDENTIFIER: [A-Za-z] [A-Za-z0-9_]*;
 expression_list: expression (COMMA expression)*;
 expression:
-    CONST                                                                               #Const
-    | IDENTIFIER                                                                        #IdentifierExpr
-    | THIS                                                                              #This
-    | expression DOT IDENTIFIER                                                         #Member
-    | expression LEFT_BRACKET expression RIGHT_BRACKET                                  #Index
-    | expression LEFT_PAREN expression_list? RIGHT_PAREN                                #FunctionParam
-    | expression (ZIZENG_OP | ZIJIAN_OP)                                                #UnaryPos
-    | <assoc=right> (ADD_OP | MINUS_OP | ZIZENG_OP | ZIJIAN_OP | NOT_OP) expression     #UnaryPre
-    | (MULTI_OP | DIV_OP | MOD_OP | LOGIC_NOT_OP) expression                            #UnaryPre
+    CONST                                                                                               #Const
+    | IDENTIFIER                                                                                        #IdentifierExpr
+    | THIS                                                                                              #This
+    | expression DOT IDENTIFIER                                                                         #Member
+    | expression LEFT_BRACKET expression RIGHT_BRACKET                                                  #Index
+    | expression LEFT_PAREN expression_list? RIGHT_PAREN                                                #FunctionParam
+    | expression (ZIZENG_OP | ZIJIAN_OP)                                                                #UnaryPos
+    | <assoc=right> (ADD_OP | MINUS_OP | ZIZENG_OP | ZIJIAN_OP | NOT_OP | LOGIC_NOT_OP) expression      #UnaryPre
     | expression (ADD_OP | MINUS_OP | MULTI_OP | DIV_OP | MOD_OP | LEFT_SHIFT_OP | RIGHT_SHIFT_OP | XIAOYU_OP | XIAOYUDENGYU_OP | DAYU_OP | DAYUDENGYU_OP | EQUAL_OP | NOT_EQUAL_OP | AND_OP | OR_OP | XOR_OP | LOGIC_AND_OP | LOGIC_OR_OP) expression   #Binary
-    | NEW var_malloc                                                                    #New
-    | expression ASSIGN expression                                                      #Binary
+    | NEW var_malloc                                                                                    #New
+    | expression ASSIGN expression                                                                      #Binary
     ;
 
 var_multi_def: type IDENTIFIER (COMMA IDENTIFIER)*;

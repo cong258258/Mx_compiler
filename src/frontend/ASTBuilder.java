@@ -1,8 +1,11 @@
 package frontend;
 
-import AST.AST;
+import AST.*;
+import org.antlr.v4.runtime.ParserRuleContext;
 import parser.MxBaseVisitor;
 import parser.MxParser;
+import utility.Position;
+import java.util.ArrayList;
 
 public class ASTBuilder extends MxBaseVisitor<AST>
 {
@@ -26,13 +29,45 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     @Override
     public AST visitUnaryPre(MxParser.UnaryPreContext ctx)
     {
-        return super.visitUnaryPre(ctx);
+        Position tmp_pos = new Position(ctx);
+        Optype tmp_op;
+        if(ctx.ADD_OP() != null)
+            tmp_op = Optype.op_zheng;
+        else if(ctx.MINUS_OP() != null)
+            tmp_op = Optype.op_fu;
+        else if(ctx.ZIZENG_OP() != null)
+            tmp_op = Optype.op_zizeng;
+        else if(ctx.ZIJIAN_OP() != null)
+            tmp_op = Optype.op_zijian;
+        else if(ctx.NOT_OP() != null)
+            tmp_op = Optype.op_not;
+        else if(ctx.LOGIC_NOT_OP() != null)
+            tmp_op = Optype.op_logic_not;
+        else
+        {
+            tmp_op = Optype.op_empty;
+            System.out.println("visitUnaryPre??????");
+        }
+        ExprAST tmp_expr = (ExprAST) visit(ctx.expression());
+        return new UnaryPreAST(tmp_pos, tmp_op, tmp_expr);
     }
 
     @Override
     public AST visitUnaryPos(MxParser.UnaryPosContext ctx)
     {
-        return super.visitUnaryPos(ctx);
+        Position tmp_pos = new Position(ctx);
+        Optype tmp_op;
+        if(ctx.ZIZENG_OP() != null)
+            tmp_op = Optype.op_zizeng;
+        else if(ctx.ZIJIAN_OP() != null)
+            tmp_op = Optype.op_zijian;
+        else
+        {
+            tmp_op = Optype.op_empty;
+            System.out.println("visitUnaryPos??????");
+        }
+        ExprAST tmp_expr = (ExprAST) visit(ctx.expression());
+        return new UnaryPosAST(tmp_pos, tmp_op, tmp_expr);
     }
 
     @Override
@@ -116,55 +151,107 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     @Override
     public AST visitIfStatement(MxParser.IfStatementContext ctx)
     {
-        return super.visitIfStatement(ctx);
+        Position tmp_pos = new Position(ctx);
+        ExprAST tmp_condition = (ExprAST) visit(ctx.expression());
+        StatementAST tmp_todo_statement = (StatementAST) visit(ctx.statement(0));
+        StatementAST tmp_else_statement;
+        if(ctx.statement(1) != null)
+            tmp_else_statement = (StatementAST) visit(ctx.statement(1));
+        else
+            tmp_else_statement = null;
+        return new IfStatementAST(tmp_pos, tmp_condition, tmp_todo_statement, tmp_else_statement);
     }
 
     @Override
     public AST visitForStatement(MxParser.ForStatementContext ctx)
     {
-        return super.visitForStatement(ctx);
+        Position tmp_pos = new Position(ctx);
+        StatementAST tmp_init;
+        if(ctx.statement(0) != null)
+            tmp_init = (StatementAST) visit(ctx.statement(0));
+        else
+            tmp_init = null;
+        ExprAST tmp_condition;
+        if(ctx.expression() != null)
+            tmp_condition = (ExprAST) visit(ctx.expression());
+        else
+            tmp_condition = null;
+        StatementAST tmp_update;
+        if(ctx.statement(1) != null)
+            tmp_update = (StatementAST) visit(ctx.statement(1));
+        else
+            tmp_update = null;
+        StatementAST tmp_todo_statement = (StatementAST) visit(ctx.statement(2));
+        return new ForStatementAST(tmp_pos, tmp_init, tmp_condition, tmp_update, tmp_todo_statement);
     }
 
     @Override
     public AST visitWhileStatement(MxParser.WhileStatementContext ctx)
     {
-        return super.visitWhileStatement(ctx);
+        Position tmp_pos = new Position(ctx);
+        ExprAST tmp_condition = (ExprAST) visit(ctx.expression());
+        StatementAST tmp_todo_statement = (StatementAST) visit(ctx.statement());
+        return new WhileStatementAST(tmp_pos, tmp_condition, tmp_todo_statement);
     }
 
     @Override
     public AST visitReturnStatement(MxParser.ReturnStatementContext ctx)
     {
-        return super.visitReturnStatement(ctx);
+        Position tmp_pos = new Position(ctx);
+        ExprAST tmp_return_expr;
+        if(ctx.expression() != null)
+            tmp_return_expr = (ExprAST) visit(ctx.expression());
+        else
+            tmp_return_expr = null;
+        return new ReturnStatementAST(tmp_pos, tmp_return_expr);
     }
 
     @Override
     public AST visitBreakStatement(MxParser.BreakStatementContext ctx)
     {
-        return super.visitBreakStatement(ctx);
+        Position tmp_pos = new Position(ctx);
+        return new BreakStatementAST(tmp_pos);
     }
 
     @Override
     public AST visitContinueStatement(MxParser.ContinueStatementContext ctx)
     {
-        return super.visitContinueStatement(ctx);
+        Position tmp_pos = new Position(ctx);
+        return new ContinueStatementAST(tmp_pos);
     }
 
     @Override
     public AST visitExprStatement(MxParser.ExprStatementContext ctx)
     {
-        return super.visitExprStatement(ctx);
+        Position tmp_pos = new Position(ctx);
+        ExprAST tmp_expr = (ExprAST) visit(ctx.expression());
+        return new ExprStatementAST(tmp_pos, tmp_expr);
     }
 
     @Override
     public AST visitProgram(MxParser.ProgramContext ctx)
     {
-        return super.visitProgram(ctx);
+        Position tmp_pos = new Position(ctx);
+        ArrayList<ProgramPartAST> tmp_program_parts = new ArrayList<ProgramPartAST>();
+        for(ParserRuleContext i: ctx.program_part())
+            tmp_program_parts.add((ProgramPartAST) visit(i));
+        return new ProgramAST(tmp_pos, tmp_program_parts);
     }
 
     @Override
     public AST visitProgram_part(MxParser.Program_partContext ctx)
     {
-        return super.visitProgram_part(ctx);
+        if(ctx.class_def() != null)
+            return visit(ctx.class_def());
+        else if(ctx.func_def() != null)
+            return visit(ctx.func_def());
+        else if(ctx.var_def() != null)
+            return visit(ctx.var_def());
+        else
+        {
+            System.out.println("visitProgram_part?????");
+            return null;
+        }
     }
 
     @Override
