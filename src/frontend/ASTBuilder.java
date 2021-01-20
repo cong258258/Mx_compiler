@@ -475,7 +475,11 @@ public class ASTBuilder extends MxBaseVisitor<AST>
         Position tmp_pos = new Position(ctx);
         TypeAST tmp_return_vartype = (TypeAST) visit(ctx.type());
         String tmp_function_name = ctx.IDENTIFIER().getText();
-        ParamlistAST tmp_params = (ParamlistAST) visit(ctx.paramlist());
+        ParamlistAST tmp_params;
+        if(ctx.paramlist() == null)
+            tmp_params = null;
+        else
+            tmp_params = (ParamlistAST) visit(ctx.paramlist());
         StatementAST tmp_statements = (StatementAST) visit(ctx.statement());
         return new FunctiondefAST(tmp_pos, tmp_return_vartype, tmp_function_name, tmp_params, tmp_statements);
     }

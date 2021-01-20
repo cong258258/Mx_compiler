@@ -58,7 +58,7 @@ COLON: ':';
 SEMICOLON: ';';
 
 WHITE: [ \t\n\r]+ -> skip;
-//BLOCKCOMMENT: '/*' [\s\S]*? '*/' -> skip;
+BLOCKCOMMENT: '/*' .*? '*/' -> skip;
 LINECOMMENT: '//' ~[\\r\n]* ('\n' | '\r\n' | EOF) -> skip;
 
 BOOL_CONST: TRUE | FALSE;
@@ -93,7 +93,7 @@ statement:
     var_def                                                                                             #VardefStatement
     | LEFT_BIGBRACE statement* RIGHT_BIGBRACE                                                           #Statements
     | IF LEFT_PAREN expression RIGHT_PAREN statement (ELSE statement)?                                  #IfStatement
-    | FOR LEFT_PAREN statement? SEMICOLON expression? SEMICOLON statement? RIGHT_PAREN statement        #ForStatement
+    | FOR LEFT_PAREN expression? SEMICOLON expression? SEMICOLON expression? RIGHT_PAREN statement        #ForStatement
     | WHILE LEFT_PAREN expression RIGHT_PAREN statement                                                 #WhileStatement
     | RETURN expression? SEMICOLON                                                                      #ReturnStatement
     | BREAK SEMICOLON                                                                                   #BreakStatement

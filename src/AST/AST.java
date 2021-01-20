@@ -8,5 +8,9 @@ public abstract class AST
     {
         this.position = positionn;
     }
+    public Position get_position()
+    {
+        return position;
+    }
     abstract public void accept(ASTVisitor visitor);
 }
