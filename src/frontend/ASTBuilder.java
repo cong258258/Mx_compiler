@@ -210,6 +210,8 @@ public class ASTBuilder extends MxBaseVisitor<AST>
         ArrayList<IdentifierExprAST> tmp_identifiers = new ArrayList<>();
         for(TerminalNode i: ctx.IDENTIFIER())
             tmp_identifiers.add(new IdentifierExprAST(tmp_pos, i.getText()));
+//        for(IdentifierExprAST i: tmp_identifiers)
+//            i.set_type(tmp_vartype);
         return new VarmultidefStatementAST(tmp_pos, tmp_vartype, tmp_identifiers);
     }
 

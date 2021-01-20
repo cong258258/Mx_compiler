@@ -10,6 +10,8 @@ import java.io.IOException;
 import parser.MxLexer;
 import parser.MxParser;
 
+import static AST.Optype.op_empty;
+
 
 public class Mxcompiler
 {

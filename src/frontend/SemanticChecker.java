@@ -3,6 +3,8 @@ package frontend;
 import AST.*;
 import utility.Error;
 import utility.Scope;
+import utility.Vartype;
+
 import static AST.Optype.*;
 
 public class SemanticChecker implements ASTVisitor
@@ -125,9 +127,16 @@ public class SemanticChecker implements ASTVisitor
     {
         AST.get_lhs().accept(this);
         AST.get_rhs().accept(this);
-        if(AST.get_optype() == op_empty)
+        Optype binop = AST.get_optype();
+        ExprAST lexpr = AST.get_lhs();
+        ExprAST rexpr = AST.get_rhs();
+        Vartype ltype = lexpr.get_type();
+        Vartype rtype = rexpr.get_type();
+        if(binop == op_empty)
             throw new Error(AST.get_position(), "op empty unknown error");
-//        else if(AST.get_optype() == )
+        else if(binop == op_minus || binop == op_multi || binop == op_divide || binop == op_mod)
+        {
+        }
     }
 
     @Override
