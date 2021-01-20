@@ -6,13 +6,15 @@ import java.util.ArrayList;
 public class NewAST extends ExprAST
 {
     TypeAST vartype;
-    ArrayList<ExprAST> init_expr;
-    int cnt;
-    public NewAST(Position positionn, TypeAST vartp, ArrayList<ExprAST> ini, int cntt)
+    int[] len;
+    int dimension_with_init_len;
+    int dimension_all;
+    public NewAST(Position positionn, TypeAST vartp, int[] l, int dim_ini, int dim_all)
     {
         super(positionn);
         this.vartype = vartp;
-        this.init_expr = ini;
-        this.cnt = cntt;
+        this.len = l;
+        this.dimension_with_init_len = dim_ini;
+        this.dimension_all = dim_all;
     }
 }

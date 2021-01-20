@@ -5,7 +5,7 @@ import utility.Position;
 public class IdentifierExprAST extends ExprAST
 {
     String name;
-    IdentifierExprAST(Position positionn, String Name)
+    public IdentifierExprAST(Position positionn, String Name)
     {
         super(positionn);
         this.name = Name;

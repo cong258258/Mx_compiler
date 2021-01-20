@@ -2,6 +2,7 @@ package frontend;
 
 import AST.*;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import parser.MxBaseVisitor;
 import parser.MxParser;
 import utility.Position;
@@ -50,7 +51,7 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     @Override
     public AST visitNew(MxParser.NewContext ctx)
     {
-        return super.visitNew(ctx);
+        return visit(ctx.var_malloc());
     }
 
     @Override
@@ -100,7 +101,9 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     @Override
     public AST visitIdentifierExpr(MxParser.IdentifierExprContext ctx)
     {
-        return super.visitIdentifierExpr(ctx);
+        Position tmp_pos = new Position(ctx);
+        String tmp_name = ctx.IDENTIFIER().getText();
+        return new IdentifierExprAST(tmp_pos, tmp_name);
     }
 
     @Override
@@ -202,31 +205,62 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     @Override
     public AST visitVar_multi_def(MxParser.Var_multi_defContext ctx)
     {
-        return super.visitVar_multi_def(ctx);
+        Position tmp_pos = new Position(ctx);
+        TypeAST tmp_vartype = (TypeAST) visit(ctx.type());
+        ArrayList<IdentifierExprAST> tmp_identifiers = new ArrayList<>();
+        for(TerminalNode i: ctx.IDENTIFIER())
+            tmp_identifiers.add(new IdentifierExprAST(tmp_pos, i.getText()));
+        return new VarmultidefStatementAST(tmp_pos, tmp_vartype, tmp_identifiers);
     }
 
     @Override
     public AST visitVar_def_and_init(MxParser.Var_def_and_initContext ctx)
     {
-        return super.visitVar_def_and_init(ctx);
+        Position tmp_pos = new Position(ctx);
+        TypeAST tmp_vartype = (TypeAST) visit(ctx.type());
+        IdentifierExprAST tmp_identifier = new IdentifierExprAST(tmp_pos, ctx.IDENTIFIER().getText());
+        ExprAST tmp_init_expr = (ExprAST) visit(ctx.expression());
+        return new VardefandinitStatementAST(tmp_pos, tmp_vartype, tmp_identifier, tmp_init_expr);
     }
 
     @Override
     public AST visitVar_def(MxParser.Var_defContext ctx)
     {
-        return super.visitVar_def(ctx);
+        if(ctx.var_def_and_init() != null)
+            return visit(ctx.var_def_and_init());
+        else if(ctx.var_multi_def() != null)
+            return visit(ctx.var_multi_def());
+        else
+        {
+            System.out.println("visitVar_def?????");
+            return null;
+        }
     }
 
     @Override
     public AST visitVar_malloc(MxParser.Var_mallocContext ctx)
     {
-        return super.visitVar_malloc(ctx);
+        Position tmp_pos = new Position(ctx);
+        TypeAST tmp_vartype = (TypeAST) visit(ctx.type());
+        int tmp_dimension_all = ctx.LEFT_BRACKET().size();
+        int tmp_dimension_with_init = ctx.INT_CONST().size();
+        System.out.println("!!!dimension all:" + tmp_dimension_all + " dimension init:" +tmp_dimension_with_init);
+        int[] tmp_len;
+        if(tmp_dimension_with_init == 0)
+            tmp_len = null;
+        else
+        {
+            tmp_len = new int[tmp_dimension_with_init];
+            for (int i = 0; i < tmp_dimension_with_init; i++)
+                tmp_len[i] = parseInt(ctx.INT_CONST(i).getText());
+        }
+        return new NewAST(tmp_pos, tmp_vartype, tmp_len, tmp_dimension_with_init, tmp_dimension_all);
     }
 
     @Override
     public AST visitVardefStatement(MxParser.VardefStatementContext ctx)
     {
-        return super.visitVardefStatement(ctx);
+        return visit(ctx.var_def());
     }
 
     @Override
@@ -348,7 +382,49 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     @Override
     public AST visitType(MxParser.TypeContext ctx)
     {
-        return super.visitType(ctx);
+        Position tmp_pos = new Position(ctx);
+        if(ctx.LEFT_BRACKET() == null)
+        {
+            String tmp_typename;
+            if(ctx.BOOL() != null)
+                tmp_typename = "bool";
+            else if(ctx.INT() != null)
+                tmp_typename = "int";
+            else if(ctx.STRING() != null)
+                tmp_typename = "String";
+            else if(ctx.IDENTIFIER() != null)
+                tmp_typename = ctx.IDENTIFIER().getText();
+            else
+                tmp_typename = "void";
+            return new TypeAST(tmp_pos, tmp_typename);
+        }
+        else
+        {
+            int tmp_dimension = 0;
+            MxParser.TypeContext newctx;
+            while(true)
+            {
+                tmp_dimension++;
+                newctx = ctx.type();
+                if(newctx.LEFT_BRACKET() == null)
+                    break;
+            }
+            String tmp_typename;
+            if(newctx.BOOL() != null)
+                tmp_typename = "bool";
+            else if(newctx.INT() != null)
+                tmp_typename = "int";
+            else if(newctx.STRING() != null)
+                tmp_typename = "String";
+            else if(newctx.IDENTIFIER() != null)
+                tmp_typename = ctx.IDENTIFIER().getText();
+            else
+            {
+                tmp_typename = "void";
+                System.out.println("????void[]");
+            }
+            return new ArrayTypeAST(tmp_pos, tmp_typename, tmp_dimension);
+        }
     }
 
     @Override
@@ -366,7 +442,7 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     {
         Position tmp_pos = new Position(ctx);
         TypeAST tmp_param_type = (TypeAST) visit(ctx.type());
-        String tmp_param_name = ctx.IDENTIFIER().getText();
+        IdentifierExprAST tmp_param_name = (IdentifierExprAST) visit(ctx.IDENTIFIER());
         return new ParamAST(tmp_pos, tmp_param_type, tmp_param_name);
     }
 
@@ -384,7 +460,7 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     public AST visitFunc_def(MxParser.Func_defContext ctx)
     {
         TypeAST tmp_return_vartype = (TypeAST) visit(ctx.type());
-        
+
         return super.visitFunc_def(ctx);
     }
 }

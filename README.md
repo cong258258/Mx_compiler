@@ -10,16 +10,14 @@ package parser
 （层级表示派生）
 
 - **AST**
-
   - **TypeAST**
+  - **ArrayTypeAST**
 - **ProgramAST**
   - **ProgramPartAST**
     - **ClassdefAST**
     - **FunctiondefAST**
   - GlobalVardefAST   ????
-  
   - **ExprAST**
-  
     - **ConstAST**
       - **ConstIntAST**
       - **ConstBoolAST**
@@ -34,13 +32,9 @@ package parser
     - **BinaryAST**
     - **NewAST**
 	  - **ThisAST**
-  
 - **StatementAST**
-  
   - **StatementsAST**
-  
-  - **VardefStatementAST**
-  
+    - **VardefStatementAST**
       - **VardefandinitStatementAST**;
       - **VarmultidefStatementAST**;
     - **IfStatementAST**
@@ -48,35 +42,34 @@ package parser
     - **WhileStatementAST**
     - **ReturnStatementAST**
     - **BreakStatementAST**
-      
     - **ContinueStatementAST**
     - **ExprStatementAST**
-  
-  
+    - **ParamAST**
+    - **ParamlistAST**
 
 int a = new int()()
 
 
-
 <h2>AST builder</h2>
 
+- **visitConstant**
 - **visitExpression_list**    //空
-- visitNew
+- **visitNew**     //直接到malloc
 - **visitUnaryPre**
 - **visitUnaryPos**
-- visitIdentifierExpr
-- visitConst   ???
+- **visitIdentifierExpr**
+- **visitConst** 
 - **visitThis**
 - **visitIndex**
 - **visitBinary**
 - **visitMember**
 - **visitFunctionParam**   ???
-- visitVar_multi_def
-- visitVar_def_and_init
-- visitVar_def
-- visitVar_malloc
-- visitVardefStatement
-- visitStatements
+- **visitVar_multi_def**
+- **visitVar_def_and_init**
+- **visitVar_def**
+- **visitVar_malloc**
+- **visitVardefStatement**
+- **visitStatements**
 - **visitIfStatement**
 - **visitForStatement**
 - **visitWhileStatement**
@@ -86,8 +79,8 @@ int a = new int()()
 - **visitExprStatement**
 - **visitProgram**
 - **visitProgram_part**
-- visitType
+- **visitType**
 - visitClass_def
-- visitParam
-- visitParamlist
+- **visitParam**
+- **visitParamlist**
 - visitFunc_def
