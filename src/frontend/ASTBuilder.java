@@ -243,18 +243,18 @@ public class ASTBuilder extends MxBaseVisitor<AST>
         Position tmp_pos = new Position(ctx);
         TypeAST tmp_vartype = (TypeAST) visit(ctx.type());
         int tmp_dimension_all = ctx.LEFT_BRACKET().size();
-        int tmp_dimension_with_init = ctx.INT_CONST().size();
+        int tmp_dimension_with_init = ctx.expression().size();
         System.out.println("!!!dimension all:" + tmp_dimension_all + " dimension init:" +tmp_dimension_with_init);
-        int[] tmp_len;
+        ArrayList<ExprAST> tmp_init_expr;
         if(tmp_dimension_with_init == 0)
-            tmp_len = null;
+            tmp_init_expr = null;
         else
         {
-            tmp_len = new int[tmp_dimension_with_init];
-            for (int i = 0; i < tmp_dimension_with_init; i++)
-                tmp_len[i] = parseInt(ctx.INT_CONST(i).getText());
+            tmp_init_expr = new ArrayList<>();
+            for (ParserRuleContext i: ctx.expression())
+                tmp_init_expr.add((ExprAST) visit(i));
         }
-        return new NewAST(tmp_pos, tmp_vartype, tmp_len, tmp_dimension_with_init, tmp_dimension_all);
+        return new NewAST(tmp_pos, tmp_vartype, tmp_init_expr, tmp_dimension_all);
     }
 
     @Override
@@ -291,22 +291,22 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     public AST visitForStatement(MxParser.ForStatementContext ctx)
     {
         Position tmp_pos = new Position(ctx);
-        StatementAST tmp_init;
-        if(ctx.statement(0) != null)
-            tmp_init = (StatementAST) visit(ctx.statement(0));
+        ExprAST tmp_init;
+        if(ctx.expression(0) != null)
+            tmp_init = (ExprAST) visit(ctx.expression(0));
         else
             tmp_init = null;
         ExprAST tmp_condition;
-        if(ctx.expression() != null)
-            tmp_condition = (ExprAST) visit(ctx.expression());
+        if(ctx.expression(1) != null)
+            tmp_condition = (ExprAST) visit(ctx.expression(1));
         else
             tmp_condition = null;
-        StatementAST tmp_update;
-        if(ctx.statement(1) != null)
-            tmp_update = (StatementAST) visit(ctx.statement(1));
+        ExprAST tmp_update;
+        if(ctx.expression(2) != null)
+            tmp_update = (ExprAST) visit(ctx.expression(2));
         else
             tmp_update = null;
-        StatementAST tmp_todo_statement = (StatementAST) visit(ctx.statement(2));
+        StatementAST tmp_todo_statement = (StatementAST) visit(ctx.statement());
         return new ForStatementAST(tmp_pos, tmp_init, tmp_condition, tmp_update, tmp_todo_statement);
     }
 
@@ -357,10 +357,24 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     public AST visitProgram(MxParser.ProgramContext ctx)
     {
         Position tmp_pos = new Position(ctx);
+        System.out.println(tmp_pos.get_row());
         ArrayList<ProgramPartAST> tmp_program_parts = new ArrayList<>();
+        ArrayList<VardefStatementAST> tmp_program_var_def = new ArrayList<>();
         for(ParserRuleContext i: ctx.program_part())
-            tmp_program_parts.add((ProgramPartAST) visit(i));
-        return new ProgramAST(tmp_pos, tmp_program_parts);
+        {
+            AST ASTi = visit(i);
+            if(ASTi instanceof ProgramPartAST)
+            {
+                tmp_program_parts.add((ProgramPartAST) ASTi);
+                System.out.println("visitProgram, read func or class");
+            }
+            else
+            {
+                tmp_program_var_def.add((VardefStatementAST) ASTi);
+                System.out.println("visitProgram, read vardef");
+            }
+        }
+        return new ProgramAST(tmp_pos, tmp_program_parts, tmp_program_var_def);
     }
 
     @Override
@@ -482,5 +496,17 @@ public class ASTBuilder extends MxBaseVisitor<AST>
             tmp_params = (ParamlistAST) visit(ctx.paramlist());
         StatementAST tmp_statements = (StatementAST) visit(ctx.statement());
         return new FunctiondefAST(tmp_pos, tmp_return_vartype, tmp_function_name, tmp_params, tmp_statements);
+    }
+
+    @Override
+    public AST visitSub(MxParser.SubContext ctx)
+    {
+        return visit(ctx.expression());
+    }
+
+    @Override
+    public AST visitEmptyStatememt(MxParser.EmptyStatememtContext ctx)
+    {
+        return null;
     }
 }

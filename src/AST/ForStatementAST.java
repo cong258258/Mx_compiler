@@ -4,44 +4,38 @@ import utility.Position;
 
 public class ForStatementAST extends StatementAST
 {
-    StatementAST init;
+    ExprAST init;
     int init_status;
     ExprAST condition;
     int condition_status;
-    StatementAST update;
+    ExprAST update;
     int update_status;
     StatementAST todo_statement;
-    public ForStatementAST(Position positionn, StatementAST a, ExprAST b, StatementAST c, StatementAST t)
+    public ForStatementAST(Position positionn, ExprAST a, ExprAST b, ExprAST c, StatementAST t)
     {
         super(positionn);
         if(a != null)
-        {
             this.init_status = 1;
-            this.init = a;
-        }
         else
             this.init_status = 0;
         if(b != null)
-        {
             this.condition_status = 1;
-            this.condition = b;
-        }
         else
             this.condition_status = 0;
         if(c != null)
-        {
             this.update_status = 1;
-            this.update = c;
-        }
         else
             this.update_status = 0;
+        this.init = a;
+        this.condition = b;
+        this.update = c;
         this.todo_statement = t;
     }
     public int init_exist()
     {
         return this.init_status;
     }
-    public StatementAST get_init()
+    public ExprAST get_init()
     {
         return this.init;
     }
@@ -57,7 +51,7 @@ public class ForStatementAST extends StatementAST
     {
         return this.update_status;
     }
-    public StatementAST get_update()
+    public ExprAST get_update()
     {
         return this.update;
     }

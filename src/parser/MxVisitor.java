@@ -23,6 +23,13 @@ public interface MxVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpression_list(MxParser.Expression_listContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code Sub}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSub(MxParser.SubContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code New}
 	 * labeled alternative in {@link MxParser#expression}.
 	 * @param ctx the parse tree
@@ -179,6 +186,13 @@ public interface MxVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExprStatement(MxParser.ExprStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code EmptyStatememt}
+	 * labeled alternative in {@link MxParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEmptyStatememt(MxParser.EmptyStatememtContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MxParser#program}.
 	 * @param ctx the parse tree

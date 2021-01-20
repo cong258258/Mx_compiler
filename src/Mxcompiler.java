@@ -15,7 +15,7 @@ public class Mxcompiler
 {
     public static void main(String[] args) throws IOException
     {
-        File file = new File("testcases/e1.mx");
+        File file = new File("testcases/e2.mx");
         FileInputStream file_input_stream = new FileInputStream(file);
         CharStream filename_charstream = CharStreams.fromStream(file_input_stream);
         MxLexer mx_lexer = new MxLexer(filename_charstream);
