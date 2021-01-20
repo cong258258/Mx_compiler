@@ -2,15 +2,13 @@ package AST;
 
 import utility.Position;
 
-public class ArrayTypeAST extends TypeAST
+public class SingleTypeAST extends TypeAST
 {
     String typename;
-    int dimension;
-    public ArrayTypeAST(Position positionn, String typenamee, int dim)
+    public SingleTypeAST(Position positionn, String typenamee)
     {
         super(positionn);
         this.typename = typenamee;
-        this.dimension = dim;
     }
 
     @Override

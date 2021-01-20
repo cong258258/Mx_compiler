@@ -2,18 +2,11 @@ package AST;
 
 import utility.Position;
 
-public class TypeAST extends AST
+public abstract class TypeAST extends AST
 {
-    String typename;
-    public TypeAST(Position positionn, String typenamee)
+
+    public TypeAST(Position positionn)
     {
         super(positionn);
-        this.typename = typenamee;
-    }
-
-    @Override
-    public void accept(ASTVisitor visitor)
-    {
-        visitor.visit(this);
     }
 }

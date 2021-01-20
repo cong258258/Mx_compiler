@@ -357,7 +357,6 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     public AST visitProgram(MxParser.ProgramContext ctx)
     {
         Position tmp_pos = new Position(ctx);
-        System.out.println(tmp_pos.get_row());
         ArrayList<ProgramPartAST> tmp_program_parts = new ArrayList<>();
         ArrayList<VardefStatementAST> tmp_program_var_def = new ArrayList<>();
         for(ParserRuleContext i: ctx.program_part())
@@ -410,16 +409,16 @@ public class ASTBuilder extends MxBaseVisitor<AST>
                 tmp_typename = ctx.IDENTIFIER().getText();
             else
                 tmp_typename = "void";
-            return new TypeAST(tmp_pos, tmp_typename);
+            return new SingleTypeAST(tmp_pos, tmp_typename);
         }
         else
         {
             int tmp_dimension = 0;
-            MxParser.TypeContext newctx;
+            MxParser.TypeContext newctx = ctx;
             while(true)
             {
                 tmp_dimension++;
-                newctx = ctx.type();
+                newctx = newctx.type();
                 if(newctx.LEFT_BRACKET() == null)
                     break;
             }
@@ -431,7 +430,7 @@ public class ASTBuilder extends MxBaseVisitor<AST>
             else if(newctx.STRING() != null)
                 tmp_typename = "String";
             else if(newctx.IDENTIFIER() != null)
-                tmp_typename = ctx.IDENTIFIER().getText();
+                tmp_typename = newctx.getText();
             else
             {
                 tmp_typename = "void";
@@ -446,9 +445,9 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     {
         Position tmp_pos = new Position(ctx);
         String tmp_identifier = ctx.IDENTIFIER().getText();
-        ArrayList<VarmultidefStatementAST> tmp_members = new ArrayList<>();
+        ArrayList<VardefStatementAST> tmp_members = new ArrayList<>();
         for(ParserRuleContext i: ctx.var_def())
-            tmp_members.add((VarmultidefStatementAST) visit(i));
+            tmp_members.add((VardefStatementAST) visit(i));
         ArrayList<FunctiondefAST> tmp_functions = new ArrayList<>();
         FunctiondefAST tmp_constructor = null;
         for(int i = 0; i < ctx.func_def().size(); i++)
@@ -487,7 +486,11 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     public AST visitFunc_def(MxParser.Func_defContext ctx)
     {
         Position tmp_pos = new Position(ctx);
-        TypeAST tmp_return_vartype = (TypeAST) visit(ctx.type());
+        TypeAST tmp_return_vartype;
+        if(ctx.type() != null)
+            tmp_return_vartype = (TypeAST) visit(ctx.type());
+        else
+            tmp_return_vartype = new SingleTypeAST(tmp_pos, "void");
         String tmp_function_name = ctx.IDENTIFIER().getText();
         ParamlistAST tmp_params;
         if(ctx.paramlist() == null)
