@@ -107,4 +107,4 @@ type: type LEFT_BRACKET RIGHT_BRACKET | IDENTIFIER | INT | BOOL | STRING | VOID;
 class_def: CLASS IDENTIFIER LEFT_BIGBRACE (var_def | func_def)* RIGHT_BIGBRACE SEMICOLON;
 param: type IDENTIFIER;
 paramlist: param (COMMA param)*;
-func_def: type? IDENTIFIER LEFT_PAREN paramlist? RIGHT_PAREN LEFT_BIGBRACE statement* RIGHT_BIGBRACE;
+func_def: type? IDENTIFIER LEFT_PAREN paramlist? RIGHT_PAREN statement;

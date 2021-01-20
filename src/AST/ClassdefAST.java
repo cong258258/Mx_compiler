@@ -6,10 +6,10 @@ import java.util.ArrayList;
 public class ClassdefAST extends ProgramPartAST
 {
     String identifier;
-    ArrayList<VardefStatementAST> members = new ArrayList<VardefStatementAST>();
-    ArrayList<FunctiondefAST> functions = new ArrayList<FunctiondefAST>();
+    ArrayList<VarmultidefStatementAST> members;
+    ArrayList<FunctiondefAST> functions;
     FunctiondefAST constructor;
-    public ClassdefAST(Position positionn, String identifierr, ArrayList<VardefStatementAST> mem, ArrayList<FunctiondefAST> funcs, FunctiondefAST con)
+    public ClassdefAST(Position positionn, String identifierr, ArrayList<VarmultidefStatementAST> mem, ArrayList<FunctiondefAST> funcs, FunctiondefAST con)
     {
         super(positionn);
         this.identifier = identifierr;
