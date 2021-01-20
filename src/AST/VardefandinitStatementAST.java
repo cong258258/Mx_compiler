@@ -14,4 +14,10 @@ public class VardefandinitStatementAST extends VardefStatementAST
         this.identifier = id;
         this.init_expr = ini;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

@@ -14,4 +14,10 @@ public class IdentifierExprAST extends ExprAST
     {
         return this.name;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

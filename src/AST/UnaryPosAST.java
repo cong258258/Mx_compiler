@@ -20,4 +20,10 @@ public class UnaryPosAST extends ExprAST
     {
         return this.exprAST;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

@@ -19,4 +19,10 @@ public class IndexAST extends ExprAST
     {
         return this.indexExprAST;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

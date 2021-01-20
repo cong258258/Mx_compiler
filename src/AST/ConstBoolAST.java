@@ -14,4 +14,10 @@ public class ConstBoolAST extends ConstAST
     {
         return val;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

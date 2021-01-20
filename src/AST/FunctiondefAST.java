@@ -17,4 +17,10 @@ public class FunctiondefAST extends ProgramPartAST
         this.params = pa;
         this.statements = sts;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

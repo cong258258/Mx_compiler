@@ -2,7 +2,7 @@ package AST;
 
 import utility.Position;
 
-public class VardefStatementAST extends StatementAST
+public abstract class VardefStatementAST extends StatementAST
 {
     public VardefStatementAST(Position positionn)
     {

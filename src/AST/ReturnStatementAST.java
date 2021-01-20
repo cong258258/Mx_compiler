@@ -18,4 +18,10 @@ public class ReturnStatementAST extends StatementAST
     {
         return this.return_expr;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

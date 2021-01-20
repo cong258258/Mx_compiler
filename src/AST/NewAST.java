@@ -17,4 +17,10 @@ public class NewAST extends ExprAST
         this.dimension_with_init_len = dim_ini;
         this.dimension_all = dim_all;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

@@ -20,4 +20,10 @@ public class WhileStatementAST extends StatementAST
     {
         return this.todo_statement;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

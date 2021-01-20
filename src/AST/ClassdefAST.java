@@ -17,4 +17,10 @@ public class ClassdefAST extends ProgramPartAST
         this.functions = funcs;
         this.constructor = con;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

@@ -8,4 +8,10 @@ public class ThisAST extends ExprAST
     {
         super(positionn);
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

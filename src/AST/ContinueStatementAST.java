@@ -8,4 +8,10 @@ public class ContinueStatementAST extends StatementAST
     {
         super(positionn);
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

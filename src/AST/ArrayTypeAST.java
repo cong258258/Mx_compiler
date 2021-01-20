@@ -12,4 +12,10 @@ public class ArrayTypeAST extends AST
         this.typename = typenamee;
         this.dimension = dim;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

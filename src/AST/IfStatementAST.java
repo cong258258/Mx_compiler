@@ -36,4 +36,10 @@ public class IfStatementAST extends StatementAST
     {
         return this.else_statement;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

@@ -12,4 +12,10 @@ public class StatementsAST extends StatementAST
         super(positionn);
         this.statements = stmts;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

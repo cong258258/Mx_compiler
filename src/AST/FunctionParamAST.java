@@ -21,4 +21,10 @@ public class FunctionParamAST extends ExprAST
     {
         return this.params;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

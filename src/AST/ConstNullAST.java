@@ -8,4 +8,10 @@ public class ConstNullAST extends ConstAST
     {
         super(positionn);
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

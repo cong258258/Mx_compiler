@@ -12,4 +12,10 @@ public class ParamAST extends StatementAST
         this.param_type = paramtype;
         this.param_name = paramname;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

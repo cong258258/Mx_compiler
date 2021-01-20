@@ -11,4 +11,10 @@ public class ProgramAST extends AST
         super(positionn);
         this.program_parts = progparts;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

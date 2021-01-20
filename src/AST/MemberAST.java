@@ -20,4 +20,10 @@ public class MemberAST extends ExprAST
     {
         return this.identifierExprAST;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

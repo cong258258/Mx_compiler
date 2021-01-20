@@ -25,4 +25,10 @@ public class BinaryAST extends ExprAST
     {
         return this.rhs;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

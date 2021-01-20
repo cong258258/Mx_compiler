@@ -2,7 +2,7 @@ package AST;
 
 import utility.Position;
 
-public class ExprAST extends AST
+public abstract class ExprAST extends AST
 {
     int type;
 

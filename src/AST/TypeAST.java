@@ -10,4 +10,10 @@ public class TypeAST extends AST
         super(positionn);
         this.typename = typenamee;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }

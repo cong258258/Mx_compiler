@@ -1,3 +1,5 @@
+import AST.ProgramAST;
+import frontend.ASTBuilder;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -11,7 +13,7 @@ import parser.MxParser;
 
 public class Mxcompiler
 {
-    public static void main(String args[]) throws IOException
+    public static void main(String[] args) throws IOException
     {
         File file = new File("1.in");
         FileInputStream file_input_stream = new FileInputStream(file);
@@ -19,6 +21,8 @@ public class Mxcompiler
         MxLexer mx_lexer = new MxLexer(filename_charstream);
         CommonTokenStream mx_token_stream = new CommonTokenStream(mx_lexer);
         MxParser mx_parser = new MxParser(mx_token_stream);
-        ParseTree parse_tree_root = mx_parser.program();
+        ParseTree mx_parse_tree_root = mx_parser.program();
+        ASTBuilder mx_ASTBuilder = new ASTBuilder();
+        ProgramAST mx_AST_root = (ProgramAST) mx_ASTBuilder.visit(mx_parse_tree_root);
     }
 }

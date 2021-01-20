@@ -12,4 +12,10 @@ public class ParamlistAST extends StatementAST
         super(positionn);
         this.param_name_list = paramnamelist;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor)
+    {
+        visitor.visit(this);
+    }
 }
