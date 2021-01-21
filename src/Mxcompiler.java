@@ -7,6 +7,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+
 import parser.MxLexer;
 import parser.MxParser;
 
@@ -17,11 +19,12 @@ public class Mxcompiler
 {
     public static void main(String[] args) throws IOException
     {
-        for(int i = 1; i <= 11; i++)
-        {
-            System.out.println("!!!!!!!!!!!!!" + i);
-            File file = new File("testcases/array-"+i+".mx");
-            FileInputStream file_input_stream = new FileInputStream(file);
+//        for(int i = 1; i <= 70; i++)
+//        {
+//            System.out.println("!!!!!!!!!!!!!" + i);
+//            File file = new File("testcases/t"+i+".mx");
+//            FileInputStream file_input_stream = new FileInputStream(file);
+            InputStream file_input_stream = System.in;
             CharStream filename_charstream = CharStreams.fromStream(file_input_stream);
             MxLexer mx_lexer = new MxLexer(filename_charstream);
             CommonTokenStream mx_token_stream = new CommonTokenStream(mx_lexer);
@@ -29,6 +32,6 @@ public class Mxcompiler
             ParseTree mx_parse_tree_root = mx_parser.program();
             ASTBuilder mx_ASTBuilder = new ASTBuilder();
             ProgramAST mx_AST_root = (ProgramAST) mx_ASTBuilder.visit(mx_parse_tree_root);
-        }
+//        }
     }
 }

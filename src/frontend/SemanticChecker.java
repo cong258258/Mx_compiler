@@ -176,7 +176,10 @@ public class SemanticChecker implements ASTVisitor
     }
 
     @Override
-    public void visit(ConstNullAST AST) {}
+    public void visit(ConstNullAST AST)
+    {
+
+    }
 
     @Override
     public void visit(ConstStringAST AST){}

@@ -207,11 +207,9 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     {
         Position tmp_pos = new Position(ctx);
         TypeAST tmp_vartype = (TypeAST) visit(ctx.type());
-        ArrayList<IdentifierExprAST> tmp_identifiers = new ArrayList<>();
+        ArrayList<String> tmp_identifiers = new ArrayList<>();
         for(TerminalNode i: ctx.IDENTIFIER())
-            tmp_identifiers.add(new IdentifierExprAST(tmp_pos, i.getText()));
-//        for(IdentifierExprAST i: tmp_identifiers)
-//            i.set_type(tmp_vartype);
+            tmp_identifiers.add(i.getText());
         return new VarmultidefStatementAST(tmp_pos, tmp_vartype, tmp_identifiers);
     }
 
@@ -220,7 +218,7 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     {
         Position tmp_pos = new Position(ctx);
         TypeAST tmp_vartype = (TypeAST) visit(ctx.type());
-        IdentifierExprAST tmp_identifier = new IdentifierExprAST(tmp_pos, ctx.IDENTIFIER().getText());
+        String tmp_identifier = ctx.IDENTIFIER().getText();
         ExprAST tmp_init_expr = (ExprAST) visit(ctx.expression());
         return new VardefandinitStatementAST(tmp_pos, tmp_vartype, tmp_identifier, tmp_init_expr);
     }

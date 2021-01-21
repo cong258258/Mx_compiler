@@ -6,8 +6,8 @@ import java.util.ArrayList;
 public class VarmultidefStatementAST extends VardefStatementAST
 {
     TypeAST vartype;
-    ArrayList<IdentifierExprAST> identifiers;
-    public VarmultidefStatementAST(Position positionn, TypeAST vartp, ArrayList<IdentifierExprAST> ids)
+    ArrayList<String> identifiers;
+    public VarmultidefStatementAST(Position positionn, TypeAST vartp, ArrayList<String> ids)
     {
         super(positionn);
         this.vartype = vartp;
