@@ -5,20 +5,16 @@ import utility.Position;
 public class MemberAST extends ExprAST
 {
     ExprAST exprAST;
-    IdentifierExprAST identifierExprAST;
-    public MemberAST(Position positionn, ExprAST ex, IdentifierExprAST id)
+    String member_identifier;
+    public MemberAST(Position positionn, ExprAST ex, String id)
     {
         super(positionn);
         this.exprAST = ex;
-        this.identifierExprAST = id;
+        this.member_identifier = id;
     }
     public ExprAST get_ExprAST()
     {
         return this.exprAST;
-    }
-    public IdentifierExprAST get_IdentifierExprAST()
-    {
-        return this.identifierExprAST;
     }
 
     @Override

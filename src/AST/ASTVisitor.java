@@ -3,6 +3,9 @@ public interface ASTVisitor
 {
     void visit(ProgramAST AST);
 
+    void visit(VarAST AST);
+    void visit(VarlistAST AST);
+
     void visit(TypeAST AST);
     void visit(ArrayTypeAST AST);
 
@@ -33,6 +36,8 @@ public interface ASTVisitor
     void visit(BreakStatementAST AST);
     void visit(ContinueStatementAST AST);
     void visit(ExprStatementAST AST);
-    void visit(ParamAST AST);
-    void visit(ParamlistAST AST);
+//    void visit(ParamAST AST);
+//    void visit(ParamlistAST AST);
+
+
 }

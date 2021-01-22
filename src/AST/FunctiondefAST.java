@@ -1,15 +1,14 @@
 package AST;
 
 import utility.Position;
-import java.util.ArrayList;
 
 public class FunctiondefAST extends ProgramPartAST
 {
     TypeAST return_vartype;
     String function_name;
-    ParamlistAST params;
+    VarlistAST params;
     StatementAST statements;
-    public FunctiondefAST(Position positionn, TypeAST retvartp, String funcname, ParamlistAST pa, StatementAST sts)
+    public FunctiondefAST(Position positionn, TypeAST retvartp, String funcname, VarlistAST pa, StatementAST sts)
     {
         super(positionn);
         this.return_vartype = retvartp;

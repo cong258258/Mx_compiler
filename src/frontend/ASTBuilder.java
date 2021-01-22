@@ -186,8 +186,8 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     {
         Position tmp_pos = new Position(ctx);
         ExprAST tmp_exprAST = (ExprAST) visit(ctx.expression());
-        IdentifierExprAST tmp_identifierExprAST = (IdentifierExprAST) visit(ctx.IDENTIFIER());
-        return new MemberAST(tmp_pos, tmp_exprAST, tmp_identifierExprAST);
+        String tmp_member_identifier = ctx.IDENTIFIER().getText();
+        return new MemberAST(tmp_pos, tmp_exprAST, tmp_member_identifier);
     }
 
     @Override
@@ -468,18 +468,18 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     {
         Position tmp_pos = new Position(ctx);
         TypeAST tmp_param_type = (TypeAST) visit(ctx.type());
-        IdentifierExprAST tmp_param_name = (IdentifierExprAST) visit(ctx.IDENTIFIER());
-        return new ParamAST(tmp_pos, tmp_param_type, tmp_param_name);
+        String tmp_param_name = ctx.IDENTIFIER().getText();
+        return new VarAST(tmp_pos, tmp_param_type, tmp_param_name);
     }
 
     @Override
     public AST visitParamlist(MxParser.ParamlistContext ctx)
     {
         Position tmp_pos = new Position(ctx);
-        ArrayList<ParamAST> tmp_param_name_list = new ArrayList<>();
+        ArrayList<VarAST> tmp_param_name_list = new ArrayList<>();
         for(ParserRuleContext i: ctx.param())
-            tmp_param_name_list.add((ParamAST) visit(i));
-        return new ParamlistAST(tmp_pos, tmp_param_name_list);
+            tmp_param_name_list.add((VarAST) visit(i));
+        return new VarlistAST(tmp_pos, tmp_param_name_list);
     }
 
     @Override
@@ -492,11 +492,11 @@ public class ASTBuilder extends MxBaseVisitor<AST>
         else
             tmp_return_vartype = new SingleTypeAST(tmp_pos, "void");
         String tmp_function_name = ctx.IDENTIFIER().getText();
-        ParamlistAST tmp_params;
+        VarlistAST tmp_params;
         if(ctx.paramlist() == null)
             tmp_params = null;
         else
-            tmp_params = (ParamlistAST) visit(ctx.paramlist());
+            tmp_params = (VarlistAST) visit(ctx.paramlist());
         StatementAST tmp_statements = (StatementAST) visit(ctx.statement());
         return new FunctiondefAST(tmp_pos, tmp_return_vartype, tmp_function_name, tmp_params, tmp_statements);
     }

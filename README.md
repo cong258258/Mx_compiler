@@ -10,13 +10,15 @@ package parser
 （层级表示派生）
 
 - **AST**
+  - **VarAST**
+  - **VarlistAST**
   - **TypeAST**
-  - **ArrayTypeAST**
+    - **SingleTypeAST**
+    - **ArrayTypeAST**
   - **ProgramAST**
     - **ProgramPartAST**
       - **ClassdefAST**
       - **FunctiondefAST**
-    - GlobalVardefAST   ????
   - **ExprAST**
     - **ConstAST**
       - **ConstIntAST**
@@ -44,13 +46,17 @@ package parser
     - **BreakStatementAST**
     - **ContinueStatementAST**
     - **ExprStatementAST**
-    - **ParamAST**
-    - **ParamlistAST**
+    - //**ParamAST**
+    - //**ParamlistAST**
 
 
 
 - **void visit(ProgramAST AST);**
 
+- **void visit(VarAST AST);**
+  
+- **void visit(VarlistAST AST);**
+  
 - **void visit(TypeAST AST);**
 
 - **void visit(ArrayTypeAST AST);**
@@ -61,13 +67,13 @@ package parser
 
   
 
-- **void visit(ConstIntAST AST);**
+- void visit(ConstIntAST AST);
 
-- **void visit(ConstBoolAST AST);**
+- void visit(ConstBoolAST AST);
 
-- **void visit(ConstStringAST AST);**
+- void visit(ConstStringAST AST);
 
-- **void visit(ConstNullAST AST);**
+- void visit(ConstNullAST AST);
 
 - **void visit(IdentifierExprAST AST);**
 
@@ -81,7 +87,7 @@ package parser
 
 - **void visit(UnaryPosAST AST);**
 
-- **void visit(BinaryAST AST);**
+- void visit(BinaryAST AST);   //unfinished
 
 - **void visit(NewAST AST);**
 

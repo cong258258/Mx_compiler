@@ -1,5 +1,6 @@
 import AST.ProgramAST;
 import frontend.ASTBuilder;
+import frontend.SemanticChecker;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -19,7 +20,7 @@ public class Mxcompiler
 {
     public static void main(String[] args) throws IOException
     {
-//        for(int i = 1; i <= 70; i++)
+//        for(int i = 66; i <= 70; i++)
 //        {
 //            System.out.println("!!!!!!!!!!!!!" + i);
 //            File file = new File("testcases/t"+i+".mx");
@@ -32,6 +33,7 @@ public class Mxcompiler
             ParseTree mx_parse_tree_root = mx_parser.program();
             ASTBuilder mx_ASTBuilder = new ASTBuilder();
             ProgramAST mx_AST_root = (ProgramAST) mx_ASTBuilder.visit(mx_parse_tree_root);
+            SemanticChecker mx_semantic_checker = new SemanticChecker();
 //        }
     }
 }

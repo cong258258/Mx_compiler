@@ -1,6 +1,5 @@
 package utility;
 
-public class Vartype
+public abstract class Vartype
 {
-    String typename;
 }
