@@ -14,6 +14,15 @@ public class VarAST extends AST
         this.var_name = var_namee;
     }
 
+    public TypeAST get_var_type()
+    {
+        return this.var_type;
+    }
+    public String get_var_name()
+    {
+        return this.var_name;
+    }
+
     @Override
     public void accept(ASTVisitor visitor)
     {

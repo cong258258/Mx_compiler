@@ -358,22 +358,13 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     {
         Position tmp_pos = new Position(ctx);
         ArrayList<ProgramPartAST> tmp_program_parts = new ArrayList<>();
-        ArrayList<VardefStatementAST> tmp_program_var_def = new ArrayList<>();
         for(ParserRuleContext i: ctx.program_part())
         {
             AST ASTi = visit(i);
-            if(ASTi instanceof ProgramPartAST)
-            {
-                tmp_program_parts.add((ProgramPartAST) ASTi);
-                System.out.println("visitProgram, read func or class");
-            }
-            else
-            {
-                tmp_program_var_def.add((VardefStatementAST) ASTi);
-                System.out.println("visitProgram, read vardef");
-            }
+            tmp_program_parts.add((ProgramPartAST) ASTi);
+            System.out.println("visitProgram, read func or class or globalvardef");
         }
-        return new ProgramAST(tmp_pos, tmp_program_parts, tmp_program_var_def);
+        return new ProgramAST(tmp_pos, tmp_program_parts);
     }
 
     @Override
@@ -384,7 +375,10 @@ public class ASTBuilder extends MxBaseVisitor<AST>
         else if(ctx.func_def() != null)
             return visit(ctx.func_def());
         else if(ctx.var_def() != null)
-            return visit(ctx.var_def());
+        {
+            Position tmp_pos = new Position(ctx);
+            return new GlobalVardefAST(tmp_pos, (VardefStatementAST) visit(ctx.var_def()));
+        }
         else
         {
             System.out.println("visitProgram_part?????");

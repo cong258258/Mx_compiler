@@ -18,6 +18,11 @@ public class ClassdefAST extends ProgramPartAST
         this.constructor = con;
     }
 
+    public String get_identifier()
+    {
+        return identifier;
+    }
+
     @Override
     public void accept(ASTVisitor visitor)
     {

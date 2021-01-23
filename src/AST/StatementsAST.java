@@ -12,7 +12,10 @@ public class StatementsAST extends StatementAST
         super(positionn);
         this.statements = stmts;
     }
-
+    public ArrayList<StatementAST> get_statements()
+    {
+        return this.statements;
+    }
     @Override
     public void accept(ASTVisitor visitor)
     {

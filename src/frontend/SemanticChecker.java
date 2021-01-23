@@ -4,44 +4,117 @@ import AST.*;
 import utility.*;
 import utility.Error;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Stack;
+
 import static AST.Optype.*;
 
 public class SemanticChecker implements ASTVisitor
 {
+    HashMap<String, Vartype> type_table;
+//    HashMap<String, TypeAST> function_table;
+    Scope global_scope;
     Scope current_scope;
+    Stack<Scope> scope_stack;
+    public boolean put_into_type_table(String typename, Vartype vartp)
+    {
+        if(this.type_table.containsKey(typename))
+            return false;
+        else
+        {
+            this.type_table.put(typename, vartp);
+            return true;
+        }
+    }
+    public boolean find_in_type_table(String typename)
+    {
+        return this.type_table.containsKey(typename);
+    }
+//    public boolean put_into_function_table(String funcname, TypeAST typeAST)
+//    {
+//        if(this.function_table.containsKey(funcname))
+//            return false;
+//        else
+//        {
+//            this.function_table.put(funcname, typeAST);
+//            return true;
+//        }
+//    }
+//    public boolean find_in_function_table(String funcname)
+//    {
+//        return this.function_table.containsKey(funcname);
+//    }
     public SemanticChecker()
     {
-
+        scope_stack = new Stack<>();
+        global_scope = new Scope(null);
+        scope_stack.add(global_scope);
+        current_scope = global_scope;
+        type_table = new HashMap<>();
     }
     @Override
     public void visit(ProgramAST AST)
     {
-        current_scope = new Scope(null);
+        ArrayList<ProgramPartAST> program_parts = AST.get_program_parts();
+        for(ProgramPartAST i: program_parts)
+            if(i instanceof ClassdefAST)
+            {
+                String typename = ((ClassdefAST) i).get_identifier();
+                VartypeClass new_type_class = new VartypeClass(typename);
+                if(!put_into_type_table(typename, new_type_class))
+                    throw new Error(i.get_position(), "类名重定义");
+                if(current_scope.contain_object(typename, false))
+                    throw new Error(i.get_position(), "类名与已有变量名、类名、函数名冲突");
+            }
+        for(ProgramPartAST i: program_parts)
+            if(i instanceof FunctiondefAST)
+            {
+                String function_name = ((FunctiondefAST) i).get_function_name();
+//                TypeAST function_return_typeAST = ((FunctiondefAST) i).get_return_vartype();
+                current_scope.add_object(function_name, i.get_position());
+            }
+        for(ProgramPartAST i: program_parts)
+            if(i instanceof GlobalVardefAST)
+                i.accept(this);
+        for(ProgramPartAST i: program_parts)
+            if(i instanceof FunctiondefAST)
+                i.accept(this);
+        for(ProgramPartAST i: program_parts)
+            if(i instanceof ClassdefAST)
+                i.accept(this);
 
+        if(!(global_scope.contain_object("main", false)))
+            throw new Error(new Position(0, 0), "找不到main函数");
     }
 
     @Override
-    public void visit(VarAST varAST)
+    public void visit(VarAST AST)
     {
-
+        AST.get_var_type().accept(this);
+        current_scope.add_object(AST.get_var_name(), AST.get_position());
     }
 
     @Override
-    public void visit(VarlistAST varlistAST)
+    public void visit(VarlistAST AST)
     {
-
+        ArrayList<VarAST> var_list = AST.get_var_list();
+        for(VarAST i: var_list)
+            i.accept(this);
     }
 
     @Override
-    public void visit(TypeAST AST)
+    public void visit(SingleTypeAST AST)
     {
-
+        if(!find_in_type_table(AST.get_typename()))
+            throw new Error(AST.get_position(), "找不到"+AST.get_typename()+"类型");
     }
 
     @Override
     public void visit(ArrayTypeAST AST)
     {
-
+        if(!find_in_type_table(AST.get_typename()))
+            throw new Error(AST.get_position(), "找不到(基础类型)"+AST.get_typename()+"类型");
     }
 
     @Override
@@ -50,17 +123,6 @@ public class SemanticChecker implements ASTVisitor
 
     }
 
-//    @Override
-//    public void visit(ParamlistAST AST)
-//    {
-//
-//    }
-//
-//    @Override
-//    public void visit(ParamAST AST)
-//    {
-//
-//    }
 
     @Override
     public void visit(ExprStatementAST AST)
@@ -119,7 +181,11 @@ public class SemanticChecker implements ASTVisitor
     @Override
     public void visit(StatementsAST AST)
     {
-
+        Scope newscope = new Scope(current_scope);
+        scope_stack.add(newscope);
+        ArrayList<StatementAST> statements = AST.get_statements();
+        for(StatementAST i: statements)
+            i.accept(this);
     }
 
     @Override
@@ -260,6 +326,8 @@ public class SemanticChecker implements ASTVisitor
     @Override
     public void visit(IndexAST AST)
     {
+        AST.get_mainExprAST().accept(this);
+        AST.get_indexExprAST().accept(this);
 
     }
 
@@ -275,7 +343,11 @@ public class SemanticChecker implements ASTVisitor
     @Override
     public void visit(IdentifierExprAST AST)
     {
-
+        if(!current_scope.contain_object(AST.get_name(), true))
+            throw new Error(AST.get_position(), "此标识符未定义");
+        else if(!current_scope.contain_varname(AST.get_name()))
+            throw new Error(AST.get_position(), "此标识符被定义为一个函数");
+        AST.set_type(current_scope.get_vartype_with_varname(AST.get_name(), AST.get_position()));
     }
 
     @Override
@@ -302,5 +374,11 @@ public class SemanticChecker implements ASTVisitor
     @Override
     public void visit(FunctiondefAST AST)
     {
+    }
+
+    @Override
+    public void visit(GlobalVardefAST AST)
+    {
+
     }
 }

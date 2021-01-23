@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 public class GlobalVardefAST extends ProgramPartAST
 {
-    ArrayList<VardefStatementAST> vardef_statements;
-    public GlobalVardefAST(Position positionn, ArrayList<VardefStatementAST> vardefstmts)
+    VardefStatementAST vardef_statements;
+    public GlobalVardefAST(Position positionn, VardefStatementAST vardefstmts)
     {
         super(positionn);
         this.vardef_statements = vardefstmts;
@@ -16,6 +16,6 @@ public class GlobalVardefAST extends ProgramPartAST
     @Override
     public void accept(ASTVisitor visitor)
     {
-
+        visitor.visit(this);
     }
 }

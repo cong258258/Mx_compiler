@@ -17,6 +17,16 @@ public class FunctiondefAST extends ProgramPartAST
         this.statements = sts;
     }
 
+    public String get_function_name()
+    {
+        return function_name;
+    }
+
+    public TypeAST get_return_vartype()
+    {
+        return return_vartype;
+    }
+
     @Override
     public void accept(ASTVisitor visitor)
     {

@@ -13,14 +13,13 @@ import java.io.InputStream;
 import parser.MxLexer;
 import parser.MxParser;
 
-import static AST.Optype.op_empty;
 
 
 public class Mxcompiler
 {
     public static void main(String[] args) throws IOException
     {
-//        for(int i = 66; i <= 70; i++)
+//        for(int i = 1; i <= 70; i++)
 //        {
 //            System.out.println("!!!!!!!!!!!!!" + i);
 //            File file = new File("testcases/t"+i+".mx");
@@ -34,6 +33,7 @@ public class Mxcompiler
             ASTBuilder mx_ASTBuilder = new ASTBuilder();
             ProgramAST mx_AST_root = (ProgramAST) mx_ASTBuilder.visit(mx_parse_tree_root);
             SemanticChecker mx_semantic_checker = new SemanticChecker();
+            mx_AST_root.accept(mx_semantic_checker);
 //        }
     }
 }

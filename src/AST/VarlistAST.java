@@ -13,6 +13,11 @@ public class VarlistAST extends AST
         this.var_list = vlist;
     }
 
+    public ArrayList<VarAST> get_var_list()
+    {
+        return var_list;
+    }
+
     @Override
     public void accept(ASTVisitor visitor)
     {

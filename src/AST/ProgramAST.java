@@ -6,12 +6,15 @@ import java.util.ArrayList;
 public class ProgramAST extends AST
 {
     ArrayList<ProgramPartAST> program_parts;
-    ArrayList<VardefStatementAST> program_var_def;
-    public ProgramAST(Position positionn, ArrayList<ProgramPartAST> progparts, ArrayList<VardefStatementAST> progvardef)
+    public ProgramAST(Position positionn, ArrayList<ProgramPartAST> progparts)
     {
         super(positionn);
         this.program_parts = progparts;
-        this.program_var_def = progvardef;
+    }
+
+    public ArrayList<ProgramPartAST> get_program_parts()
+    {
+        return this.program_parts;
     }
 
     @Override

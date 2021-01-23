@@ -10,6 +10,10 @@ public class SingleTypeAST extends TypeAST
         super(positionn);
         this.typename = typenamee;
     }
+    public String get_typename()
+    {
+        return this.typename;
+    }
 
     @Override
     public void accept(ASTVisitor visitor)

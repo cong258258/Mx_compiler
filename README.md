@@ -19,6 +19,7 @@ package parser
     - **ProgramPartAST**
       - **ClassdefAST**
       - **FunctiondefAST**
+      - **GlobalVardefAST**
   - **ExprAST**
     - **ConstAST**
       - **ConstIntAST**
@@ -51,15 +52,15 @@ package parser
 
 
 
-- **void visit(ProgramAST AST);**
+- void visit(ProgramAST AST);
 
-- **void visit(VarAST AST);**
+- void visit(VarAST AST);
   
-- **void visit(VarlistAST AST);**
+- void visit(VarlistAST AST);
   
-- **void visit(TypeAST AST);**
-
-- **void visit(ArrayTypeAST AST);**
+-   void visit(SingleTypeAST AST);
+  
+- void visit(ArrayTypeAST AST);
 
 - **void visit(ClassdefAST AST);**
 
@@ -75,7 +76,7 @@ package parser
 
 - void visit(ConstNullAST AST);
 
-- **void visit(IdentifierExprAST AST);**
+- void visit(IdentifierExprAST AST);
 
 - **void visit(MemberAST AST);**
 
@@ -83,11 +84,11 @@ package parser
 
 - **void visit(FunctionParamAST AST);**
 
-- **void visit(UnaryPreAST AST);**
+- void visit(UnaryPreAST AST);
 
-- **void visit(UnaryPosAST AST);**
+- void visit(UnaryPosAST AST);
 
-- void visit(BinaryAST AST);   //unfinished
+- void visit(BinaryAST AST); 
 
 - **void visit(NewAST AST);**
 
