@@ -22,6 +22,10 @@ public class ClassdefAST extends ProgramPartAST
     {
         return identifier;
     }
+    public ArrayList<VardefStatementAST> get_var_def_statements()
+    {
+        return this.members;
+    }
 
     @Override
     public void accept(ASTVisitor visitor)

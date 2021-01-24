@@ -120,6 +120,12 @@ public class SemanticChecker implements ASTVisitor
     @Override
     public void visit(ClassdefAST AST)
     {
+        Scope new_scope = new Scope(current_scope);
+        scope_stack.add(new_scope);
+        current_scope = new_scope;
+        ArrayList<VardefStatementAST> var_def_statements = AST.get_var_def_statements();
+        for(VardefStatementAST i: var_def_statements)
+            i.accept(this);
 
     }
 
@@ -169,6 +175,9 @@ public class SemanticChecker implements ASTVisitor
     @Override
     public void visit(VarmultidefStatementAST AST)
     {
+        TypeAST vartypeAST = AST.get_vartype();
+        ArrayList<String> identifiers = AST.get_identifiers();
+
 
     }
 
@@ -318,17 +327,32 @@ public class SemanticChecker implements ASTVisitor
     }
 
     @Override
-    public void visit(FunctionParamAST AST)
+    public void visit(FunctionParamAST AST)    //只能是a.function()或者func
     {
-
+        ExprAST function_name = AST.get_function_name();
+        if(function_name instanceof MemberAST)
+            function_name.accept(this);
+        else if(function_name instanceof IdentifierExprAST)
+            if(!current_scope.contain_function(((IdentifierExprAST) function_name).get_name()))
+                throw new Error(function_name.get_position(), ((IdentifierExprAST) function_name).get_name()+"不是一个函数");
+        ArrayList<ExprAST> params = AST.get_params();
+        for(ExprAST i: params)
+            i.accept(this);
     }
 
     @Override
     public void visit(IndexAST AST)
     {
-        AST.get_mainExprAST().accept(this);
-        AST.get_indexExprAST().accept(this);
-
+        ExprAST main_expr = AST.get_mainExprAST();
+        ExprAST index_expr = AST.get_indexExprAST();
+        main_expr.accept(this);
+        index_expr.accept(this);
+        Vartype main_expr_type = main_expr.get_type();
+        Vartype index_expr_type = index_expr.get_type();
+//        if(!(main_expr_type instanceof VartypeArray))
+//            throw new Error(main_expr.get_position(), "[]下标运算符调用的不是数组类型");
+        if(!(index_expr_type instanceof VartypeInt))
+            throw new Error(index_expr.get_position(), "[]下标运算符索引不是int类型");
     }
 
     @Override

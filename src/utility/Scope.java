@@ -7,12 +7,14 @@ public class Scope
 {
     HashSet<String> objects;
     HashMap<String, Vartype> varname_to_vartype;
+    HashSet<String> function_name;
     Scope parent_scope;
     public Scope(Scope parent)
     {
         this.objects = new HashSet<>();
         this.parent_scope = parent;
         this.varname_to_vartype = new HashMap<>();
+        this.function_name = new HashSet<>();
     }
     public void add_object(String object_name, Position pos)
     {
@@ -33,6 +35,7 @@ public class Scope
         else
             return false;
     }
+
     public boolean contain_varname(String varname)
     {
         return this.varname_to_vartype.containsKey(varname);
@@ -51,7 +54,25 @@ public class Scope
             throw new Error(pos, "变量重定义");
         }
         else
+        {
             this.varname_to_vartype.put(varname, vartp);
+            this.objects.add(varname);
+        }
+    }
+
+    public void add_function(String function_name, Position pos)
+    {
+        if(this.function_name.contains(function_name))
+        {
+            System.out.println("Error: 函数名重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
+            throw new Error(pos, "函数名重定义");
+        }
+        else
+            this.function_name.add(function_name);
+    }
+    public boolean contain_function(String function_name)
+    {
+        return this.function_name.contains(function_name);
     }
     public Scope get_parent_scope()
     {

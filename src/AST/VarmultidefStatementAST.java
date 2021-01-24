@@ -13,6 +13,14 @@ public class VarmultidefStatementAST extends VardefStatementAST
         this.vartype = vartp;
         this.identifiers = ids;
     }
+    public TypeAST get_vartype()
+    {
+        return this.vartype;
+    }
+    public ArrayList<String> get_identifiers()
+    {
+        return identifiers;
+    }
 
     @Override
     public void accept(ASTVisitor visitor)
