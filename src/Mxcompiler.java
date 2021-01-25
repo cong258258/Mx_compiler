@@ -1,6 +1,7 @@
 import AST.ProgramAST;
 import frontend.ASTBuilder;
 import frontend.SemanticChecker;
+import utility.Error;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -19,12 +20,12 @@ public class Mxcompiler
 {
     public static void main(String[] args) throws IOException
     {
-//        for(int i = 1; i <= 70; i++)
-//        {
-//            System.out.println("!!!!!!!!!!!!!" + i);
-//            File file = new File("testcases/t"+i+".mx");
-//            FileInputStream file_input_stream = new FileInputStream(file);
-            InputStream file_input_stream = System.in;
+        for(int i = 9; i <= 9; i++)
+        {
+            System.out.println("!!!!!!!!!!!!!" + i);
+            File file = new File("testcases/basic-"+i+".mx");
+            FileInputStream file_input_stream = new FileInputStream(file);
+//            InputStream file_input_stream = System.in;
             CharStream filename_charstream = CharStreams.fromStream(file_input_stream);
             MxLexer mx_lexer = new MxLexer(filename_charstream);
             CommonTokenStream mx_token_stream = new CommonTokenStream(mx_lexer);
@@ -33,7 +34,17 @@ public class Mxcompiler
             ASTBuilder mx_ASTBuilder = new ASTBuilder();
             ProgramAST mx_AST_root = (ProgramAST) mx_ASTBuilder.visit(mx_parse_tree_root);
             SemanticChecker mx_semantic_checker = new SemanticChecker();
+            try
+            {
+                mx_AST_root.accept(mx_semantic_checker);
+            }
+            catch(Error mx_semantic_error)
+            {
+                mx_semantic_error.show_error();
+//                throw new RuntimeException();
+            }
+            mx_semantic_checker = new SemanticChecker();
             mx_AST_root.accept(mx_semantic_checker);
-//        }
+        }
     }
 }

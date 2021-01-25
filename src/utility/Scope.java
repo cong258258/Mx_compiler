@@ -3,7 +3,6 @@ package utility;
 import java.util.HashMap;
 import java.util.HashSet;
 
-
 public class Scope
 {
     Scopetype scope_type;
@@ -13,6 +12,7 @@ public class Scope
     Scope parent_scope;
     public Scope(Scope parent, Scopetype scope_type)
     {
+        this.scope_type = scope_type;
         this.objects = new HashSet<>();
         this.parent_scope = parent;
         this.varname_to_vartype = new HashMap<>();
@@ -78,7 +78,12 @@ public class Scope
     }
     public boolean contain_function(String function_name)
     {
-        return this.function_name.contains(function_name);
+        if(this.function_name.contains(function_name))
+            return true;
+        else if(this.parent_scope == null)
+            return false;
+        else
+            return this.parent_scope.contain_function(function_name);
     }
     public Scope get_parent_scope()
     {
@@ -87,5 +92,14 @@ public class Scope
     public Scopetype get_scope_type()
     {
         return this.scope_type;
+    }
+    public boolean check_scope(Scopetype target_scope)
+    {
+        if(this.get_scope_type() == target_scope)
+            return true;
+        else if(this.parent_scope == null)
+            return false;
+        else
+            return this.parent_scope.check_scope(target_scope);
     }
 }
