@@ -5,33 +5,33 @@ import utility.Position;
 public class ForStatementAST extends StatementAST
 {
     ExprAST init;
-    int init_status;
+    boolean init_status;
     ExprAST condition;
-    int condition_status;
+    boolean condition_status;
     ExprAST update;
-    int update_status;
+    boolean update_status;
     StatementAST todo_statement;
     public ForStatementAST(Position positionn, ExprAST a, ExprAST b, ExprAST c, StatementAST t)
     {
         super(positionn);
         if(a != null)
-            this.init_status = 1;
+            this.init_status = true;
         else
-            this.init_status = 0;
+            this.init_status = false;
         if(b != null)
-            this.condition_status = 1;
+            this.condition_status = true;
         else
-            this.condition_status = 0;
+            this.condition_status = false;
         if(c != null)
-            this.update_status = 1;
+            this.update_status = true;
         else
-            this.update_status = 0;
+            this.update_status = false;
         this.init = a;
         this.condition = b;
         this.update = c;
         this.todo_statement = t;
     }
-    public int init_exist()
+    public boolean init_exist()
     {
         return this.init_status;
     }
@@ -39,7 +39,7 @@ public class ForStatementAST extends StatementAST
     {
         return this.init;
     }
-    public int condition_exist()
+    public boolean condition_exist()
     {
         return this.condition_status;
     }
@@ -47,7 +47,7 @@ public class ForStatementAST extends StatementAST
     {
         return this.condition;
     }
-    public int update_exist()
+    public boolean update_exist()
     {
         return this.update_status;
     }

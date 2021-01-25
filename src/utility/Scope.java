@@ -3,13 +3,15 @@ package utility;
 import java.util.HashMap;
 import java.util.HashSet;
 
+
 public class Scope
 {
+    Scopetype scope_type;
     HashSet<String> objects;
     HashMap<String, Vartype> varname_to_vartype;
     HashSet<String> function_name;
     Scope parent_scope;
-    public Scope(Scope parent)
+    public Scope(Scope parent, Scopetype scope_type)
     {
         this.objects = new HashSet<>();
         this.parent_scope = parent;
@@ -53,13 +55,17 @@ public class Scope
             System.out.println("Error: 变量重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
             throw new Error(pos, "变量重定义");
         }
+        else if(contain_object(varname, false))
+        {
+            System.out.println("Error: 与函数或类名重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
+            throw new Error(pos, "与函数或类名重定义");
+        }
         else
         {
             this.varname_to_vartype.put(varname, vartp);
             this.objects.add(varname);
         }
     }
-
     public void add_function(String function_name, Position pos)
     {
         if(this.function_name.contains(function_name))
@@ -77,5 +83,9 @@ public class Scope
     public Scope get_parent_scope()
     {
         return this.parent_scope;
+    }
+    public Scopetype get_scope_type()
+    {
+        return this.scope_type;
     }
 }

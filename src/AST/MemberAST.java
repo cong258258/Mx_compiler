@@ -12,11 +12,14 @@ public class MemberAST extends ExprAST
         this.exprAST = ex;
         this.member_identifier = id;
     }
-    public ExprAST get_ExprAST()
+    public ExprAST get_exprAST()
     {
         return this.exprAST;
     }
-
+    public String get_member_identifier()
+    {
+        return this.member_identifier;
+    }
     @Override
     public void accept(ASTVisitor visitor)
     {

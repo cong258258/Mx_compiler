@@ -16,17 +16,22 @@ public class FunctiondefAST extends ProgramPartAST
         this.params = pa;
         this.statements = sts;
     }
-
     public String get_function_name()
     {
-        return function_name;
+        return this.function_name;
     }
-
     public TypeAST get_return_vartype()
     {
-        return return_vartype;
+        return this.return_vartype;
     }
-
+    public VarlistAST get_params()
+    {
+        return this.params;
+    }
+    public StatementAST get_statements()
+    {
+        return this.statements;
+    }
     @Override
     public void accept(ASTVisitor visitor)
     {

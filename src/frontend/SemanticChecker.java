@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Stack;
 
 import static AST.Optype.*;
+import static utility.Scopetype.*;
 
 public class SemanticChecker implements ASTVisitor
 {
@@ -31,6 +32,10 @@ public class SemanticChecker implements ASTVisitor
     {
         return this.type_table.containsKey(typename);
     }
+    public Vartype get_vartype_in_type_table_with_typename(String typename)
+    {
+        return this.type_table.get(typename);
+    }
 //    public boolean put_into_function_table(String funcname, TypeAST typeAST)
 //    {
 //        if(this.function_table.containsKey(funcname))
@@ -48,7 +53,7 @@ public class SemanticChecker implements ASTVisitor
     public SemanticChecker()
     {
         scope_stack = new Stack<>();
-        global_scope = new Scope(null);
+        global_scope = new Scope(null, normal_scope);
         scope_stack.add(global_scope);
         current_scope = global_scope;
         type_table = new HashMap<>();
@@ -91,8 +96,16 @@ public class SemanticChecker implements ASTVisitor
     @Override
     public void visit(VarAST AST)
     {
-        AST.get_var_type().accept(this);
-        current_scope.add_object(AST.get_var_name(), AST.get_position());
+        TypeAST var_typeAST = AST.get_var_type();
+        var_typeAST.accept(this);
+        String var_typename;
+        if(var_typeAST instanceof SingleTypeAST)
+            var_typename = ((SingleTypeAST) var_typeAST).get_typename();
+        else if(var_typeAST instanceof ArrayTypeAST)
+            var_typename = ((ArrayTypeAST) var_typeAST).get_typename();
+        else
+            throw new Error(null, "fuck");
+        current_scope.add_varname(AST.get_var_name(), get_vartype_in_type_table_with_typename(var_typename), AST.get_position());
     }
 
     @Override
@@ -120,56 +133,132 @@ public class SemanticChecker implements ASTVisitor
     @Override
     public void visit(ClassdefAST AST)
     {
-        Scope new_scope = new Scope(current_scope);
+        Scope new_scope = new Scope(current_scope, class_scope);
         scope_stack.add(new_scope);
         current_scope = new_scope;
         ArrayList<VardefStatementAST> var_def_statements = AST.get_var_def_statements();
         for(VardefStatementAST i: var_def_statements)
             i.accept(this);
-
+        ArrayList<FunctiondefAST> functions = AST.get_functions();
+        for(FunctiondefAST i: functions)
+            i.accept(this);
+        scope_stack.pop();
+        current_scope = scope_stack.peek();
     }
 
 
     @Override
     public void visit(ExprStatementAST AST)
     {
-
+        AST.get_expr().accept(this);
     }
 
     @Override
     public void visit(ContinueStatementAST AST)
     {
-
+        if(current_scope.get_scope_type() != loop_scope)
+            throw new Error(AST.get_position(), "continue语句不在循环中");
     }
 
     @Override
     public void visit(BreakStatementAST AST)
     {
-
+        if(current_scope.get_scope_type() != loop_scope)
+            throw new Error(AST.get_position(), "break语句不在循环中");
     }
 
     @Override
     public void visit(ReturnStatementAST AST)
     {
-
+        if(current_scope.get_scope_type() != function_scope)
+            throw new Error(AST.get_position(), "return语句不在函数中");
+        if(AST.return_expr_exist())
+            AST.get_return_expr().accept(this);
     }
 
     @Override
     public void visit(WhileStatementAST AST)
     {
-
+        ExprAST condition = AST.get_condition();
+        StatementAST todo_statement = AST.get_todo_statement();
+        condition.accept(this);
+        if(!condition.get_type().equals(new VartypeBool()))
+            throw new Error(condition.get_position(), "while语句中，条件表达式返回非bool类型");
+        if(todo_statement instanceof StatementsAST)
+            todo_statement.accept(this);
+        else
+        {
+            Scope new_scope = new Scope(current_scope, loop_scope);
+            scope_stack.add(new_scope);
+            current_scope = new_scope;
+            todo_statement.accept(this);
+            scope_stack.pop();
+            current_scope = scope_stack.peek();
+        }
     }
 
     @Override
     public void visit(ForStatementAST AST)
     {
-
+        if(AST.init_exist())
+            AST.get_init().accept(this);
+        if(AST.condition_exist())
+        {
+            ExprAST condition = AST.get_condition();
+            condition.accept(this);
+            if(!condition.get_type().equals(new VartypeBool()))
+                throw new Error(condition.get_position(), "for语句的循环条件语句中，条件表达式返回非bool类型");
+        }
+        if(AST.update_exist())
+            AST.get_update().accept(this);
+        StatementAST todo_statement = AST.get_todo_statement();
+        if(todo_statement instanceof StatementsAST)
+            todo_statement.accept(this);
+        else
+        {
+            Scope new_scope = new Scope(current_scope, loop_scope);
+            scope_stack.add(new_scope);
+            current_scope = new_scope;
+            todo_statement.accept(this);
+            scope_stack.pop();
+            current_scope = scope_stack.peek();
+        }
     }
 
     @Override
     public void visit(IfStatementAST AST)
     {
-
+        ExprAST condition = AST.get_condition();
+        StatementAST todo_statement = AST.get_todo_statement();
+        condition.accept(this);
+        if(!condition.get_type().equals(new VartypeBool()))
+            throw new Error(condition.get_position(), "if语句中，条件表达式返回非bool类型");
+        if(todo_statement instanceof StatementsAST)
+            todo_statement.accept(this);
+        else
+        {
+            Scope new_scope = new Scope(current_scope, normal_scope);
+            scope_stack.add(new_scope);
+            current_scope = new_scope;
+            todo_statement.accept(this);
+            scope_stack.pop();
+            current_scope = scope_stack.peek();
+        }
+        if(AST.else_statement_exist())
+        {
+            StatementAST else_statement = AST.get_else_statement();
+            if(else_statement instanceof StatementsAST)
+                else_statement.accept(this);
+            else
+            {
+                Scope new_scope = new Scope(current_scope, normal_scope);
+                scope_stack.add(new_scope);
+                current_scope = new_scope;
+                else_statement.accept(this);
+                scope_stack.pop();
+                current_scope = scope_stack.peek();
+            }
+        }
     }
 
     @Override
@@ -177,36 +266,69 @@ public class SemanticChecker implements ASTVisitor
     {
         TypeAST vartypeAST = AST.get_vartype();
         ArrayList<String> identifiers = AST.get_identifiers();
-
-
+        vartypeAST.accept(this);
+        String typename;
+        if(vartypeAST instanceof SingleTypeAST)
+            typename = ((SingleTypeAST) vartypeAST).get_typename();
+        else if(vartypeAST instanceof ArrayTypeAST)
+            typename = ((ArrayTypeAST) vartypeAST).get_typename();
+        else
+            throw new Error(null, ":fuck");
+        for(String i: identifiers)
+            current_scope.add_varname(i, get_vartype_in_type_table_with_typename(typename), AST.get_position());
     }
 
     @Override
     public void visit(VardefandinitStatementAST AST)
     {
-
+        TypeAST vartypeAST = AST.get_vartype();
+        String identifier = AST.get_identifier();
+        ExprAST init_expr = AST.get_init_expr();
+        String typename;
+        vartypeAST.accept(this);
+        init_expr.accept(this);
+        if(vartypeAST instanceof SingleTypeAST)
+            typename = ((SingleTypeAST) vartypeAST).get_typename();
+        else if(vartypeAST instanceof ArrayTypeAST)
+            typename = ((ArrayTypeAST) vartypeAST).get_typename();
+        else
+            throw new Error(null, ":fuck");
+        Vartype type = get_vartype_in_type_table_with_typename(typename);
+        if(type != init_expr.get_type())
+            throw new Error(init_expr.get_position(), "赋值左右两边类型不一致");
+        current_scope.add_varname(identifier, type, AST.get_position());
     }
 
     @Override
     public void visit(StatementsAST AST)
     {
-        Scope newscope = new Scope(current_scope);
+        Scope newscope = new Scope(current_scope, normal_scope);
         scope_stack.add(newscope);
         ArrayList<StatementAST> statements = AST.get_statements();
         for(StatementAST i: statements)
             i.accept(this);
+        scope_stack.pop();
+        current_scope = scope_stack.peek();
     }
 
     @Override
     public void visit(ThisAST AST)
     {
-
+        if(current_scope.get_scope_type() != class_scope)
+            throw new Error(AST.get_position(), "This表达式找不到class作用域");
     }
 
     @Override
     public void visit(NewAST AST)
     {
-
+        AST.get_vartype().accept(this);
+        ArrayList<ExprAST> init_expr = AST.get_init_expr();
+        for(ExprAST i: init_expr)
+        {
+            i.accept(this);
+            if(!(i.get_type() instanceof VartypeInt))
+                throw new Error(i.get_position(), "数组初始化大小不是int值");
+        }
     }
 
     @Override
@@ -358,9 +480,11 @@ public class SemanticChecker implements ASTVisitor
     @Override
     public void visit(MemberAST AST)   //a.member; a.function();
     {
-        AST.get_ExprAST().accept(this);
-        ExprAST expr = AST.get_ExprAST();
+        ExprAST expr = AST.get_exprAST();
+        String member = AST.get_member_identifier();
+        expr.accept(this);
         Vartype type = expr.get_type();
+
 
     }
 
@@ -398,11 +522,23 @@ public class SemanticChecker implements ASTVisitor
     @Override
     public void visit(FunctiondefAST AST)
     {
+        Scope new_scope = new Scope(current_scope, function_scope);
+        scope_stack.add(new_scope);
+        current_scope = new_scope;
+        TypeAST return_vartype = AST.get_return_vartype();
+        String function_name = AST.get_function_name();
+        VarlistAST params = AST.get_params();
+        StatementAST statements = AST.get_statements();
+        return_vartype.accept(this);
+        params.accept(this);
+        statements.accept(this);
+        scope_stack.pop();
+        current_scope = scope_stack.peek();
     }
 
     @Override
     public void visit(GlobalVardefAST AST)
     {
-
+        AST.get_vardef_statements().accept(this);
     }
 }

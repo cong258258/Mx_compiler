@@ -14,7 +14,18 @@ public class VardefandinitStatementAST extends VardefStatementAST
         this.identifier = id;
         this.init_expr = ini;
     }
-
+    public TypeAST get_vartype()
+    {
+        return this.vartype;
+    }
+    public String get_identifier()
+    {
+        return this.identifier;
+    }
+    public ExprAST get_init_expr()
+    {
+        return this.init_expr;
+    }
     @Override
     public void accept(ASTVisitor visitor)
     {

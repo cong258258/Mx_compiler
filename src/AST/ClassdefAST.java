@@ -26,6 +26,10 @@ public class ClassdefAST extends ProgramPartAST
     {
         return this.members;
     }
+    public ArrayList<FunctiondefAST> get_functions()
+    {
+        return this.functions;
+    }
 
     @Override
     public void accept(ASTVisitor visitor)

@@ -6,7 +6,7 @@ public class IfStatementAST extends StatementAST
 {
     ExprAST condition;
     StatementAST todo_statement, else_statement;
-    int else_statement_status;
+    boolean else_statement_status;
     public IfStatementAST(Position positionn, ExprAST cond, StatementAST todo, StatementAST elsee)
     {
         super(positionn);
@@ -14,11 +14,11 @@ public class IfStatementAST extends StatementAST
         this.todo_statement = todo;
         if(else_statement != null)
         {
-            else_statement_status = 1;
+            else_statement_status = true;
             this.else_statement = elsee;
         }
         else
-            else_statement_status = 0;
+            else_statement_status = false;
     }
     public ExprAST get_condition()
     {
@@ -28,7 +28,7 @@ public class IfStatementAST extends StatementAST
     {
         return this.todo_statement;
     }
-    public int else_statement_exist()
+    public boolean else_statement_exist()
     {
         return this.else_statement_status;
     }

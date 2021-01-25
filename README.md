@@ -80,9 +80,9 @@ package parser
 
 - **void visit(MemberAST AST);**
 
-- **void visit(IndexAST AST);**
+- void visit(IndexAST AST);
 
-- **void visit(FunctionParamAST AST);**
+- void visit(FunctionParamAST AST);
 
 - void visit(UnaryPreAST AST);
 

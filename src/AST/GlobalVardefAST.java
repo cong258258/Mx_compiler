@@ -12,7 +12,10 @@ public class GlobalVardefAST extends ProgramPartAST
         super(positionn);
         this.vardef_statements = vardefstmts;
     }
-
+    public VardefStatementAST get_vardef_statements()
+    {
+        return this.vardef_statements;
+    }
     @Override
     public void accept(ASTVisitor visitor)
     {
