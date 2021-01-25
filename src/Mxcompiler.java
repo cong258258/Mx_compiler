@@ -45,6 +45,6 @@ public class Mxcompiler
             }
 //            mx_semantic_checker = new SemanticChecker();
 //            mx_AST_root.accept(mx_semantic_checker);
-        }
+//        }
     }
 }
