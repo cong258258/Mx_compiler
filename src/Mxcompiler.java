@@ -20,12 +20,12 @@ public class Mxcompiler
 {
     public static void main(String[] args) throws IOException
     {
-        for(int i = 28; i <= 28; i++)
-        {
-            System.out.println("!!!!!!!!!!!!!" + i);
-            File file = new File("testcases/basic-"+i+".mx");
-            FileInputStream file_input_stream = new FileInputStream(file);
-//            InputStream file_input_stream = System.in;
+//        for(int i = 28; i <= 28; i++)
+//        {
+//            System.out.println("!!!!!!!!!!!!!" + i);
+//            File file = new File("testcases/basic-"+i+".mx");
+//            FileInputStream file_input_stream = new FileInputStream(file);
+            InputStream file_input_stream = System.in;
             CharStream filename_charstream = CharStreams.fromStream(file_input_stream);
             MxLexer mx_lexer = new MxLexer(filename_charstream);
             CommonTokenStream mx_token_stream = new CommonTokenStream(mx_lexer);
@@ -46,5 +46,5 @@ public class Mxcompiler
 //            mx_semantic_checker = new SemanticChecker();
 //            mx_AST_root.accept(mx_semantic_checker);
         }
-    }
+//    }
 }
