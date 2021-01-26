@@ -20,7 +20,7 @@ public class Mxcompiler
 {
     public static void main(String[] args) throws IOException
     {
-        for(int i = 3; i <= 3; i++)
+        for(int i = 35; i <= 35; i++)
         {
             System.out.println("!!!!!!!!!!!!!" + i);
             File file = new File("testcases/basic-"+i+".mx");

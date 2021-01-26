@@ -229,17 +229,12 @@ public class SemanticChecker implements ASTVisitor
         condition.accept(this);
         if(!(condition.get_type() instanceof VartypeBool))
             throw new Error(condition.get_position(), "while语句中，条件表达式返回非bool类型");
-        if(todo_statement instanceof StatementsAST)
-            todo_statement.accept(this);
-        else
-        {
-            Scope new_scope = new Scope(current_scope, loop_scope_type);
-            scope_stack.add(new_scope);
-            current_scope = new_scope;
-            todo_statement.accept(this);
-            scope_stack.pop();
-            current_scope = scope_stack.peek();
-        }
+        Scope new_scope = new Scope(current_scope, loop_scope_type);
+        scope_stack.add(new_scope);
+        current_scope = new_scope;
+        todo_statement.accept(this);
+        scope_stack.pop();
+        current_scope = scope_stack.peek();
     }
 
     @Override
@@ -257,17 +252,12 @@ public class SemanticChecker implements ASTVisitor
         if(AST.update_exist())
             AST.get_update().accept(this);
         StatementAST todo_statement = AST.get_todo_statement();
-        if(todo_statement instanceof StatementsAST)
-            todo_statement.accept(this);
-        else
-        {
-            Scope new_scope = new Scope(current_scope, loop_scope_type);
-            scope_stack.add(new_scope);
-            current_scope = new_scope;
-            todo_statement.accept(this);
-            scope_stack.pop();
-            current_scope = scope_stack.peek();
-        }
+        Scope new_scope = new Scope(current_scope, loop_scope_type);
+        scope_stack.add(new_scope);
+        current_scope = new_scope;
+        todo_statement.accept(this);
+        scope_stack.pop();
+        current_scope = scope_stack.peek();
     }
 
     @Override
@@ -336,10 +326,13 @@ public class SemanticChecker implements ASTVisitor
 //            throw new Error(null, ":fuck");
         String typename = vartypeAST.get_typename();
         int dimension = vartypeAST.get_dimension();
-        System.out.println("uuuuuuuuuuuuuuuuuuuuuu" + typename);
+        Vartype type;
         if(typename.equals("void"))
             throw new Error(vartypeAST.get_position(), "变量类型不能为void");
-        Vartype type = get_vartype_in_type_table_with_typename(typename);
+        if(dimension == 0)
+            type = get_vartype_in_type_table_with_typename(typename);
+        else
+            type = new VartypeArray(get_vartype_in_type_table_with_typename(typename), dimension);
         if(!is_same_type(type, init_expr.get_type()))
             throw new Error(init_expr.get_position(), "赋值左右两边类型不一致, 左边是"+type.toString()+", 右边是"+init_expr.get_type().toString());
         current_scope.add_varname(identifier, type, AST.get_position());
@@ -447,7 +440,12 @@ public class SemanticChecker implements ASTVisitor
             System.out.println(rtype);
             if(((ltype instanceof VartypeInt) && (rtype instanceof VartypeInt))
                 ||((ltype instanceof VartypeString) && (rtype instanceof VartypeString))
-                ||((ltype instanceof VartypeBool) && (rtype instanceof VartypeBool)))
+                ||((ltype instanceof VartypeBool) && (rtype instanceof VartypeBool))
+                ||((ltype instanceof VartypeArray) && (rtype instanceof VartypeNull))
+                ||((ltype instanceof VartypeNull) && (rtype instanceof VartypeArray))
+                ||((ltype instanceof VartypeClass) && (rtype instanceof VartypeNull))
+                ||((ltype instanceof VartypeNull) && (rtype instanceof VartypeClass))
+                ||((ltype instanceof VartypeNull) && (rtype instanceof VartypeNull)))
                 AST.set_type(new VartypeBool());
             else
                 throw new Error(lpos, "二元运算符" + binop + "只能用于同类比较");
@@ -464,9 +462,10 @@ public class SemanticChecker implements ASTVisitor
         {
             if(ltype instanceof VartypeNull)
                 throw new Error(lpos, "null不可被赋值");
+            System.out.println("rrrrr"+lexpr.is_left_value());
             if(!lexpr.is_left_value())
                 throw new Error(lpos, "在二元运算符" + binop + "中，赋值左侧不是左值");
-            if(!is_same_type(ltype, rtype))
+            if(!is_assignable(ltype, rtype))
                 throw new Error(lpos, "在二元运算符" + binop + "中，左右两边类型不同");
             AST.set_type(ltype);
         }

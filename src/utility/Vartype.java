@@ -7,8 +7,11 @@ public abstract class Vartype
     {
         return a.typename.equals(b.typename);
     }
-    public boolean is_assignable(Vartype a, Vartype b)
+    public static boolean is_assignable(Vartype a, Vartype b)
     {
-        return true;
+        if((a instanceof VartypeArray || a instanceof VartypeClass) && b instanceof VartypeNull)
+            return true;
+        else
+            return is_same_type(a, b);
     }
 }
