@@ -62,12 +62,14 @@ package parser
   
 - void visit(ArrayTypeAST AST);
 
-- **void visit(ClassdefAST AST);**
+- void visit(ClassdefAST AST);  //构造函数没有返回值
 
-- **void visit(FunctiondefAST AST);**
+- void visit(FunctiondefAST AST);
 
+- void visit(GlobalVardefAST AST)
   
 
+  
 - void visit(ConstIntAST AST);
 
 - void visit(ConstBoolAST AST);
@@ -90,40 +92,41 @@ package parser
 
 - void visit(BinaryAST AST); 
 
-- **void visit(NewAST AST);**
+- void visit(NewAST AST);
 
-- **void visit(ThisAST AST);**
-
-  
-
-- **void visit(StatementsAST AST);**
-
-- **void visit(VardefandinitStatementAST AST);**
-
-- **void visit(VarmultidefStatementAST AST);**
-
-- **void visit(IfStatementAST AST);**
-
-- **void visit(ForStatementAST AST);**
-
-- **void visit(WhileStatementAST AST);**
-
-- **void visit(ReturnStatementAST AST);**
-
-- **void visit(BreakStatementAST AST);**
-
-- **void visit(ContinueStatementAST AST);**
-
-- **void visit(ExprStatementAST AST);**
-
-- **void visit(ParamAST AST);**
-
-- **void visit(ParamlistAST AST);**
+- void visit(ThisAST AST);
 
   
 
+- void visit(StatementsAST AST);   //{}
+
+- void visit(VardefandinitStatementAST AST);
+
+- void visit(VarmultidefStatementAST AST);
+
+- void visit(IfStatementAST AST);
+
+- void visit(ForStatementAST AST);
+
+- void visit(WhileStatementAST AST);(有没有单行？)
+
+- void visit(ReturnStatementAST AST);
+
+- void visit(BreakStatementAST AST);
+
+- void visit(ContinueStatementAST AST);
+
+- void visit(ExprStatementAST AST);
+
+- //void visit(ParamAST AST);
+
+- //void visit(ParamlistAST AST);
+
+  
 
 int a = new int()()
+
+null == null
 
 
 <h2>AST builder</h2>

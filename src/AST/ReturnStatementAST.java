@@ -10,10 +10,6 @@ public class ReturnStatementAST extends StatementAST
         super(positionn);
         this.return_expr = ret;
     }
-    public boolean return_expr_exist()
-    {
-        return this.return_expr != null;
-    }
     public ExprAST get_return_expr()
     {
         return this.return_expr;

@@ -62,13 +62,14 @@ public class SemanticChecker implements ASTVisitor
         put_into_type_table("bool", new VartypeBool());
         put_into_type_table("String", new VartypeString());
         put_into_type_table("void", new VartypeVoid());
-        global_scope.add_function("print", new Position(-1,0));
-        global_scope.add_function("println", new Position(-1,0));
-        global_scope.add_function("printInt", new Position(-1,0));
-        global_scope.add_function("getString", new Position(-1,0));
-        global_scope.add_function("getInt", new Position(-1,0));
-        global_scope.add_function("toString", new Position(-1,0));
-
+        global_scope.add_function("print", new VartypeVoid(), new Position(-1,0));
+        global_scope.add_function("println", new VartypeVoid(), new Position(-1,0));
+        global_scope.add_function("printInt", new VartypeVoid(), new Position(-1,0));
+        global_scope.add_function("printlnInt", new VartypeVoid(), new Position(-1,0));
+        global_scope.add_function("getString", new VartypeString(), new Position(-1,0));
+        global_scope.add_function("getInt", new VartypeInt(), new Position(-1,0));
+        global_scope.add_function("toString", new VartypeString(), new Position(-1,0));
+//        global_scope.add_varname("null", new VartypeNull(), new Position(-1, 0));
 
 
 
@@ -94,18 +95,31 @@ public class SemanticChecker implements ASTVisitor
 //                TypeAST function_return_typeAST = ((FunctiondefAST) i).get_return_vartype();
                 current_scope.add_object(function_name, i.get_position());
             }
+//        for(ProgramPartAST i: program_parts)
+//            if(i instanceof GlobalVardefAST)
+//                i.accept(this);
+//        for(ProgramPartAST i: program_parts)
+//            if(i instanceof FunctiondefAST)
+//                i.accept(this);
+//        for(ProgramPartAST i: program_parts)
+//            if(i instanceof ClassdefAST)
+//                i.accept(this);
         for(ProgramPartAST i: program_parts)
-            if(i instanceof GlobalVardefAST)
-                i.accept(this);
-        for(ProgramPartAST i: program_parts)
-            if(i instanceof FunctiondefAST)
-                i.accept(this);
-        for(ProgramPartAST i: program_parts)
-            if(i instanceof ClassdefAST)
-                i.accept(this);
+            i.accept(this);
+
 
         if(!(global_scope.contain_object("main", false)))
             throw new Error(new Position(0, 0), "找不到main函数");
+        for(ProgramPartAST i: program_parts)
+            if(i instanceof FunctiondefAST && ((FunctiondefAST) i).get_function_name().equals("main"))
+            {
+                if(!((FunctiondefAST) i).get_return_vartype().get_typename().equals("int"))
+                    throw new Error(i.get_position(), "main函数返回值类型不为int");
+                if(((FunctiondefAST) i).get_params() != null)
+                    throw new Error(((FunctiondefAST) i).get_params().get_position(), "main函数不应有参数");
+
+            }
+
     }
 
     @Override
@@ -185,8 +199,26 @@ public class SemanticChecker implements ASTVisitor
             System.out.println(current_scope.get_scope_type());
             throw new Error(AST.get_position(), "return语句不在函数中");
         }
-        if(AST.return_expr_exist())
-            AST.get_return_expr().accept(this);
+        current_scope.set_return_statement_status();
+        Vartype return_type = current_scope.get_return_type_for_function_scope();
+        ExprAST return_expr = AST.get_return_expr();
+        if(return_expr != null)
+        {
+            return_expr.accept(this);
+            if(is_same_type(return_type, new VartypeVoid()))
+                throw new Error(return_expr.get_position(), "void返回类型函数不应有返回值");
+            else
+            {
+                System.out.println(return_expr.get_type().toString());
+                if(!is_same_type(return_type, return_expr.get_type()))
+                  throw new Error(AST.get_position(), "函数类型与返回类型不同") ;
+            }
+        }
+        else
+        {
+            if(!is_same_type(return_type, new VartypeVoid()))
+                throw new Error(AST.get_position(), "返回值表达式缺失");
+        }
     }
 
     @Override
@@ -195,7 +227,7 @@ public class SemanticChecker implements ASTVisitor
         ExprAST condition = AST.get_condition();
         StatementAST todo_statement = AST.get_todo_statement();
         condition.accept(this);
-        if(!condition.get_type().equals(new VartypeBool()))
+        if(!(condition.get_type() instanceof VartypeBool))
             throw new Error(condition.get_position(), "while语句中，条件表达式返回非bool类型");
         if(todo_statement instanceof StatementsAST)
             todo_statement.accept(this);
@@ -244,7 +276,7 @@ public class SemanticChecker implements ASTVisitor
         ExprAST condition = AST.get_condition();
         StatementAST todo_statement = AST.get_todo_statement();
         condition.accept(this);
-        if(!condition.get_type().equals(new VartypeBool()))
+        if(!(condition.get_type() instanceof VartypeBool))
             throw new Error(condition.get_position(), "if语句中，条件表达式返回非bool类型");
         if(todo_statement instanceof StatementsAST)
             todo_statement.accept(this);
@@ -386,6 +418,8 @@ public class SemanticChecker implements ASTVisitor
                 else
                     throw new Error(rpos, "在二元运算符" + binop + "中，左边是String，右边不是int或String");
             }
+            else
+                throw new Error(lpos, "二元运算符" + binop + "只能用于整数类型加法或者字符串类型拼接");
         }
         else if(binop == op_xiaoyu || binop == op_xiaoyudengyu || binop == op_dayu || binop == op_dayudengyu)
         {
@@ -409,6 +443,7 @@ public class SemanticChecker implements ASTVisitor
         }
         else if(binop == op_equal || binop == op_not_equal)
         {
+            System.out.println(rtype);
             if(((ltype instanceof VartypeInt) && (rtype instanceof VartypeInt))
                 ||((ltype instanceof VartypeString) && (rtype instanceof VartypeString))
                 ||((ltype instanceof VartypeBool) && (rtype instanceof VartypeBool)))
@@ -426,8 +461,10 @@ public class SemanticChecker implements ASTVisitor
         }
         else if(binop == op_assign)
         {
+            if(ltype instanceof VartypeNull)
+                throw new Error(lpos, "null不可被赋值");
             if(!is_same_type(ltype, rtype))
-                throw new Error(rpos, "在二元运算符" + binop + "中，左右两边类型不同");
+                throw new Error(lpos, "在二元运算符" + binop + "中，左右两边类型不同");
             AST.set_type(ltype);
         }
         else
@@ -520,7 +557,10 @@ public class SemanticChecker implements ASTVisitor
     }
 
     @Override
-    public void visit(ConstNullAST AST){}
+    public void visit(ConstNullAST AST)
+    {
+        AST.set_type(new VartypeNull());
+    }
 
     @Override
     public void visit(ConstStringAST AST)
@@ -550,13 +590,19 @@ public class SemanticChecker implements ASTVisitor
         String function_name = AST.get_function_name();
         VarlistAST params = AST.get_params();
         StatementAST statements = AST.get_statements();
+        current_scope.get_parent_scope().add_function(function_name, get_vartype_in_type_table_with_typename(return_vartype.get_typename()), AST.get_position());
         return_vartype.accept(this);
+//        System.out.println(get_vartype_in_type_table_with_typename(return_vartype.get_typename()));
+        current_scope.get_parent_scope().set_return_type_for_function_scope(get_vartype_in_type_table_with_typename(return_vartype.get_typename()));
         if(params != null)
             params.accept(this);
         statements.accept(this);
+        if(!function_name.equals("main"))
+            if(!current_scope.has_return_statement())
+                throw new Error(AST.get_position(), "找不到return语句");
+
         scope_stack.pop();
         current_scope = scope_stack.peek();
-        current_scope.add_function(function_name, AST.get_position());
     }
 
     @Override
