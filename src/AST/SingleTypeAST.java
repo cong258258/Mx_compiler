@@ -14,6 +14,10 @@ public class SingleTypeAST extends TypeAST
     {
         return this.typename;
     }
+    public int get_dimension()
+    {
+        return 0;
+    }
 
     @Override
     public void accept(ASTVisitor visitor)

@@ -326,7 +326,6 @@ public class SemanticChecker implements ASTVisitor
         TypeAST vartypeAST = AST.get_vartype();
         String identifier = AST.get_identifier();
         ExprAST init_expr = AST.get_init_expr();
-        String typename;
         vartypeAST.accept(this);
         init_expr.accept(this);
 //        if(vartypeAST instanceof SingleTypeAST)
@@ -335,7 +334,9 @@ public class SemanticChecker implements ASTVisitor
 //            typename = ((ArrayTypeAST) vartypeAST).get_typename();
 //        else
 //            throw new Error(null, ":fuck");
-        typename = vartypeAST.get_typename();
+        String typename = vartypeAST.get_typename();
+        int dimension = vartypeAST.get_dimension();
+        System.out.println("uuuuuuuuuuuuuuuuuuuuuu" + typename);
         if(typename.equals("void"))
             throw new Error(vartypeAST.get_position(), "变量类型不能为void");
         Vartype type = get_vartype_in_type_table_with_typename(typename);
@@ -463,6 +464,8 @@ public class SemanticChecker implements ASTVisitor
         {
             if(ltype instanceof VartypeNull)
                 throw new Error(lpos, "null不可被赋值");
+            if(!lexpr.is_left_value())
+                throw new Error(lpos, "在二元运算符" + binop + "中，赋值左侧不是左值");
             if(!is_same_type(ltype, rtype))
                 throw new Error(lpos, "在二元运算符" + binop + "中，左右两边类型不同");
             AST.set_type(ltype);
@@ -474,12 +477,15 @@ public class SemanticChecker implements ASTVisitor
     @Override
     public void visit(UnaryPosAST AST)
     {
-        AST.get_ExprAST().accept(this);
+        ExprAST exprAST = AST.get_ExprAST();
+        exprAST.accept(this);
         Position position = AST.get_position();
         Optype optype = AST.get_optype();
-        Vartype type = AST.get_ExprAST().get_type();
+        Vartype type = exprAST.get_type();
         if(!(type instanceof VartypeInt))
             throw new Error(position, "一元后置运算符" + optype + "只能作用于int");
+        if(!exprAST.is_left_value())
+            throw new Error(position, "一元后置运算符" + optype + "只能作用于左值");
         AST.set_type(new VartypeInt());
     }
 
@@ -495,6 +501,8 @@ public class SemanticChecker implements ASTVisitor
             if(!(type instanceof VartypeInt))
                 throw new Error(position, "一元前置运算符" + optype + "只能作用于int");
             AST.set_type(new VartypeInt());
+            if(optype == op_zizeng || optype == op_zijian)
+                AST.set_left_value(true);
         }
         else if(optype == op_logic_not)
         {
@@ -529,10 +537,14 @@ public class SemanticChecker implements ASTVisitor
         index_expr.accept(this);
         Vartype main_expr_type = main_expr.get_type();
         Vartype index_expr_type = index_expr.get_type();
-//        if(!(main_expr_type instanceof VartypeArray))
-//            throw new Error(main_expr.get_position(), "[]下标运算符调用的不是数组类型");
+        System.out.println(main_expr_type);
+        if(!(main_expr_type instanceof VartypeArray))
+            throw new Error(main_expr.get_position(), "[]下标运算符调用的不是数组类型");
         if(!(index_expr_type instanceof VartypeInt))
             throw new Error(index_expr.get_position(), "[]下标运算符索引不是int类型");
+        AST.set_left_value(main_expr.is_left_value());
+        VartypeArray main_expr_type_array = (VartypeArray) main_expr_type;
+        AST.set_type(new VartypeArray(main_expr_type_array.get_basetype(), main_expr_type_array.get_dimension()-1));
     }
 
     @Override
@@ -554,6 +566,7 @@ public class SemanticChecker implements ASTVisitor
         else if(!current_scope.contain_varname(AST.get_name()))
             throw new Error(AST.get_position(), "此标识符被定义为一个函数");
         AST.set_type(current_scope.get_vartype_with_varname(AST.get_name(), AST.get_position()));
+        AST.set_left_value(true);
     }
 
     @Override

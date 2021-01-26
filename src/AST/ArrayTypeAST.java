@@ -16,6 +16,10 @@ public class ArrayTypeAST extends TypeAST
     {
         return this.typename;
     }
+    public int get_dimension()
+    {
+        return this.dimension;
+    }
     @Override
     public void accept(ASTVisitor visitor)
     {

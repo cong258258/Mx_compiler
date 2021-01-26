@@ -9,4 +9,5 @@ public abstract class TypeAST extends AST
         super(positionn);
     }
     public abstract String get_typename();
+    public abstract int get_dimension();
 }
