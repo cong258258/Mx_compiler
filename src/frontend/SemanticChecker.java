@@ -553,7 +553,9 @@ public class SemanticChecker implements ASTVisitor
         String member = AST.get_member_identifier();
         expr.accept(this);
         Vartype type = expr.get_type();
-
+        if(!type.has_method(member))
+            throw new Error(expr.get_position(), "找不到此方法");
+        AST.set_type(new VartypeMethod(member, type));
 
     }
 

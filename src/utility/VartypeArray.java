@@ -1,5 +1,7 @@
 package utility;
 
+import java.util.ArrayList;
+
 public class VartypeArray extends Vartype
 {
     Vartype basetype;
@@ -9,6 +11,15 @@ public class VartypeArray extends Vartype
         this.basetype = basetypee;
         this.dimension = dim;
         super.typename = basetypee.typename;
+        super.methods = new ArrayList<>();
+
+        ArrayList<String> parameters;
+        FunctionEntity method;
+
+        parameters = new ArrayList<>();
+        method = new FunctionEntity("size", parameters);
+        methods.add(method);
+
     }
     public Vartype get_basetype()
     {

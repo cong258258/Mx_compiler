@@ -1,5 +1,6 @@
 package utility;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class VartypeClass extends Vartype
@@ -9,5 +10,6 @@ public class VartypeClass extends Vartype
     public VartypeClass(String type_namee)
     {
         super.typename = type_namee;
+        super.methods = new ArrayList<>();
     }
 }
