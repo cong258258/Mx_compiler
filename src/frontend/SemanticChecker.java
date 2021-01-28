@@ -1,7 +1,7 @@
 package frontend;
 
 import AST.*;
-import javafx.util.Pair;
+import org.antlr.v4.runtime.misc.Pair;
 import utility.*;
 import utility.Error;
 
@@ -575,7 +575,7 @@ public class SemanticChecker implements ASTVisitor
             ExprAST param_provide = params.get(i);
             Pair<Vartype, String> param_need = real_param_list.get(i);
             Vartype param_provide_type = param_provide.get_type();
-            Vartype param_need_type = param_need.getKey();
+            Vartype param_need_type = param_need.a;
             if(!is_assignable(param_need_type, param_provide_type))
                 throw new Error(param_provide.get_position(), "传参错误");
         }

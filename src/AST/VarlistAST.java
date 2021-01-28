@@ -1,6 +1,6 @@
 package AST;
 
-import javafx.util.Pair;
+import org.antlr.v4.runtime.misc.Pair;
 import utility.Position;
 import utility.Vartype;
 

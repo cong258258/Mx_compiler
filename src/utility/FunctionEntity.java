@@ -1,6 +1,6 @@
 package utility;
 
-import javafx.util.Pair;
+import org.antlr.v4.runtime.misc.Pair;
 import java.util.ArrayList;
 
 public class FunctionEntity
