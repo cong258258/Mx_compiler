@@ -31,8 +31,6 @@ public abstract class Vartype
     }
     public boolean has_method(String method_name)
     {
-        for(Map.Entry<String, FunctionEntity> entry: methods.entrySet())
-            System.out.println(entry.getKey() + "   -----   " + entry.getValue().toString());
         return this.methods.containsKey(method_name);
     }
     public FunctionEntity get_function_entity_with_method_name(String function_name)

@@ -20,6 +20,10 @@ public class SemanticChecker implements ASTVisitor
     Scope global_scope;
     Scope current_scope;
     Stack<Scope> scope_stack;
+    VartypeInt _standard_vartype_int;
+    VartypeBool _standard_vartype_bool;
+    VartypeString _standard_vartype_string;
+    VartypeVoid _standard_vartype_void;
     public boolean put_into_type_table(String typename, Vartype vartp)
     {
         if(this.type_table.containsKey(typename))
@@ -59,10 +63,10 @@ public class SemanticChecker implements ASTVisitor
         scope_stack.add(global_scope);
         current_scope = global_scope;
         type_table = new HashMap<>();
-        VartypeInt _standard_vartype_int = new VartypeInt();
-        VartypeBool _standard_vartype_bool = new VartypeBool();
-        VartypeString _standard_vartype_string = new VartypeString();
-        VartypeVoid _standard_vartype_void = new VartypeVoid();
+        _standard_vartype_int = new VartypeInt();
+        _standard_vartype_bool = new VartypeBool();
+        _standard_vartype_string = new VartypeString();
+        _standard_vartype_void = new VartypeVoid();
         _standard_vartype_string.VartypeString_init();
         put_into_type_table("int", _standard_vartype_int);
         put_into_type_table("bool", _standard_vartype_bool);
@@ -70,28 +74,24 @@ public class SemanticChecker implements ASTVisitor
         put_into_type_table("void",_standard_vartype_void);
         ArrayList<Pair<Vartype, String>> params;
         params = new ArrayList<>();
-        params.add(new Pair<>(new VartypeString(), "str"));
-        global_scope.add_function("print", new VartypeVoid(), params, new Position(-1,0));
+        params.add(new Pair<>(_standard_vartype_string, "str"));
+        global_scope.add_function("print", _standard_vartype_void, params, new Position(-1,0));
         params = new ArrayList<>();
-        params.add(new Pair<>(new VartypeString(), "str"));
-        global_scope.add_function("println", new VartypeVoid(), params, new Position(-1,0));
+        params.add(new Pair<>(_standard_vartype_string, "str"));
+        global_scope.add_function("println", _standard_vartype_void, params, new Position(-1,0));
         params = new ArrayList<>();
-        params.add(new Pair<>(new VartypeInt(), "n"));
-        global_scope.add_function("printInt", new VartypeVoid(), params, new Position(-1,0));
+        params.add(new Pair<>(_standard_vartype_int, "n"));
+        global_scope.add_function("printInt", _standard_vartype_void, params, new Position(-1,0));
         params = new ArrayList<>();
-        params.add(new Pair<>(new VartypeInt(), "n"));
-        global_scope.add_function("printlnInt", new VartypeVoid(), params, new Position(-1,0));
+        params.add(new Pair<>(_standard_vartype_int, "n"));
+        global_scope.add_function("printlnInt", _standard_vartype_void, params, new Position(-1,0));
         params = new ArrayList<>();
-        global_scope.add_function("getString", new VartypeString(), params, new Position(-1,0));
+        global_scope.add_function("getString", _standard_vartype_string, params, new Position(-1,0));
         params = new ArrayList<>();
-        global_scope.add_function("getInt", new VartypeInt(), params, new Position(-1,0));
+        global_scope.add_function("getInt", _standard_vartype_int, params, new Position(-1,0));
         params = new ArrayList<>();
-        params.add(new Pair<>(new VartypeInt(), "i"));
-        global_scope.add_function("toString", new VartypeString(), params, new Position(-1,0));
-//        global_scope.add_varname("null", new VartypeNull(), new Position(-1, 0));
-
-
-
+        params.add(new Pair<>(_standard_vartype_int, "i"));
+        global_scope.add_function("toString", _standard_vartype_string, params, new Position(-1,0));
     }
     @Override
     public void visit(ProgramAST AST)
@@ -229,7 +229,7 @@ public class SemanticChecker implements ASTVisitor
         if(return_expr != null)
         {
             return_expr.accept(this);
-            if(is_same_type(return_type, new VartypeVoid()))
+            if(is_same_type(return_type,_standard_vartype_void))
                 throw new Error(return_expr.get_position(), "void返回类型函数不应有返回值");
             else
             {
@@ -240,7 +240,7 @@ public class SemanticChecker implements ASTVisitor
         }
         else
         {
-            if(!is_same_type(return_type, new VartypeVoid()))
+            if(!is_same_type(return_type, _standard_vartype_void))
                 throw new Error(AST.get_position(), "返回值表达式缺失");
         }
     }
@@ -270,7 +270,7 @@ public class SemanticChecker implements ASTVisitor
         {
             ExprAST condition = AST.get_condition();
             condition.accept(this);
-            if(!is_same_type(condition.get_type(), new VartypeBool()))
+            if(!is_same_type(condition.get_type(), _standard_vartype_bool))
                 throw new Error(condition.get_position(), "for语句的循环条件语句中，条件表达式返回非bool类型");
         }
         if(AST.update_exist())
@@ -416,23 +416,23 @@ public class SemanticChecker implements ASTVisitor
                 throw new Error(lpos, "在二元运算符" + binop + "中，左边不是int");
             if(!(rtype instanceof VartypeInt))
                 throw new Error(rpos, "在二元运算符" + binop + "中，右边不是int");
-            AST.set_type(new VartypeInt());
+            AST.set_type(_standard_vartype_int);
         }
         else if(binop == op_add)
         {
             if(ltype instanceof VartypeInt)
             {
                 if(rtype instanceof VartypeInt)
-                    AST.set_type(new VartypeInt());
+                    AST.set_type(_standard_vartype_int);
                 else if(rtype instanceof VartypeString)
-                    AST.set_type(new VartypeString());
+                    AST.set_type(_standard_vartype_int);
                 else
                     throw new Error(rpos, "在二元运算符" + binop + "中，左边是int，右边不是int或String");
             }
             else if(ltype instanceof VartypeString)
             {
                 if(rtype instanceof VartypeInt || rtype instanceof VartypeString)
-                    AST.set_type(new VartypeString());
+                    AST.set_type(_standard_vartype_string);
                 else
                     throw new Error(rpos, "在二元运算符" + binop + "中，左边是String，右边不是int或String");
             }
@@ -446,14 +446,14 @@ public class SemanticChecker implements ASTVisitor
                 if(!(rtype instanceof VartypeInt))
                     throw new Error(rpos, "在二元运算符" + binop + "中，左边是int，右边不是int");
                 else
-                    AST.set_type(new VartypeBool());
+                    AST.set_type(_standard_vartype_bool);
             }
             else if(ltype instanceof VartypeString)
             {
                 if(!(rtype instanceof VartypeString))
                     throw new Error(rpos, "在二元运算符" + binop + "中，左边是String，右边不是String");
                 else
-                    AST.set_type(new VartypeBool());
+                    AST.set_type(_standard_vartype_bool);
             }
             else
                 throw new Error(lpos, "二元运算符" + binop + "只能用于比较int或String");
@@ -470,7 +470,7 @@ public class SemanticChecker implements ASTVisitor
                 ||((ltype instanceof VartypeClass) && (rtype instanceof VartypeNull))
                 ||((ltype instanceof VartypeNull) && (rtype instanceof VartypeClass))
                 ||((ltype instanceof VartypeNull) && (rtype instanceof VartypeNull)))
-                AST.set_type(new VartypeBool());
+                AST.set_type(_standard_vartype_bool);
             else
                 throw new Error(lpos, "二元运算符" + binop + "只能用于同类比较");
         }
@@ -480,7 +480,7 @@ public class SemanticChecker implements ASTVisitor
                 throw new Error(lpos, "在二元运算符" + binop + "中，左边不是bool");
             if(!(rtype instanceof VartypeBool))
                 throw new Error(rpos, "在二元运算符" + binop + "中，右边不是bool");
-            AST.set_type(new VartypeBool());
+            AST.set_type(_standard_vartype_bool);
         }
         else if(binop == op_assign)
         {
@@ -509,7 +509,7 @@ public class SemanticChecker implements ASTVisitor
             throw new Error(position, "一元后置运算符" + optype + "只能作用于int");
         if(!exprAST.is_left_value())
             throw new Error(position, "一元后置运算符" + optype + "只能作用于左值");
-        AST.set_type(new VartypeInt());
+        AST.set_type(_standard_vartype_int);
     }
 
     @Override
@@ -523,7 +523,7 @@ public class SemanticChecker implements ASTVisitor
         {
             if(!(type instanceof VartypeInt))
                 throw new Error(position, "一元前置运算符" + optype + "只能作用于int");
-            AST.set_type(new VartypeInt());
+            AST.set_type(_standard_vartype_int);
             if(optype == op_zizeng || optype == op_zijian)
                 AST.set_left_value(true);
         }
@@ -531,7 +531,7 @@ public class SemanticChecker implements ASTVisitor
         {
             if(!(type instanceof VartypeBool))
                 throw new Error(position, "一元前置运算符" + optype + "只能作用于bool");
-            AST.set_type(new VartypeBool());
+            AST.set_type(_standard_vartype_bool);
         }
         else
             throw new Error(position, "op empty unknown error");
@@ -541,7 +541,7 @@ public class SemanticChecker implements ASTVisitor
     public void visit(FunctionParamAST AST)    //只能是a.function()或者func()
     {
         ExprAST function_name = AST.get_function_name();
-        System.out.println(function_name.toString());
+//        System.out.println(function_name.toString());
         if(function_name instanceof MemberAST)
         {
             function_name.accept(this);
@@ -618,12 +618,12 @@ public class SemanticChecker implements ASTVisitor
                 AST.set_left_value(true);
             }
             else
-                throw new Error(expr.get_position(), "找不到此方法或成员变量");
+                throw new Error(expr.get_position(), "找不到此方法或成员变量"+member);
         }
         else
         {
             if(!type.has_method(member))
-                throw new Error(expr.get_position(), "找不到此方法");
+                throw new Error(expr.get_position(), "找不到此方法"+member);
             AST.set_type(new VartypeMethod(member, type));
         }
     }
@@ -632,9 +632,9 @@ public class SemanticChecker implements ASTVisitor
     public void visit(IdentifierExprAST AST)
     {
         if(!current_scope.contain_object(AST.get_name(), true))
-            throw new Error(AST.get_position(), "此标识符未定义");
+            throw new Error(AST.get_position(), "此标识符 "+AST.get_name()+" 未定义");
         else if(!current_scope.contain_varname(AST.get_name()))
-            throw new Error(AST.get_position(), "此标识符被定义为一个函数");
+            throw new Error(AST.get_position(), "此标识符 "+AST.get_name()+" 被定义为一个函数");
         AST.set_type(current_scope.get_vartype_with_varname(AST.get_name(), AST.get_position()));
         AST.set_left_value(true);
     }
@@ -648,19 +648,19 @@ public class SemanticChecker implements ASTVisitor
     @Override
     public void visit(ConstStringAST AST)
     {
-        AST.set_type(new VartypeString());
+        AST.set_type(_standard_vartype_string);
     }
 
     @Override
     public void visit(ConstBoolAST AST)
     {
-        AST.set_type(new VartypeBool());
+        AST.set_type(_standard_vartype_bool);
     }
 
     @Override
     public void visit(ConstIntAST AST)
     {
-        AST.set_type(new VartypeInt());
+        AST.set_type(_standard_vartype_int);
     }
 
     @Override

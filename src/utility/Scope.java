@@ -105,7 +105,7 @@ public class Scope
     }
     public void add_function(String function_name, Vartype vartp, ArrayList<Pair<Vartype, String>> params, Position pos)
     {
-        System.out.println(function_name+vartp.typename);
+//        System.out.println(function_name+vartp.typename);
         if(this.function_name_to_function_entity.containsKey(function_name))
         {
             System.out.println("Error: 函数名重定义,行 " + pos.get_row() + " 列 " + pos.get_col());

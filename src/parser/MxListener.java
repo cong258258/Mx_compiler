@@ -238,18 +238,6 @@ public interface MxListener extends ParseTreeListener {
 	 */
 	void exitEmptyStatememt(MxParser.EmptyStatememtContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Sub}
-	 * labeled alternative in {@link MxParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterSub(MxParser.SubContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Sub}
-	 * labeled alternative in {@link MxParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitSub(MxParser.SubContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code New}
 	 * labeled alternative in {@link MxParser#expression}.
 	 * @param ctx the parse tree
@@ -261,6 +249,18 @@ public interface MxListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNew(MxParser.NewContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Sub}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterSub(MxParser.SubContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Sub}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitSub(MxParser.SubContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code UnaryPre}
 	 * labeled alternative in {@link MxParser#expression}.
