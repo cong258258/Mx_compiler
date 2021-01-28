@@ -1,6 +1,7 @@
 package frontend;
 
 import AST.*;
+import javafx.util.Pair;
 import utility.*;
 import utility.Error;
 
@@ -62,13 +63,26 @@ public class SemanticChecker implements ASTVisitor
         put_into_type_table("bool", new VartypeBool());
         put_into_type_table("String", new VartypeString());
         put_into_type_table("void", new VartypeVoid());
-        global_scope.add_function("print", new VartypeVoid(), new Position(-1,0));
-        global_scope.add_function("println", new VartypeVoid(), new Position(-1,0));
-        global_scope.add_function("printInt", new VartypeVoid(), new Position(-1,0));
-        global_scope.add_function("printlnInt", new VartypeVoid(), new Position(-1,0));
-        global_scope.add_function("getString", new VartypeString(), new Position(-1,0));
-        global_scope.add_function("getInt", new VartypeInt(), new Position(-1,0));
-        global_scope.add_function("toString", new VartypeString(), new Position(-1,0));
+        ArrayList<Pair<Vartype, String>> params;
+        params = new ArrayList<>();
+        params.add(new Pair<>(new VartypeString(), "str"));
+        global_scope.add_function("print", new VartypeVoid(), params, new Position(-1,0));
+        params = new ArrayList<>();
+        params.add(new Pair<>(new VartypeString(), "str"));
+        global_scope.add_function("println", new VartypeVoid(), params, new Position(-1,0));
+        params = new ArrayList<>();
+        params.add(new Pair<>(new VartypeInt(), "n"));
+        global_scope.add_function("printInt", new VartypeVoid(), params, new Position(-1,0));
+        params = new ArrayList<>();
+        params.add(new Pair<>(new VartypeInt(), "n"));
+        global_scope.add_function("printlnInt", new VartypeVoid(), params, new Position(-1,0));
+        params = new ArrayList<>();
+        global_scope.add_function("getString", new VartypeString(), params, new Position(-1,0));
+        params = new ArrayList<>();
+        global_scope.add_function("getInt", new VartypeInt(), params, new Position(-1,0));
+        params = new ArrayList<>();
+        params.add(new Pair<>(new VartypeInt(), "i"));
+        global_scope.add_function("toString", new VartypeString(), params, new Position(-1,0));
 //        global_scope.add_varname("null", new VartypeNull(), new Position(-1, 0));
 
 
@@ -88,13 +102,13 @@ public class SemanticChecker implements ASTVisitor
                 if(current_scope.contain_object(typename, false))
                     throw new Error(i.get_position(), "类名与已有变量名、类名、函数名冲突");
             }
-        for(ProgramPartAST i: program_parts)
-            if(i instanceof FunctiondefAST)
-            {
-                String function_name = ((FunctiondefAST) i).get_function_name();
+//        for(ProgramPartAST i: program_parts)
+//            if(i instanceof FunctiondefAST)
+//            {
+//                String function_name = ((FunctiondefAST) i).get_function_name();
 //                TypeAST function_return_typeAST = ((FunctiondefAST) i).get_return_vartype();
-                current_scope.add_object(function_name, i.get_position());
-            }
+//                current_scope.add_object(function_name, i.get_position());
+//            }
 //        for(ProgramPartAST i: program_parts)
 //            if(i instanceof GlobalVardefAST)
 //                i.accept(this);
@@ -137,7 +151,10 @@ public class SemanticChecker implements ASTVisitor
     {
         ArrayList<VarAST> var_list = AST.get_var_list();
         for(VarAST i: var_list)
+        {
             i.accept(this);
+            AST.add_into_var_arraylist(get_vartype_in_type_table_with_typename(i.get_var_type().get_typename()), i.get_var_name());
+        }
     }
 
     @Override
@@ -160,12 +177,14 @@ public class SemanticChecker implements ASTVisitor
         Scope new_scope = new Scope(current_scope, class_scope_type);
         scope_stack.add(new_scope);
         current_scope = new_scope;
+        String classname = AST.get_identifier();
         ArrayList<VardefStatementAST> var_def_statements = AST.get_var_def_statements();
         for(VardefStatementAST i: var_def_statements)
             i.accept(this);
         ArrayList<FunctiondefAST> functions = AST.get_functions();
         for(FunctiondefAST i: functions)
             i.accept(this);
+        put_into_type_table(classname, new VartypeClass(classname, current_scope.varname_to_vartype_copy(), current_scope.function_name_to_function_entity_copy()));
         scope_stack.pop();
         current_scope = scope_stack.peek();
     }
@@ -604,17 +623,22 @@ public class SemanticChecker implements ASTVisitor
         String function_name = AST.get_function_name();
         VarlistAST params = AST.get_params();
         StatementAST statements = AST.get_statements();
-        current_scope.get_parent_scope().add_function(function_name, get_vartype_in_type_table_with_typename(return_vartype.get_typename()), AST.get_position());
         return_vartype.accept(this);
 //        System.out.println(get_vartype_in_type_table_with_typename(return_vartype.get_typename()));
         current_scope.get_parent_scope().set_return_type_for_function_scope(get_vartype_in_type_table_with_typename(return_vartype.get_typename()));
+        ArrayList<Pair<Vartype, String>> var_arraylist;
         if(params != null)
+        {
             params.accept(this);
+            var_arraylist = params.get_var_arraylist();
+        }
+        else
+            var_arraylist = new ArrayList<>();
         statements.accept(this);
+        current_scope.get_parent_scope().add_function(function_name, get_vartype_in_type_table_with_typename(return_vartype.get_typename()), var_arraylist, AST.get_position());
         if(!function_name.equals("main"))
             if(!current_scope.has_return_statement())
                 throw new Error(AST.get_position(), "找不到return语句");
-
         scope_stack.pop();
         current_scope = scope_stack.peek();
     }

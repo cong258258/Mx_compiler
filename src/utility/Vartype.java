@@ -1,15 +1,16 @@
 package utility;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public abstract class Vartype
 {
     String typename;
-    ArrayList<FunctionEntity> methods;
+    HashMap<String, FunctionEntity> methods;
     public Vartype()
     {
         this.typename = "";
-        this.methods = null;
+        this.methods = new HashMap<>();
 
     }
     public static boolean is_same_type(Vartype a, Vartype b)
@@ -25,9 +26,6 @@ public abstract class Vartype
     }
     public boolean has_method(String method_name)
     {
-        for (FunctionEntity i: methods)
-            if (i.get_function_name().equals(method_name))
-                return true;
-        return false;
+        return methods.containsKey(method_name);
     }
 }

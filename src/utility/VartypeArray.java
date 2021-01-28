@@ -1,6 +1,9 @@
 package utility;
 
+import javafx.util.Pair;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class VartypeArray extends Vartype
 {
@@ -11,14 +14,11 @@ public class VartypeArray extends Vartype
         this.basetype = basetypee;
         this.dimension = dim;
         super.typename = basetypee.typename;
-        super.methods = new ArrayList<>();
+        super.methods = new HashMap<>();
 
-        ArrayList<String> parameters;
-        FunctionEntity method;
-
-        parameters = new ArrayList<>();
-        method = new FunctionEntity("size", parameters);
-        methods.add(method);
+        ArrayList<Pair<Vartype, String>> parameters = new ArrayList<>();
+        FunctionEntity method = new FunctionEntity("size", new VartypeInt(), parameters, new Position(-1, 0));
+        methods.put("size", method);
 
     }
     public Vartype get_basetype()

@@ -1,5 +1,8 @@
 package utility;
 
+import javafx.util.Pair;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -10,7 +13,8 @@ public class Scope
     Scopetype scope_type;
     HashSet<String> objects;
     HashMap<String, Vartype> varname_to_vartype;
-    HashMap<String, Vartype> function_name_to_function_type;
+//    HashMap<String, Vartype> function_name_to_function_type;
+    HashMap<String, FunctionEntity> function_name_to_function_entity;
     Scope parent_scope;
     Vartype return_type_for_function_scope;
     boolean has_return_statement;
@@ -21,7 +25,8 @@ public class Scope
         this.objects = new HashSet<>();
         this.parent_scope = parent;
         this.varname_to_vartype = new HashMap<>();
-        this.function_name_to_function_type = new HashMap<>();
+//        this.function_name_to_function_type = new HashMap<>();
+        this.function_name_to_function_entity = new HashMap<>();
         this.return_type_for_function_scope = null;
         this.has_return_statement = false;
     }
@@ -99,32 +104,72 @@ public class Scope
             this.objects.add(varname);
         }
     }
-    public void add_function(String function_name, Vartype vartp, Position pos)
+    public void add_function(String function_name, Vartype vartp, ArrayList<Pair<Vartype, String>> params, Position pos)
     {
         System.out.println(function_name+vartp.typename);
-        if(this.function_name_to_function_type.containsKey(function_name))
+        if(this.function_name_to_function_entity.containsKey(function_name))
         {
             System.out.println("Error: 函数名重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
             throw new Error(pos, "函数名重定义");
         }
+        else if(contain_object(function_name, false))
+        {
+            System.out.println("Error: 与变量名或类名重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
+            throw new Error(pos, "与变量名或类名重定义");
+        }
         else
-            this.function_name_to_function_type.put(function_name, vartp);
+        {
+            FunctionEntity new_function_entity = new FunctionEntity(function_name, vartp, params, pos);
+            this.function_name_to_function_entity.put(function_name, new_function_entity);
+            this.objects.add(function_name);
+        }
     }
     public boolean contain_function(String function_name)
     {
-        if(this.function_name_to_function_type.containsKey(function_name))
+        if(this.function_name_to_function_entity.containsKey(function_name))
             return true;
         else if(this.parent_scope == null)
             return false;
         else
             return this.parent_scope.contain_function(function_name);
     }
-    public Vartype get_function_type_with_function_name(String function_name, Position pos)
+    public FunctionEntity get_function_entity_with_function_name(String function_name, Position pos)
     {
         if(!contain_function(function_name))
             throw new Error(pos, "找不到" + function_name + "函数");
-        return function_name_to_function_type.get(function_name);
+        return function_name_to_function_entity.get(function_name);
     }
+
+
+//    public void add_function(String function_name, Vartype vartp, Position pos)
+//    {
+//        System.out.println(function_name+vartp.typename);
+//        if(this.function_name_to_function_type.containsKey(function_name))
+//        {
+//            System.out.println("Error: 函数名重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
+//            throw new Error(pos, "函数名重定义");
+//        }
+//        else
+//            this.function_name_to_function_type.put(function_name, vartp);
+//    }
+//    public boolean contain_function(String function_name)
+//    {
+//        if(this.function_name_to_function_type.containsKey(function_name))
+//            return true;
+//        else if(this.parent_scope == null)
+//            return false;
+//        else
+//            return this.parent_scope.contain_function(function_name);
+//    }
+//    public Vartype get_function_type_with_function_name(String function_name, Position pos)
+//    {
+//        if(!contain_function(function_name))
+//            throw new Error(pos, "找不到" + function_name + "函数");
+//        return function_name_to_function_type.get(function_name);
+//    }
+
+
+
     public Scope get_parent_scope()
     {
         return this.parent_scope;
@@ -152,5 +197,13 @@ public class Scope
             this.has_return_statement = true;
         else
             this.parent_scope.set_return_statement_status();
+    }
+    public HashMap<String, Vartype> varname_to_vartype_copy()
+    {
+        return this.varname_to_vartype;
+    }
+    public HashMap<String, FunctionEntity> function_name_to_function_entity_copy()
+    {
+        return this.function_name_to_function_entity;
     }
 }

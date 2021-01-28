@@ -1,6 +1,6 @@
 package utility;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class VartypeMethod extends Vartype
 {
@@ -9,6 +9,6 @@ public class VartypeMethod extends Vartype
     {
         this.return_type = return_typee;
         super.typename = typename;
-        super.methods = new ArrayList<>();
+        super.methods = new HashMap<>();
     }
 }
