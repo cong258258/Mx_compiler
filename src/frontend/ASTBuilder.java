@@ -21,7 +21,7 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     {
         Position tmp_pos = new Position(ctx);
         String tmp_val = ctx.getText();
-        System.out.println("!!!!!test getText" + tmp_val);
+//        System.out.println("!!!!!test getText" + tmp_val);
         if(ctx.BOOL_CONST() != null)
         {
             if(tmp_val.equals("true"))
@@ -362,7 +362,7 @@ public class ASTBuilder extends MxBaseVisitor<AST>
         {
             AST ASTi = visit(i);
             tmp_program_parts.add((ProgramPartAST) ASTi);
-            System.out.println("visitProgram, read func or class or globalvardef");
+//            System.out.println("visitProgram, read func or class or globalvardef");
         }
         return new ProgramAST(tmp_pos, tmp_program_parts);
     }

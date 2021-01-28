@@ -19,16 +19,13 @@ public class VartypeClass extends Vartype
         this.members = varname_to_vartypee;
         super.methods = function_name_to_function_entityy;
     }
-    public boolean contain_member(String varname)
+    public boolean has_member(String varname)
     {
         return this.members.containsKey(varname);
     }
-    public Vartype get_member_type_with_member_name(String varname, Position pos)
+    public Vartype get_member_type_with_member_name(String varname)
     {
-        if(this.members.containsKey(varname))
-            return this.members.get(varname);
-        else
-            throw new Error(pos, "找不到" + varname + "类型的变量名");
+        return this.members.get(varname);
     }
     public void add_member(String varname, Vartype vartp, Position pos)
     {
@@ -38,7 +35,7 @@ public class VartypeClass extends Vartype
             System.out.println("Error: 变量重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
             throw new Error(pos, "变量重定义");
         }
-        else if(contain_function(varname))
+        else if(has_method(varname))
         {
             System.out.println("Error: 与函数重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
             throw new Error(pos, "与函数重定义");
@@ -46,7 +43,7 @@ public class VartypeClass extends Vartype
         else
             this.members.put(varname, vartp);
     }
-    public void add_function(String function_name, Vartype vartp, ArrayList<Pair<Vartype, String>> params, Position pos)
+    public void add_method(String function_name, Vartype vartp, ArrayList<Pair<Vartype, String>> params, Position pos)
     {
         System.out.println(function_name+vartp.typename);
         if(this.methods.containsKey(function_name))
@@ -60,14 +57,14 @@ public class VartypeClass extends Vartype
             this.methods.put(function_name, new_function_entity);
         }
     }
-    public boolean contain_function(String function_name)
-    {
-        return this.methods.containsKey(function_name);
-    }
-    public FunctionEntity get_function_entity_with_function_name(String function_name, Position pos)
-    {
-        if(!contain_function(function_name))
-            throw new Error(pos, "找不到" + function_name + "函数");
-        return methods.get(function_name);
-    }
+//    public boolean has_method(String function_name)
+//    {
+//        return this.methods.containsKey(function_name);
+//    }
+//    public FunctionEntity get_function_entity_with_method_name(String function_name, Position pos)
+//    {
+//        if(!has_method(function_name))
+//            throw new Error(pos, "找不到" + function_name + "方法");
+//        return methods.get(function_name);
+//    }
 }

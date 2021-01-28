@@ -32,8 +32,7 @@ public class Scope
     }
     public void set_return_type_for_function_scope(Vartype vartp)
     {
-        System.out.println(vartp.typename + this.get_scope_type().toString());
-
+//        System.out.println(vartp.typename + this.get_scope_type().toString());
         this.return_type_for_function_scope = vartp;
     }
     public Vartype get_return_type_for_function_scope()
@@ -133,11 +132,12 @@ public class Scope
         else
             return this.parent_scope.contain_function(function_name);
     }
-    public FunctionEntity get_function_entity_with_function_name(String function_name, Position pos)
+    public FunctionEntity get_function_entity_with_function_name(String function_name)
     {
-        if(!contain_function(function_name))
-            throw new Error(pos, "找不到" + function_name + "函数");
-        return function_name_to_function_entity.get(function_name);
+        if(this.function_name_to_function_entity.containsKey(function_name))
+            return function_name_to_function_entity.get(function_name);
+        else
+            return this.parent_scope.get_function_entity_with_function_name(function_name);
     }
 
 

@@ -14,7 +14,7 @@ public class VarlistAST extends AST
     {
         super(positionn);
         this.var_list = vlist;
-        this.var_arraylist = null;
+        this.var_arraylist = new ArrayList<>();
     }
 
     public ArrayList<VarAST> get_var_list()
