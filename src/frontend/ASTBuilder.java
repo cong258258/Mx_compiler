@@ -244,7 +244,7 @@ public class ASTBuilder extends MxBaseVisitor<AST>
         TypeAST tmp_vartype = (TypeAST) visit(ctx.type());
         int tmp_dimension_all = ctx.LEFT_BRACKET().size();
         int tmp_dimension_with_init = ctx.expression().size();
-        System.out.println("!!!dimension all:" + tmp_dimension_all + " dimension init:" +tmp_dimension_with_init);
+//        System.out.println("!!!dimension all:" + tmp_dimension_all + " dimension init:" +tmp_dimension_with_init);
         ArrayList<ExprAST> tmp_init_expr;
         if(tmp_dimension_with_init == 0)
             tmp_init_expr = null;
@@ -428,7 +428,7 @@ public class ASTBuilder extends MxBaseVisitor<AST>
             else
             {
                 tmp_typename = "void";
-                System.out.println("????void[]");
+//                System.out.println("????void[]");
             }
             return new ArrayTypeAST(tmp_pos, tmp_typename, tmp_dimension);
         }

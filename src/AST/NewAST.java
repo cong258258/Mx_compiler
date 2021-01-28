@@ -25,6 +25,14 @@ public class NewAST extends ExprAST
     {
         return this.init_expr;
     }
+    public int get_dimension_all()
+    {
+        return this.dimension_all;
+    }
+    public int get_demension_init()
+    {
+        return this.init_expr.size();
+    }
     @Override
     public void accept(ASTVisitor visitor)
     {

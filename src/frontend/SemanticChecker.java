@@ -357,8 +357,8 @@ public class SemanticChecker implements ASTVisitor
             type = get_vartype_in_type_table_with_typename(typename);
         else
             type = new VartypeArray(get_vartype_in_type_table_with_typename(typename), dimension);
-        if(!is_same_type(type, init_expr.get_type()))
-            throw new Error(init_expr.get_position(), "赋值左右两边类型不一致, 左边是"+type.toString()+", 右边是"+init_expr.get_type().toString());
+        if(!is_assignable(type, init_expr.get_type()))
+            throw new Error(init_expr.get_position(), "赋值左右两边类型不一致, 左边是"+type.get_typename() +", 右边是"+init_expr.get_type().get_typename());
         current_scope.add_varname(identifier, type, AST.get_position());
     }
 
@@ -388,14 +388,20 @@ public class SemanticChecker implements ASTVisitor
         TypeAST vartype = AST.get_vartype();
         vartype.accept(this);
         ArrayList<ExprAST> init_expr = AST.get_init_expr();
-        if(init_expr != null)
-            for(ExprAST i: init_expr)
-            {
-                i.accept(this);
-                if(!(i.get_type() instanceof VartypeInt))
-                    throw new Error(i.get_position(), "数组初始化大小不是int值");
-            }
-        AST.set_type(get_vartype_in_type_table_with_typename(vartype.get_typename()));
+        if(AST.get_dimension_all() == 0)
+            AST.set_type(get_vartype_in_type_table_with_typename(vartype.get_typename()));
+        else
+        {
+            if(init_expr != null)
+                for(ExprAST i : init_expr)
+                {
+                    i.accept(this);
+                    if(!(i.get_type() instanceof VartypeInt))
+                        throw new Error(i.get_position(), "数组初始化大小不是int值");
+                }
+            AST.set_type(new VartypeArray(get_vartype_in_type_table_with_typename(vartype.get_typename()), AST.get_dimension_all()));
+        }
+        AST.set_left_value(true);
     }
 
     @Override
@@ -484,9 +490,9 @@ public class SemanticChecker implements ASTVisitor
         }
         else if(binop == op_assign)
         {
+//            System.out.println(AST.get_position().get_row());
             if(ltype instanceof VartypeNull)
                 throw new Error(lpos, "null不可被赋值");
-//            System.out.println("rrrrr"+lexpr.is_left_value());
             if(!lexpr.is_left_value())
                 throw new Error(lpos, "在二元运算符" + binop + "中，赋值左侧不是左值");
             if(!is_assignable(ltype, rtype))
@@ -591,14 +597,16 @@ public class SemanticChecker implements ASTVisitor
         index_expr.accept(this);
         Vartype main_expr_type = main_expr.get_type();
         Vartype index_expr_type = index_expr.get_type();
-//        System.out.println(main_expr_type);
         if(!(main_expr_type instanceof VartypeArray))
             throw new Error(main_expr.get_position(), "[]下标运算符调用的不是数组类型");
         if(!(index_expr_type instanceof VartypeInt))
             throw new Error(index_expr.get_position(), "[]下标运算符索引不是int类型");
         AST.set_left_value(main_expr.is_left_value());
         VartypeArray main_expr_type_array = (VartypeArray) main_expr_type;
-        AST.set_type(new VartypeArray(main_expr_type_array.get_basetype(), main_expr_type_array.get_dimension()-1));
+        if(main_expr_type_array.get_dimension() == 1)
+            AST.set_type(main_expr_type_array.get_basetype());
+        else
+            AST.set_type(new VartypeArray(main_expr_type_array.get_basetype(), main_expr_type_array.get_dimension()-1));
     }
 
     @Override

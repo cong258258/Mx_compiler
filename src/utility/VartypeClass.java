@@ -32,12 +32,12 @@ public class VartypeClass extends Vartype
 //        System.out.println(varname);
         if(this.members.containsKey(varname))
         {
-            System.out.println("Error: 变量重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
+//            System.out.println("Error: 变量重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
             throw new Error(pos, "变量重定义");
         }
         else if(has_method(varname))
         {
-            System.out.println("Error: 与函数重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
+//            System.out.println("Error: 与函数重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
             throw new Error(pos, "与函数重定义");
         }
         else
@@ -48,7 +48,7 @@ public class VartypeClass extends Vartype
 //        System.out.println(function_name+vartp.typename);
         if(this.methods.containsKey(function_name))
         {
-            System.out.println("Error: 函数名重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
+//            System.out.println("Error: 函数名重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
             throw new Error(pos, "函数名重定义");
         }
         else

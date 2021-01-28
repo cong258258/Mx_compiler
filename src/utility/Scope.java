@@ -47,7 +47,7 @@ public class Scope
     {
         if(this.objects.contains(object_name))
         {
-            System.out.println("Error: 作用域中重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
+//            System.out.println("Error: 作用域中重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
             throw new Error(pos, "作用域中重定义");
         }
         else
@@ -89,12 +89,12 @@ public class Scope
 //        System.out.println(varname);
         if(this.varname_to_vartype.containsKey(varname))
         {
-            System.out.println("Error: 变量重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
+//            System.out.println("Error: 变量重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
             throw new Error(pos, "变量重定义");
         }
         else if(contain_object(varname, false))
         {
-            System.out.println("Error: 与函数或类名重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
+//            System.out.println("Error: 与函数或类名重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
             throw new Error(pos, "与函数或类名重定义");
         }
         else
@@ -108,12 +108,12 @@ public class Scope
 //        System.out.println(function_name+vartp.typename);
         if(this.function_name_to_function_entity.containsKey(function_name))
         {
-            System.out.println("Error: 函数名重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
+//            System.out.println("Error: 函数名重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
             throw new Error(pos, "函数名重定义");
         }
         else if(contain_object(function_name, false))
         {
-            System.out.println("Error: 与变量名或类名重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
+//            System.out.println("Error: 与变量名或类名重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
             throw new Error(pos, "与变量名或类名重定义");
         }
         else
