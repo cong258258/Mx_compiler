@@ -78,6 +78,16 @@ public interface MxListener extends ParseTreeListener {
 	 */
 	void exitType(MxParser.TypeContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MxParser#basictype_for_array}.
+	 * @param ctx the parse tree
+	 */
+	void enterBasictype_for_array(MxParser.Basictype_for_arrayContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MxParser#basictype_for_array}.
+	 * @param ctx the parse tree
+	 */
+	void exitBasictype_for_array(MxParser.Basictype_for_arrayContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MxParser#var_multi_def}.
 	 * @param ctx the parse tree
 	 */

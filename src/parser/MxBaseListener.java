@@ -99,6 +99,18 @@ public class MxBaseListener implements MxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterBasictype_for_array(MxParser.Basictype_for_arrayContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBasictype_for_array(MxParser.Basictype_for_arrayContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterVar_multi_def(MxParser.Var_multi_defContext ctx) { }
 	/**
 	 * {@inheritDoc}

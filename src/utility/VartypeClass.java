@@ -67,4 +67,12 @@ public class VartypeClass extends Vartype
 //            throw new Error(pos, "找不到" + function_name + "方法");
 //        return methods.get(function_name);
 //    }
+    public void set_members(HashMap<String, Vartype> memberss)
+    {
+        this.members = memberss;
+    }
+    public void set_methods(HashMap<String, FunctionEntity> methodss)
+    {
+        super.methods = methodss;
+    }
 }

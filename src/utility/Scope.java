@@ -16,6 +16,7 @@ public class Scope
 //    HashMap<String, Vartype> function_name_to_function_type;
     HashMap<String, FunctionEntity> function_name_to_function_entity;
     Scope parent_scope;
+    Vartype class_type_for_class_scope;
     Vartype return_type_for_function_scope;
     boolean has_return_statement;
 
@@ -28,6 +29,7 @@ public class Scope
 //        this.function_name_to_function_type = new HashMap<>();
         this.function_name_to_function_entity = new HashMap<>();
         this.return_type_for_function_scope = null;
+        this.class_type_for_class_scope = null;
         this.has_return_statement = false;
     }
     public void set_return_type_for_function_scope(Vartype vartp)
@@ -43,6 +45,20 @@ public class Scope
         else
             return this.parent_scope.get_return_type_for_function_scope();
     }
+
+    public void set_class_type_for_class_scope(Vartype vartp)
+    {
+        this.class_type_for_class_scope = vartp;
+    }
+    public Vartype get_class_type_for_class_scope()
+    {
+        if(this.class_type_for_class_scope != null)
+            return this.class_type_for_class_scope;
+        else
+            return this.parent_scope.get_class_type_for_class_scope();
+    }
+
+
     public void add_object(String object_name, Position pos)
     {
         if(this.objects.contains(object_name))
@@ -139,7 +155,26 @@ public class Scope
         else
             return this.parent_scope.get_function_entity_with_function_name(function_name);
     }
-
+    public void add_function_raw(String function_name, Vartype vartp, Position pos)
+    {
+//        System.out.println(function_name+vartp.typename);
+        if(this.function_name_to_function_entity.containsKey(function_name))
+        {
+//            System.out.println("Error: 函数名重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
+            throw new Error(pos, "函数名重定义");
+        }
+        else if(contain_object(function_name, false))
+        {
+//            System.out.println("Error: 与变量名或类名重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
+            throw new Error(pos, "与变量名或类名重定义");
+        }
+        else
+        {
+            FunctionEntity new_function_entity = new FunctionEntity(function_name, vartp, new ArrayList<>(), pos);
+            this.function_name_to_function_entity.put(function_name, new_function_entity);
+            this.objects.add(function_name);
+        }
+    }
 
 //    public void add_function(String function_name, Vartype vartp, Position pos)
 //    {

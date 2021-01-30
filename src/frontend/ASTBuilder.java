@@ -241,10 +241,10 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     public AST visitVar_malloc(MxParser.Var_mallocContext ctx)
     {
         Position tmp_pos = new Position(ctx);
-        TypeAST tmp_vartype = (TypeAST) visit(ctx.type());
+        TypeAST tmp_vartype = (TypeAST) visit(ctx.basictype_for_array());
         int tmp_dimension_all = ctx.LEFT_BRACKET().size();
         int tmp_dimension_with_init = ctx.expression().size();
-//        System.out.println("!!!dimension all:" + tmp_dimension_all + " dimension init:" +tmp_dimension_with_init);
+        System.out.println("!!!dimension all:" + tmp_dimension_all + " dimension init:" +tmp_dimension_with_init);
         ArrayList<ExprAST> tmp_init_expr;
         if(tmp_dimension_with_init == 0)
             tmp_init_expr = null;
@@ -505,5 +505,21 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     public AST visitEmptyStatememt(MxParser.EmptyStatememtContext ctx)
     {
         return null;
+    }
+
+    @Override
+    public AST visitBasictype_for_array(MxParser.Basictype_for_arrayContext ctx)
+    {
+        Position tmp_pos = new Position(ctx);
+        String tmp_typename;
+        if(ctx.BOOL() != null)
+            tmp_typename = "bool";
+        else if(ctx.INT() != null)
+            tmp_typename = "int";
+        else if(ctx.STRING() != null)
+            tmp_typename = "String";
+        else
+            tmp_typename = ctx.IDENTIFIER().getText();
+        return new SingleTypeAST(tmp_pos, tmp_typename);
     }
 }

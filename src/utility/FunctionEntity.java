@@ -16,6 +16,14 @@ public class FunctionEntity
         this.parameters = params;
         this.position = pos;
     }
+    public void set_parameters(ArrayList<Pair<Vartype, String>> params)
+    {
+        this.parameters = params;
+    }
+    public void set_return_vartype(Vartype return_vartp)
+    {
+        this.return_vartype = return_vartp;
+    }
     public String get_function_name()
     {
         return this.function_name;
