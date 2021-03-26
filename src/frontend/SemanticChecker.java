@@ -1,6 +1,7 @@
 package frontend;
 
 import AST.*;
+import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 import org.antlr.v4.runtime.misc.Pair;
 import utility.*;
 import utility.Error;
@@ -306,6 +307,7 @@ public class SemanticChecker implements ASTVisitor
             AST.get_init().accept(this);
         if(AST.condition_exist())
         {
+            System.out.println("dasdaadfssfdsf");
             ExprAST condition = AST.get_condition();
             condition.accept(this);
             if(!is_same_type(condition.get_type(), _standard_vartype_bool))

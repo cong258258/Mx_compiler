@@ -16,19 +16,20 @@ var_malloc:
     | basictype_for_array (LEFT_BRACKET expression RIGHT_BRACKET)+ (LEFT_BRACKET RIGHT_BRACKET)*                                            #Array_var_malloc
     | basictype_for_array LEFT_PAREN RIGHT_PAREN                                                                                            #Class_var_malloc
     | basictype_for_array                                                                                                                   #Simple_var_malloc
-;
+    ;
 
 statement:
-    var_def                                                                                             #VardefStatement
-    | LEFT_BIGBRACE statement* RIGHT_BIGBRACE                                                           #Statements
-    | IF LEFT_PAREN expression RIGHT_PAREN statement (ELSE statement)?                                  #IfStatement
-    | FOR LEFT_PAREN expression? SEMICOLON expression? SEMICOLON expression? RIGHT_PAREN statement      #ForStatement
-    | WHILE LEFT_PAREN expression RIGHT_PAREN statement                                                 #WhileStatement
-    | RETURN expression? SEMICOLON                                                                      #ReturnStatement
-    | BREAK SEMICOLON                                                                                   #BreakStatement
-    | CONTINUE SEMICOLON                                                                                #ContinueStatement
-    | expression SEMICOLON                                                                              #ExprStatement
-    | SEMICOLON                                                                                         #EmptyStatememt;
+    var_def                                                                                                                 #VardefStatement
+    | LEFT_BIGBRACE statement* RIGHT_BIGBRACE                                                                               #Statements
+    | IF LEFT_PAREN expression RIGHT_PAREN statement (ELSE statement)?                                                      #IfStatement
+    | FOR LEFT_PAREN init=expression? SEMICOLON condition=expression? SEMICOLON update=expression? RIGHT_PAREN statement    #ForStatement
+    | WHILE LEFT_PAREN expression RIGHT_PAREN statement                                                                     #WhileStatement
+    | RETURN expression? SEMICOLON                                                                                          #ReturnStatement
+    | BREAK SEMICOLON                                                                                                       #BreakStatement
+    | CONTINUE SEMICOLON                                                                                                    #ContinueStatement
+    | expression SEMICOLON                                                                                                  #ExprStatement
+    | SEMICOLON                                                                                                             #EmptyStatememt
+    ;
 
 expression:
     <assoc=right> NEW var_malloc                                                                        #New

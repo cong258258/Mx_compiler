@@ -1371,6 +1371,9 @@ public class MxParser extends Parser {
 		}
 	}
 	public static class ForStatementContext extends StatementContext {
+		public ExpressionContext init;
+		public ExpressionContext condition;
+		public ExpressionContext update;
 		public TerminalNode FOR() { return getToken(MxParser.FOR, 0); }
 		public TerminalNode LEFT_PAREN() { return getToken(MxParser.LEFT_PAREN, 0); }
 		public List<TerminalNode> SEMICOLON() { return getTokens(MxParser.SEMICOLON); }
@@ -1503,7 +1506,7 @@ public class MxParser extends Parser {
 				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << BOOL_CONST) | (1L << INT_CONST) | (1L << STRING_CONST) | (1L << NULL_CONST) | (1L << NEW) | (1L << THIS) | (1L << IDENTIFIER) | (1L << ADD_OP) | (1L << MINUS_OP) | (1L << LOGIC_NOT_OP) | (1L << NOT_OP) | (1L << ZIZENG_OP) | (1L << ZIJIAN_OP) | (1L << LEFT_PAREN))) != 0)) {
 					{
 					setState(185);
-					expression(0);
+					((ForStatementContext)_localctx).init = expression(0);
 					}
 				}
 
@@ -1515,7 +1518,7 @@ public class MxParser extends Parser {
 				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << BOOL_CONST) | (1L << INT_CONST) | (1L << STRING_CONST) | (1L << NULL_CONST) | (1L << NEW) | (1L << THIS) | (1L << IDENTIFIER) | (1L << ADD_OP) | (1L << MINUS_OP) | (1L << LOGIC_NOT_OP) | (1L << NOT_OP) | (1L << ZIZENG_OP) | (1L << ZIJIAN_OP) | (1L << LEFT_PAREN))) != 0)) {
 					{
 					setState(189);
-					expression(0);
+					((ForStatementContext)_localctx).condition = expression(0);
 					}
 				}
 
@@ -1527,7 +1530,7 @@ public class MxParser extends Parser {
 				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << BOOL_CONST) | (1L << INT_CONST) | (1L << STRING_CONST) | (1L << NULL_CONST) | (1L << NEW) | (1L << THIS) | (1L << IDENTIFIER) | (1L << ADD_OP) | (1L << MINUS_OP) | (1L << LOGIC_NOT_OP) | (1L << NOT_OP) | (1L << ZIZENG_OP) | (1L << ZIJIAN_OP) | (1L << LEFT_PAREN))) != 0)) {
 					{
 					setState(193);
-					expression(0);
+					((ForStatementContext)_localctx).update = expression(0);
 					}
 				}
 

@@ -23,7 +23,7 @@ public class Mxcompiler
         for(int i = 61; i <= 61; i++)
         {
             System.out.println("!!!!!!!!!!!!!" + i);
-            File file = new File("testcases/symbol-2.mx");
+            File file = new File("testcases/loop-1.mx");
             FileInputStream file_input_stream = new FileInputStream(file);
 //            InputStream file_input_stream = System.in;
             CharStream filename_charstream = CharStreams.fromStream(file_input_stream);

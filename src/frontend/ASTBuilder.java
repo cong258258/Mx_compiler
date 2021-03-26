@@ -273,18 +273,18 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     {
         Position tmp_pos = new Position(ctx);
         ExprAST tmp_init;
-        if(ctx.expression(0) != null)
-            tmp_init = (ExprAST) visit(ctx.expression(0));
+        if(ctx.init != null)
+            tmp_init = (ExprAST) visit(ctx.init);
         else
             tmp_init = null;
         ExprAST tmp_condition;
-        if(ctx.expression(1) != null)
-            tmp_condition = (ExprAST) visit(ctx.expression(1));
+        if(ctx.condition != null)
+            tmp_condition = (ExprAST) visit(ctx.condition);
         else
             tmp_condition = null;
         ExprAST tmp_update;
-        if(ctx.expression(2) != null)
-            tmp_update = (ExprAST) visit(ctx.expression(2));
+        if(ctx.update != null)
+            tmp_update = (ExprAST) visit(ctx.update);
         else
             tmp_update = null;
         StatementAST tmp_todo_statement = (StatementAST) visit(ctx.statement());
