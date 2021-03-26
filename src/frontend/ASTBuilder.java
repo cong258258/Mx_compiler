@@ -429,7 +429,8 @@ public class ASTBuilder extends MxBaseVisitor<AST>
         {
             if(ctx.func_def(i).type() == null)
             {
-                System.out.println("Class Constructor");
+                if(!ctx.func_def(i).IDENTIFIER().getText().equals(tmp_identifier))
+                    throw new Error(new Position(ctx.func_def(i)), "类构造函数与类名不一致");
                 tmp_constructor = (FunctiondefAST) visit(ctx.func_def(i));
             }
             else

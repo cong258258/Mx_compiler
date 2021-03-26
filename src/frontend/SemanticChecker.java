@@ -140,15 +140,17 @@ public class SemanticChecker implements ASTVisitor
                 Vartype function_return_type = get_vartype_in_type_table_with_typename(function_return_typeAST.get_typename());
                 current_scope.add_function_raw(function_name, function_return_type, i.get_position());
             }
-        for(ProgramPartAST i: program_parts)        //层级访问
-            if(i instanceof GlobalVardefAST)
-                i.accept(this);
-        for(ProgramPartAST i: program_parts)
-            if(i instanceof ClassdefAST)
-                i.accept(this);
-        for(ProgramPartAST i: program_parts)
-            if(i instanceof FunctiondefAST)
-                i.accept(this);
+        for(ProgramPartAST i: program_parts)//层级访问
+            i.accept(this);
+//        for(ProgramPartAST i: program_parts)        //层级访问
+//            if(i instanceof GlobalVardefAST)
+//                i.accept(this);
+//        for(ProgramPartAST i: program_parts)
+//            if(i instanceof ClassdefAST)
+//                i.accept(this);
+//        for(ProgramPartAST i: program_parts)
+//            if(i instanceof FunctiondefAST)
+//                i.accept(this);
 //        for(ProgramPartAST i: program_parts)
 //            if(i instanceof ClassdefAST)
 //                i.accept(this);
@@ -307,7 +309,7 @@ public class SemanticChecker implements ASTVisitor
             AST.get_init().accept(this);
         if(AST.condition_exist())
         {
-            System.out.println("dasdaadfssfdsf");
+//            System.out.println("dasdaadfssfdsf");
             ExprAST condition = AST.get_condition();
             condition.accept(this);
             if(!is_same_type(condition.get_type(), _standard_vartype_bool))
@@ -403,7 +405,7 @@ public class SemanticChecker implements ASTVisitor
         else
             type = new VartypeArray(get_vartype_in_type_table_with_typename(typename), dimension);
         if(!is_assignable(type, init_expr.get_type()))
-            throw new Error(init_expr.get_position(), "赋值左右两边类型不一致, 左边是"+type.get_typename() +", 右边是"+init_expr.get_type().get_typename());
+            throw new Error(init_expr.get_position(), "赋值左右两边类型不一致");
         current_scope.add_varname(identifier, type, AST.get_position());
     }
 
