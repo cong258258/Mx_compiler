@@ -547,7 +547,7 @@ public class SemanticChecker implements ASTVisitor
             if(!lexpr.is_left_value())
                 throw new Error(lpos, "在二元运算符" + binop + "中，赋值左侧不是左值");
             if(!is_assignable(ltype, rtype))
-                throw new Error(lpos, "在二元运算符" + binop + "中，左右两边类型不同，分别为 " + ltype.get_typename() +"， " + rtype.get_typename());
+                throw new Error(lpos, "在二元运算符" + binop + "中，左右两边类型不同");
             AST.set_type(ltype);
         }
         else
