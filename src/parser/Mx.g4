@@ -11,7 +11,12 @@ basictype_for_array: IDENTIFIER | INT | BOOL | STRING;
 var_multi_def: type IDENTIFIER (COMMA IDENTIFIER)*;
 var_def_and_init: type IDENTIFIER ASSIGN expression;
 var_def: (var_multi_def | var_def_and_init) SEMICOLON;
-var_malloc: basictype_for_array (LEFT_BRACKET expression RIGHT_BRACKET)* (LEFT_BRACKET RIGHT_BRACKET)* (LEFT_PAREN RIGHT_PAREN)?;
+var_malloc:
+    basictype_for_array (LEFT_BRACKET expression RIGHT_BRACKET)* (LEFT_BRACKET RIGHT_BRACKET)+ (LEFT_BRACKET expression RIGHT_BRACKET)+     #Wrong_var_malloc
+    | basictype_for_array (LEFT_BRACKET expression RIGHT_BRACKET)+ (LEFT_BRACKET RIGHT_BRACKET)*                                            #Array_var_malloc
+    | basictype_for_array LEFT_PAREN RIGHT_PAREN                                                                                            #Class_var_malloc
+    | basictype_for_array                                                                                                                   #Simple_var_malloc
+;
 
 statement:
     var_def                                                                                             #VardefStatement
@@ -26,8 +31,7 @@ statement:
     | SEMICOLON                                                                                         #EmptyStatememt;
 
 expression:
-    expression ASSIGN expression                                                                        #Binary
-    | <assoc=right> NEW var_malloc                                                                      #New
+    <assoc=right> NEW var_malloc                                                                        #New
     | expression DOT IDENTIFIER                                                                         #Member
     | expression LEFT_BRACKET expression RIGHT_BRACKET                                                  #Index
     | expression LEFT_PAREN expression_list? RIGHT_PAREN                                                #FunctionParam
@@ -43,6 +47,7 @@ expression:
     | expression OR_OP expression                                                                       #Binary
     | expression LOGIC_AND_OP expression                                                                #Binary
     | expression LOGIC_OR_OP expression                                                                 #Binary
+    | <assoc=right> expression ASSIGN expression                                                        #Binary
     | LEFT_PAREN expression RIGHT_PAREN                                                                 #Sub
     | constant                                                                                          #Const
     | IDENTIFIER                                                                                        #IdentifierExpr

@@ -102,7 +102,6 @@ public class Scope
     }
     public void add_varname(String varname, Vartype vartp, Position pos)
     {
-//        System.out.println(varname);
         if(this.varname_to_vartype.containsKey(varname))
         {
 //            System.out.println("Error: 变量重定义,行 " + pos.get_row() + " 列 " + pos.get_col());

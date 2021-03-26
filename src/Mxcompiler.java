@@ -20,7 +20,7 @@ public class Mxcompiler
 {
     public static void main(String[] args) throws IOException
     {
-//        for(int i = 36; i <= 36; i++)
+//        for(int i = 61; i <= 61; i++)
 //        {
 //            System.out.println("!!!!!!!!!!!!!" + i);
 //            File file = new File("testcases/basic-"+i+".mx");
@@ -45,8 +45,6 @@ public class Mxcompiler
                 mx_semantic_error.show_error();
                 throw new RuntimeException();
             }
-//            mx_semantic_checker = new SemanticChecker();
-//            mx_AST_root.accept(mx_semantic_checker);
 //        }
     }
 }

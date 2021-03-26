@@ -77,11 +77,33 @@ public interface MxVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVar_def(MxParser.Var_defContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MxParser#var_malloc}.
+	 * Visit a parse tree produced by the {@code Wrong_var_malloc}
+	 * labeled alternative in {@link MxParser#var_malloc}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitVar_malloc(MxParser.Var_mallocContext ctx);
+	T visitWrong_var_malloc(MxParser.Wrong_var_mallocContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Array_var_malloc}
+	 * labeled alternative in {@link MxParser#var_malloc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArray_var_malloc(MxParser.Array_var_mallocContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Class_var_malloc}
+	 * labeled alternative in {@link MxParser#var_malloc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClass_var_malloc(MxParser.Class_var_mallocContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Simple_var_malloc}
+	 * labeled alternative in {@link MxParser#var_malloc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSimple_var_malloc(MxParser.Simple_var_mallocContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code VardefStatement}
 	 * labeled alternative in {@link MxParser#statement}.

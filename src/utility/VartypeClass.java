@@ -57,6 +57,10 @@ public class VartypeClass extends Vartype
             this.methods.put(function_name, new_function_entity);
         }
     }
+    public void copy_method_from_scope(String function_name, FunctionEntity func_entity)
+    {
+        this.methods.put(function_name, func_entity);
+    }
 //    public boolean has_method(String function_name)
 //    {
 //        return this.methods.containsKey(function_name);

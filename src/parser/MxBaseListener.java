@@ -147,13 +147,49 @@ public class MxBaseListener implements MxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVar_malloc(MxParser.Var_mallocContext ctx) { }
+	@Override public void enterWrong_var_malloc(MxParser.Wrong_var_mallocContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVar_malloc(MxParser.Var_mallocContext ctx) { }
+	@Override public void exitWrong_var_malloc(MxParser.Wrong_var_mallocContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArray_var_malloc(MxParser.Array_var_mallocContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArray_var_malloc(MxParser.Array_var_mallocContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterClass_var_malloc(MxParser.Class_var_mallocContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitClass_var_malloc(MxParser.Class_var_mallocContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSimple_var_malloc(MxParser.Simple_var_mallocContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSimple_var_malloc(MxParser.Simple_var_mallocContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

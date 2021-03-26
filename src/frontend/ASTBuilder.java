@@ -8,6 +8,7 @@ import parser.MxParser;
 import utility.Position;
 import java.util.ArrayList;
 import static java.lang.Integer.parseInt;
+import utility.Error;
 
 public class ASTBuilder extends MxBaseVisitor<AST>
 {
@@ -235,26 +236,6 @@ public class ASTBuilder extends MxBaseVisitor<AST>
             System.out.println("visitVar_def?????");
             return null;
         }
-    }
-
-    @Override
-    public AST visitVar_malloc(MxParser.Var_mallocContext ctx)
-    {
-        Position tmp_pos = new Position(ctx);
-        TypeAST tmp_vartype = (TypeAST) visit(ctx.basictype_for_array());
-        int tmp_dimension_all = ctx.LEFT_BRACKET().size();
-        int tmp_dimension_with_init = ctx.expression().size();
-        System.out.println("!!!dimension all:" + tmp_dimension_all + " dimension init:" +tmp_dimension_with_init);
-        ArrayList<ExprAST> tmp_init_expr;
-        if(tmp_dimension_with_init == 0)
-            tmp_init_expr = null;
-        else
-        {
-            tmp_init_expr = new ArrayList<>();
-            for (ParserRuleContext i: ctx.expression())
-                tmp_init_expr.add((ExprAST) visit(i));
-        }
-        return new NewAST(tmp_pos, tmp_vartype, tmp_init_expr, tmp_dimension_all);
     }
 
     @Override
@@ -521,5 +502,44 @@ public class ASTBuilder extends MxBaseVisitor<AST>
         else
             tmp_typename = ctx.IDENTIFIER().getText();
         return new SingleTypeAST(tmp_pos, tmp_typename);
+    }
+
+    @Override
+    public AST visitArray_var_malloc(MxParser.Array_var_mallocContext ctx) {
+        Position tmp_pos = new Position(ctx);
+        TypeAST tmp_vartype = (TypeAST) visit(ctx.basictype_for_array());
+        int tmp_dimension_all = ctx.LEFT_BRACKET().size();
+        int tmp_dimension_with_init = ctx.expression().size();
+//        System.out.println("!!!dimension all:" + tmp_dimension_all + " dimension init:" +tmp_dimension_with_init);
+        ArrayList<ExprAST> tmp_init_expr;
+        if(tmp_dimension_with_init == 0)
+            tmp_init_expr = null;
+        else
+        {
+            tmp_init_expr = new ArrayList<>();
+            for (ParserRuleContext i: ctx.expression())
+                tmp_init_expr.add((ExprAST) visit(i));
+        }
+        return new NewAST(tmp_pos, tmp_vartype, tmp_init_expr, tmp_dimension_all);
+    }
+
+    @Override
+    public AST visitClass_var_malloc(MxParser.Class_var_mallocContext ctx) {
+        Position tmp_pos = new Position(ctx);
+        TypeAST tmp_vartype = (TypeAST) visit(ctx.basictype_for_array());
+        return new NewAST(tmp_pos, tmp_vartype, new ArrayList<>(), 0);
+    }
+
+    @Override
+    public AST visitSimple_var_malloc(MxParser.Simple_var_mallocContext ctx) {
+        Position tmp_pos = new Position(ctx);
+        TypeAST tmp_vartype = (TypeAST) visit(ctx.basictype_for_array());
+        return new NewAST(tmp_pos, tmp_vartype, new ArrayList<>(), 0);
+    }
+
+    @Override
+    public AST visitWrong_var_malloc(MxParser.Wrong_var_mallocContext ctx) {
+        Position tmp_pos = new Position(ctx);
+        throw new Error(tmp_pos, "数组初始化语法错误");
     }
 }
