@@ -1,7 +1,6 @@
 package frontend;
 
 import AST.*;
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 import org.antlr.v4.runtime.misc.Pair;
 import utility.*;
 import utility.Error;
