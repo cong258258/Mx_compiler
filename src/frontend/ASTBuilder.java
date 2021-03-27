@@ -265,6 +265,7 @@ public class ASTBuilder extends MxBaseVisitor<AST>
             tmp_else_statement = (StatementAST) visit(ctx.statement(1));
         else
             tmp_else_statement = null;
+//        System.out.println((tmp_todo_statement == null) + "   " + (tmp_else_statement == null));
         return new IfStatementAST(tmp_pos, tmp_condition, tmp_todo_statement, tmp_else_statement);
     }
 

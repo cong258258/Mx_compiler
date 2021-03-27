@@ -10,9 +10,10 @@ public class IfStatementAST extends StatementAST
     public IfStatementAST(Position positionn, ExprAST cond, StatementAST todo, StatementAST elsee)
     {
         super(positionn);
+//        System.out.println(cond + " " + todo + " " + elsee);
         this.condition = cond;
         this.todo_statement = todo;
-        if(else_statement != null)
+        if(elsee != null)
         {
             else_statement_status = true;
             this.else_statement = elsee;

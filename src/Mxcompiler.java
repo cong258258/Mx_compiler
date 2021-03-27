@@ -20,12 +20,12 @@ public class Mxcompiler
 {
     public static void main(String[] args) throws IOException
     {
-//        for(int i = 61; i <= 61; i++)
-//        {
-//            System.out.println("!!!!!!!!!!!!!" + i);
-//            File file = new File("testcases/basic-19.mx");
-//            FileInputStream file_input_stream = new FileInputStream(file);
-            InputStream file_input_stream = System.in;
+        for(int i = 61; i <= 61; i++)
+        {
+            System.out.println("!!!!!!!!!!!!!" + i);
+            File file = new File("testcases/function-4.mx");
+            FileInputStream file_input_stream = new FileInputStream(file);
+//            InputStream file_input_stream = System.in;
             CharStream filename_charstream = CharStreams.fromStream(file_input_stream);
             try
             {
@@ -47,6 +47,6 @@ public class Mxcompiler
                 mx_semantic_error.show_error();
                 throw new RuntimeException();
             }
-//        }
+        }
     }
 }

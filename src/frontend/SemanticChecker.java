@@ -99,7 +99,7 @@ public class SemanticChecker implements ASTVisitor
     public void visit(ProgramAST AST)
     {
         ArrayList<ProgramPartAST> program_parts = AST.get_program_parts();
-        for(ProgramPartAST i: program_parts)     //定义Class名字
+        for(ProgramPartAST i: program_parts)     //定义类的名字
             if(i instanceof ClassdefAST)
             {
                 String typename = ((ClassdefAST) i).get_identifier();
@@ -108,12 +108,12 @@ public class SemanticChecker implements ASTVisitor
                     throw new Error(i.get_position(), "类名重定义");
                 current_scope.add_varname(typename, new_type_class_raw, i.get_position());
             }
-        for(ProgramPartAST i: program_parts)        //定义Class成员
+        for(ProgramPartAST i: program_parts)        //定义类的对外接口，类名，成员变量，成员函数原型
             if(i instanceof ClassdefAST)
             {
                 String typename = ((ClassdefAST) i).get_identifier();
                 VartypeClass new_type_class_raw = (VartypeClass) get_vartype_in_type_table_with_typename(typename);
-                Scope tmp_scope = new Scope(current_scope, class_scope_type);
+                Scope tmp_scope = new Scope(current_scope, class_scope_type);     //非检查时作用域 借作用域完成类方法对外接口的定义
                 scope_stack.add(tmp_scope);
                 current_scope = tmp_scope;
                 ArrayList<VardefStatementAST> var_def_statements = ((ClassdefAST) i).get_var_def_statements();
@@ -123,38 +123,50 @@ public class SemanticChecker implements ASTVisitor
                 ArrayList<FunctiondefAST> functions = ((ClassdefAST) i).get_functions();
                 for(FunctiondefAST j: functions)
                 {
+                    System.out.println(j.get_position().get_row());
                     TypeAST function_return_typeAST = j.get_return_vartype();
                     Vartype function_return_type = get_vartype_in_type_table_with_typename(function_return_typeAST.get_typename());
-                    tmp_scope.add_function_raw(j.get_function_name(), function_return_type, j.get_position());
+                    VarlistAST params = j.get_params();
+                    ArrayList<Pair<Vartype, String>> var_arraylist = new ArrayList<>();
+                    if(params != null)
+                    {
+                        ArrayList<VarAST> raw_var_list =  params.get_var_list();
+                        for(VarAST k: raw_var_list)
+                            var_arraylist.add(new Pair<>(get_vartype_in_type_table_with_typename(k.get_var_type().get_typename()), k.get_var_name()));
+                    }
+                    tmp_scope.add_function(j.get_function_name(), function_return_type, var_arraylist, j.get_position());
                     new_type_class_raw.copy_method_from_scope(j.get_function_name(), tmp_scope.get_function_entity_with_function_name(j.get_function_name()));
                 }
                 scope_stack.pop();
                 current_scope = scope_stack.peek();
             }
-        for(ProgramPartAST i: program_parts)        //定义function
+        for(ProgramPartAST i: program_parts)        //定义函数的对外接口
             if(i instanceof FunctiondefAST)
             {
                 String function_name = ((FunctiondefAST) i).get_function_name();
                 TypeAST function_return_typeAST = ((FunctiondefAST) i).get_return_vartype();
-                Vartype function_return_type = get_vartype_in_type_table_with_typename(function_return_typeAST.get_typename());
-                current_scope.add_function_raw(function_name, function_return_type, i.get_position());
+                Vartype function_return_type;
+                if(function_return_typeAST.get_dimension() == 0)
+                    function_return_type = get_vartype_in_type_table_with_typename(function_return_typeAST.get_typename());
+                else
+                    function_return_type = new VartypeArray(get_vartype_in_type_table_with_typename(function_return_typeAST.get_typename()), function_return_typeAST.get_dimension());
+                VarlistAST params = ((FunctiondefAST) i).get_params();
+                ArrayList<Pair<Vartype, String>> var_arraylist;
+                if(params != null)
+                {
+                    params.accept(this);
+                    var_arraylist = params.get_var_arraylist();
+                }
+                else
+                    var_arraylist = new ArrayList<>();
+                current_scope.add_function(function_name, function_return_type, var_arraylist, i.get_position());
             }
         for(ProgramPartAST i: program_parts)//层级访问
             i.accept(this);
-//        for(ProgramPartAST i: program_parts)        //层级访问
+
+//        for(ProgramPartAST i: program_parts)
 //            if(i instanceof GlobalVardefAST)
 //                i.accept(this);
-//        for(ProgramPartAST i: program_parts)
-//            if(i instanceof ClassdefAST)
-//                i.accept(this);
-//        for(ProgramPartAST i: program_parts)
-//            if(i instanceof FunctiondefAST)
-//                i.accept(this);
-//        for(ProgramPartAST i: program_parts)
-//            if(i instanceof ClassdefAST)
-//                i.accept(this);
-//        for(ProgramPartAST i: program_parts)
-//            i.accept(this);
 
 
         if(!(global_scope.contain_object("main", false)))
@@ -167,7 +179,6 @@ public class SemanticChecker implements ASTVisitor
                 if(((FunctiondefAST) i).get_params() != null)
                     throw new Error(((FunctiondefAST) i).get_params().get_position(), "main函数不应有参数");
             }
-
     }
 
     @Override
@@ -175,9 +186,14 @@ public class SemanticChecker implements ASTVisitor
     {
         TypeAST var_typeAST = AST.get_var_type();
         var_typeAST.accept(this);
-        String var_typename;
-        var_typename = var_typeAST.get_typename();
-        current_scope.add_varname(AST.get_var_name(), get_vartype_in_type_table_with_typename(var_typename), AST.get_position());
+        String var_typename = var_typeAST.get_typename();
+        int var_type_dimension = var_typeAST.get_dimension();
+        Vartype real_vartype;
+        if(var_type_dimension == 0)
+            real_vartype = get_vartype_in_type_table_with_typename(var_typename);
+        else
+            real_vartype = new VartypeArray(get_vartype_in_type_table_with_typename(var_typename), var_type_dimension);
+        current_scope.add_varname(AST.get_var_name(), real_vartype, AST.get_position());
     }
 
     @Override
@@ -212,16 +228,18 @@ public class SemanticChecker implements ASTVisitor
         scope_stack.add(new_scope);
         current_scope = new_scope;
         String classname = AST.get_identifier();
-        current_scope.set_class_type_for_class_scope(get_vartype_in_type_table_with_typename(classname));
+        Vartype class_vartype = get_vartype_in_type_table_with_typename(classname);
+        current_scope.set_class_type_for_class_scope(class_vartype);
+        current_scope.copy_scope_from_class_vartype(class_vartype);
         ArrayList<VardefStatementAST> var_def_statements = AST.get_var_def_statements();
         for(VardefStatementAST i: var_def_statements)
             i.accept(this);
         ArrayList<FunctiondefAST> functions = AST.get_functions();
         for(FunctiondefAST i: functions)
         {
-            TypeAST function_return_typeAST = i.get_return_vartype();
-            Vartype function_return_type = get_vartype_in_type_table_with_typename(function_return_typeAST.get_typename());
-            current_scope.add_function_raw(i.get_function_name(), function_return_type, i.get_position());
+//            TypeAST function_return_typeAST = i.get_return_vartype();
+//            Vartype function_return_type = get_vartype_in_type_table_with_typename(function_return_typeAST.get_typename());
+//            current_scope.add_function_raw(i.get_function_name(), function_return_type, i.get_position());
             i.accept(this);
         }
 
@@ -273,7 +291,8 @@ public class SemanticChecker implements ASTVisitor
                 throw new Error(return_expr.get_position(), "void返回类型函数不应有返回值");
             else
             {
-//                System.out.println(return_expr.get_type().toString());
+//                System.out.println(return_type);
+                System.out.println(return_expr.get_type());
                 if(!is_same_type(return_type, return_expr.get_type()))
                   throw new Error(AST.get_position(), "函数类型与返回类型不同") ;
             }
@@ -388,6 +407,7 @@ public class SemanticChecker implements ASTVisitor
         ExprAST init_expr = AST.get_init_expr();
         vartypeAST.accept(this);
         init_expr.accept(this);
+        System.out.println(init_expr.get_type());
 //        if(vartypeAST instanceof SingleTypeAST)
 //            typename = ((SingleTypeAST) vartypeAST).get_typename();
 //        else if(vartypeAST instanceof ArrayTypeAST)
@@ -621,7 +641,10 @@ public class SemanticChecker implements ASTVisitor
             i.accept(this);
         FunctionEntity function_entity;
         if(function_name instanceof IdentifierExprAST)
+        {
             function_entity = current_scope.get_function_entity_with_function_name(((IdentifierExprAST) function_name).get_name());
+//            System.out.println(function_entity.get_return_vartype());
+        }
         else
         {
             VartypeMethod var_type_method = (VartypeMethod) function_name.get_type();
@@ -629,7 +652,7 @@ public class SemanticChecker implements ASTVisitor
         }
         ArrayList<Pair<Vartype, String>> real_param_list = function_entity.get_parameters();
         if(real_param_list.size() != params.size())
-            throw new Error(AST.get_position(), "参数个数不一致");
+            throw new Error(AST.get_position(), "参数个数不一致，需要" + real_param_list.size() + "个，给出" + params.size() + "个");
         for(int i = 0; i < real_param_list.size(); i++)
         {
             ExprAST param_provide = params.get(i);
@@ -734,25 +757,28 @@ public class SemanticChecker implements ASTVisitor
         Scope new_scope = new Scope(current_scope, function_scope_type);
         scope_stack.add(new_scope);
         current_scope = new_scope;
-        TypeAST return_vartype = AST.get_return_vartype();
         String function_name = AST.get_function_name();
-        VarlistAST params = AST.get_params();
+        current_scope.copy_scope_from_function_entity(current_scope.get_parent_scope().get_function_entity_with_function_name(function_name));
+        TypeAST return_vartype = AST.get_return_vartype();
+
+//        VarlistAST params = AST.get_params();
         StatementAST statements = AST.get_statements();
-        return_vartype.accept(this);
+//        return_vartype.accept(this);
 //        System.out.println(get_vartype_in_type_table_with_typename(return_vartype.get_typename()));
-        current_scope.get_parent_scope().set_return_type_for_function_scope(get_vartype_in_type_table_with_typename(return_vartype.get_typename()));
-        ArrayList<Pair<Vartype, String>> var_arraylist;
-        if(params != null)
-        {
-            params.accept(this);
-            var_arraylist = params.get_var_arraylist();
-        }
-        else
-            var_arraylist = new ArrayList<>();
+//        current_scope.get_parent_scope().set_return_type_for_function_scope(get_vartype_in_type_table_with_typename(return_vartype.get_typename()));
+//        current_scope.get_parent_scope().set_return_type_for_function_scope();
+//        ArrayList<Pair<Vartype, String>> var_arraylist;
+//        if(params != null)
+//        {
+//            params.accept(this);
+//            var_arraylist = params.get_var_arraylist();
+//        }
+//        else
+//            var_arraylist = new ArrayList<>();
         statements.accept(this);
-        FunctionEntity function_entity_raw = current_scope.get_parent_scope().get_function_entity_with_function_name(function_name);
-        function_entity_raw.set_return_vartype(get_vartype_in_type_table_with_typename(return_vartype.get_typename()));
-        function_entity_raw.set_parameters(var_arraylist);
+//        FunctionEntity function_entity_raw = current_scope.get_parent_scope().get_function_entity_with_function_name(function_name);
+//        function_entity_raw.set_return_vartype(get_vartype_in_type_table_with_typename(return_vartype.get_typename()));
+//        function_entity_raw.set_parameters(var_arraylist);
         //current_scope.get_parent_scope().add_function(function_name, get_vartype_in_type_table_with_typename(return_vartype.get_typename()), var_arraylist, AST.get_position());
         if((!function_name.equals("main")) && !return_vartype.get_typename().equals("void"))
             if(!current_scope.has_return_statement())

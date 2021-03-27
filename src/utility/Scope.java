@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.misc.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 import static utility.Scopetype.*;
 
@@ -102,6 +103,7 @@ public class Scope
     }
     public void add_varname(String varname, Vartype vartp, Position pos)
     {
+        System.out.println("adding "+ vartp + " " + varname + " at " + pos.get_row() + " " + pos.get_col());
         if(this.varname_to_vartype.containsKey(varname))
         {
 //            System.out.println("Error: 变量重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
@@ -174,7 +176,17 @@ public class Scope
             this.objects.add(function_name);
         }
     }
-
+    public void copy_scope_from_class_vartype(Vartype tmp_class)
+    {
+//        this.varname_to_vartype = ((VartypeClass) tmp_class).get_members();
+        this.function_name_to_function_entity = ((VartypeClass) tmp_class).get_methods();
+        Set<String> function_name_set = function_name_to_function_entity.keySet();
+        this.objects.addAll(function_name_set);
+    }
+    public void copy_scope_from_function_entity(FunctionEntity tmp_function)
+    {
+        this.return_type_for_function_scope = tmp_function.get_return_vartype();
+    }
 //    public void add_function(String function_name, Vartype vartp, Position pos)
 //    {
 //        System.out.println(function_name+vartp.typename);

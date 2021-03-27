@@ -79,4 +79,12 @@ public class VartypeClass extends Vartype
     {
         super.methods = methodss;
     }
+    public HashMap<String, Vartype> get_members()
+    {
+        return this.members;
+    }
+    public HashMap<String, FunctionEntity> get_methods()
+    {
+        return this.methods;
+    }
 }
