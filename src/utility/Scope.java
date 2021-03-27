@@ -178,6 +178,7 @@ public class Scope
     }
     public void copy_scope_from_class_vartype(Vartype tmp_class)
     {
+//        System.out.println("copy!!");
 //        this.varname_to_vartype = ((VartypeClass) tmp_class).get_members();
         this.function_name_to_function_entity = ((VartypeClass) tmp_class).get_methods();
         Set<String> function_name_set = function_name_to_function_entity.keySet();
@@ -186,7 +187,10 @@ public class Scope
     public void copy_scope_from_function_entity(FunctionEntity tmp_function)
     {
         for (Pair<Vartype, String> i: tmp_function.parameters)
+        {
             this.varname_to_vartype.put(i.b, i.a);
+            this.objects.add(i.b);
+        }
         this.return_type_for_function_scope = tmp_function.get_return_vartype();
     }
 //    public void add_function(String function_name, Vartype vartp, Position pos)
