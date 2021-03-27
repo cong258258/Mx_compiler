@@ -5,16 +5,27 @@ import utility.Position;
 public class WhileStatementAST extends StatementAST
 {
     ExprAST condition;
+    boolean todo_statement_status;
     StatementAST todo_statement;
     public WhileStatementAST(Position positionn, ExprAST cond, StatementAST todo)
     {
         super(positionn);
         this.condition = cond;
-        this.todo_statement = todo;
+        if(todo != null)
+        {
+            this.todo_statement = todo;
+            this.todo_statement_status = true;
+        }
+        else
+            this.todo_statement_status = false;
     }
     public ExprAST get_condition()
     {
         return this.condition;
+    }
+    public boolean todo_statement_exist()
+    {
+        return this.todo_statement_status;
     }
     public StatementAST get_todo_statement()
     {

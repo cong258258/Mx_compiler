@@ -6,13 +6,19 @@ public class IfStatementAST extends StatementAST
 {
     ExprAST condition;
     StatementAST todo_statement, else_statement;
+    boolean todo_statement_status;
     boolean else_statement_status;
     public IfStatementAST(Position positionn, ExprAST cond, StatementAST todo, StatementAST elsee)
     {
         super(positionn);
-//        System.out.println(cond + " " + todo + " " + elsee);
         this.condition = cond;
-        this.todo_statement = todo;
+        if(todo != null)
+        {
+            todo_statement_status = true;
+            this.todo_statement = todo;
+        }
+        else
+            todo_statement_status = false;
         if(elsee != null)
         {
             else_statement_status = true;
@@ -24,6 +30,10 @@ public class IfStatementAST extends StatementAST
     public ExprAST get_condition()
     {
         return this.condition;
+    }
+    public boolean todo_statement_exist()
+    {
+        return this.todo_statement_status;
     }
     public StatementAST get_todo_statement()
     {

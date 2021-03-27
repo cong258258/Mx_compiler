@@ -11,21 +11,14 @@ public class ForStatementAST extends StatementAST
     ExprAST update;
     boolean update_status;
     StatementAST todo_statement;
+    boolean todo_statement_status;
     public ForStatementAST(Position positionn, ExprAST a, ExprAST b, ExprAST c, StatementAST t)
     {
         super(positionn);
-        if(a != null)
-            this.init_status = true;
-        else
-            this.init_status = false;
-        if(b != null)
-            this.condition_status = true;
-        else
-            this.condition_status = false;
-        if(c != null)
-            this.update_status = true;
-        else
-            this.update_status = false;
+        this.init_status = (a != null);
+        this.condition_status = (b != null);
+        this.update_status = (c != null);
+        this.todo_statement_status = (t != null);
         this.init = a;
         this.condition = b;
         this.update = c;
@@ -54,6 +47,10 @@ public class ForStatementAST extends StatementAST
     public ExprAST get_update()
     {
         return this.update;
+    }
+    public boolean todo_statement_exist()
+    {
+        return this.todo_statement_status;
     }
     public StatementAST get_todo_statement()
     {

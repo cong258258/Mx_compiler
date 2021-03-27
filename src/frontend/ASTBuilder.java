@@ -250,7 +250,11 @@ public class ASTBuilder extends MxBaseVisitor<AST>
         Position tmp_pos = new Position(ctx);
         ArrayList<StatementAST> tmp_statements = new ArrayList<>();
         for(ParserRuleContext i: ctx.statement())
-            tmp_statements.add((StatementAST) visit(i));
+        {
+            StatementAST tmp_statement = (StatementAST) visit(i);
+            if(tmp_statement != null)
+                tmp_statements.add(tmp_statement);
+        }
         return new StatementsAST(tmp_pos, tmp_statements);
     }
 
@@ -259,7 +263,11 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     {
         Position tmp_pos = new Position(ctx);
         ExprAST tmp_condition = (ExprAST) visit(ctx.expression());
-        StatementAST tmp_todo_statement = (StatementAST) visit(ctx.statement(0));
+        StatementAST tmp_todo_statement;
+        if(ctx.statement(0) != null)
+            tmp_todo_statement = (StatementAST) visit(ctx.statement(0));
+        else
+            tmp_todo_statement = null;
         StatementAST tmp_else_statement;
         if(ctx.statement(1) != null)
             tmp_else_statement = (StatementAST) visit(ctx.statement(1));

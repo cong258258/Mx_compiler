@@ -123,9 +123,14 @@ public class SemanticChecker implements ASTVisitor
                 ArrayList<FunctiondefAST> functions = ((ClassdefAST) i).get_functions();
                 for(FunctiondefAST j: functions)
                 {
-                    System.out.println(j.get_position().get_row());
                     TypeAST function_return_typeAST = j.get_return_vartype();
-                    Vartype function_return_type = get_vartype_in_type_table_with_typename(function_return_typeAST.get_typename());
+                    Vartype function_return_basetype = get_vartype_in_type_table_with_typename(function_return_typeAST.get_typename());
+                    Vartype function_return_type;
+                    int function_return_type_dimension = function_return_typeAST.get_dimension();
+                    if(function_return_type_dimension == 0)
+                        function_return_type = function_return_basetype;
+                    else
+                        function_return_type = new VartypeArray(function_return_basetype, function_return_type_dimension);
                     VarlistAST params = j.get_params();
                     ArrayList<Pair<Vartype, String>> var_arraylist = new ArrayList<>();
                     if(params != null)
@@ -154,8 +159,10 @@ public class SemanticChecker implements ASTVisitor
                 ArrayList<Pair<Vartype, String>> var_arraylist;
                 if(params != null)
                 {
+                    current_scope = new Scope(current_scope, function_scope_type);
                     params.accept(this);
                     var_arraylist = params.get_var_arraylist();
+                    current_scope = scope_stack.peek();
                 }
                 else
                     var_arraylist = new ArrayList<>();
@@ -291,8 +298,6 @@ public class SemanticChecker implements ASTVisitor
                 throw new Error(return_expr.get_position(), "void返回类型函数不应有返回值");
             else
             {
-//                System.out.println(return_type);
-                System.out.println(return_expr.get_type());
                 if(!is_same_type(return_type, return_expr.get_type()))
                   throw new Error(AST.get_position(), "函数类型与返回类型不同") ;
             }
@@ -308,16 +313,19 @@ public class SemanticChecker implements ASTVisitor
     public void visit(WhileStatementAST AST)
     {
         ExprAST condition = AST.get_condition();
-        StatementAST todo_statement = AST.get_todo_statement();
         condition.accept(this);
         if(!(condition.get_type() instanceof VartypeBool))
             throw new Error(condition.get_position(), "while语句中，条件表达式返回非bool类型");
-        Scope new_scope = new Scope(current_scope, loop_scope_type);
-        scope_stack.add(new_scope);
-        current_scope = new_scope;
-        todo_statement.accept(this);
-        scope_stack.pop();
-        current_scope = scope_stack.peek();
+        if(AST.todo_statement_exist())
+        {
+            StatementAST todo_statement = AST.get_todo_statement();
+            Scope new_scope = new Scope(current_scope, loop_scope_type);
+            scope_stack.add(new_scope);
+            current_scope = new_scope;
+            todo_statement.accept(this);
+            scope_stack.pop();
+            current_scope = scope_stack.peek();
+        }
     }
 
     @Override
@@ -335,33 +343,39 @@ public class SemanticChecker implements ASTVisitor
         }
         if(AST.update_exist())
             AST.get_update().accept(this);
-        StatementAST todo_statement = AST.get_todo_statement();
-        Scope new_scope = new Scope(current_scope, loop_scope_type);
-        scope_stack.add(new_scope);
-        current_scope = new_scope;
-        todo_statement.accept(this);
-        scope_stack.pop();
-        current_scope = scope_stack.peek();
+        if(AST.todo_statement_exist())
+        {
+            StatementAST todo_statement = AST.get_todo_statement();
+            Scope new_scope = new Scope(current_scope, loop_scope_type);
+            scope_stack.add(new_scope);
+            current_scope = new_scope;
+            todo_statement.accept(this);
+            scope_stack.pop();
+            current_scope = scope_stack.peek();
+        }
     }
 
     @Override
     public void visit(IfStatementAST AST)
     {
         ExprAST condition = AST.get_condition();
-        StatementAST todo_statement = AST.get_todo_statement();
         condition.accept(this);
         if(!(condition.get_type() instanceof VartypeBool))
             throw new Error(condition.get_position(), "if语句中，条件表达式返回非bool类型");
-        if(todo_statement instanceof StatementsAST)
-            todo_statement.accept(this);
-        else
+        if(AST.todo_statement_exist())
         {
-            Scope new_scope = new Scope(current_scope, normal_scope_type);
-            scope_stack.add(new_scope);
-            current_scope = new_scope;
-            todo_statement.accept(this);
-            scope_stack.pop();
-            current_scope = scope_stack.peek();
+            StatementAST todo_statement = AST.get_todo_statement();
+            if(todo_statement instanceof StatementsAST)
+                todo_statement.accept(this);
+            else
+            {
+                Scope new_scope = new Scope(current_scope, normal_scope_type);
+                scope_stack.add(new_scope);
+                current_scope = new_scope;
+                todo_statement.accept(this);
+                scope_stack.pop();
+                current_scope = scope_stack.peek();
+            }
         }
         if(AST.else_statement_exist())
         {
@@ -407,7 +421,7 @@ public class SemanticChecker implements ASTVisitor
         ExprAST init_expr = AST.get_init_expr();
         vartypeAST.accept(this);
         init_expr.accept(this);
-        System.out.println(init_expr.get_type());
+//        System.out.println(init_expr.get_type());
 //        if(vartypeAST instanceof SingleTypeAST)
 //            typename = ((SingleTypeAST) vartypeAST).get_typename();
 //        else if(vartypeAST instanceof ArrayTypeAST)
@@ -674,7 +688,7 @@ public class SemanticChecker implements ASTVisitor
         index_expr.accept(this);
         Vartype main_expr_type = main_expr.get_type();
         Vartype index_expr_type = index_expr.get_type();
-//        System.out.println(main_expr_type);
+//        System.out.println(main_expr);
         if(!(main_expr_type instanceof VartypeArray))
             throw new Error(main_expr.get_position(), "[]下标运算符调用的是 "+main_expr_type.get_typename()+" 类型，不是数组类型");
         if(!(index_expr_type instanceof VartypeInt))

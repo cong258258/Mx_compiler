@@ -20,33 +20,29 @@ public class Mxcompiler
 {
     public static void main(String[] args) throws IOException
     {
-//        for(int i = 61; i <= 61; i++)
-//        {
-//            System.out.println("!!!!!!!!!!!!!" + i);
-//            File file = new File("testcases/function-4.mx");
-//            FileInputStream file_input_stream = new FileInputStream(file);
-            InputStream file_input_stream = System.in;
-            CharStream filename_charstream = CharStreams.fromStream(file_input_stream);
-            try
-            {
-                MxLexer mx_lexer = new MxLexer(filename_charstream);
-                mx_lexer.removeErrorListeners();
-                mx_lexer.addErrorListener(new MxErrorListener());
-                CommonTokenStream mx_token_stream = new CommonTokenStream(mx_lexer);
-                MxParser mx_parser = new MxParser(mx_token_stream);
-                mx_parser.removeErrorListeners();
-                mx_parser.addErrorListener(new MxErrorListener());
-                ParseTree mx_parse_tree_root = mx_parser.program();
-                ASTBuilder mx_ASTBuilder = new ASTBuilder();
-                ProgramAST mx_AST_root = (ProgramAST) mx_ASTBuilder.visit(mx_parse_tree_root);
-                SemanticChecker mx_semantic_checker = new SemanticChecker();
-                mx_AST_root.accept(mx_semantic_checker);
-            }
-            catch(Error mx_semantic_error)
-            {
-                mx_semantic_error.show_error();
-                throw new RuntimeException();
-            }
-//        }
+//        File file = new File("testcases/class-9.mx");
+//        FileInputStream file_input_stream = new FileInputStream(file);
+        InputStream file_input_stream = System.in;
+        CharStream filename_charstream = CharStreams.fromStream(file_input_stream);
+        try
+        {
+            MxLexer mx_lexer = new MxLexer(filename_charstream);
+            mx_lexer.removeErrorListeners();
+            mx_lexer.addErrorListener(new MxErrorListener());
+            CommonTokenStream mx_token_stream = new CommonTokenStream(mx_lexer);
+            MxParser mx_parser = new MxParser(mx_token_stream);
+            mx_parser.removeErrorListeners();
+            mx_parser.addErrorListener(new MxErrorListener());
+            ParseTree mx_parse_tree_root = mx_parser.program();
+            ASTBuilder mx_ASTBuilder = new ASTBuilder();
+            ProgramAST mx_AST_root = (ProgramAST) mx_ASTBuilder.visit(mx_parse_tree_root);
+            SemanticChecker mx_semantic_checker = new SemanticChecker();
+            mx_AST_root.accept(mx_semantic_checker);
+        }
+        catch(Error mx_semantic_error)
+        {
+            mx_semantic_error.show_error();
+            throw new RuntimeException();
+        }
     }
 }

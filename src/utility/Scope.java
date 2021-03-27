@@ -103,7 +103,7 @@ public class Scope
     }
     public void add_varname(String varname, Vartype vartp, Position pos)
     {
-        System.out.println("adding "+ vartp + " " + varname + " at " + pos.get_row() + " " + pos.get_col());
+//        System.out.println("adding "+ vartp + " " + varname + " at " + pos.get_row() + " " + pos.get_col());
         if(this.varname_to_vartype.containsKey(varname))
         {
 //            System.out.println("Error: 变量重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
@@ -185,6 +185,8 @@ public class Scope
     }
     public void copy_scope_from_function_entity(FunctionEntity tmp_function)
     {
+        for (Pair<Vartype, String> i: tmp_function.parameters)
+            this.varname_to_vartype.put(i.b, i.a);
         this.return_type_for_function_scope = tmp_function.get_return_vartype();
     }
 //    public void add_function(String function_name, Vartype vartp, Position pos)
