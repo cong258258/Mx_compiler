@@ -20,11 +20,23 @@ public class SemanticChecker implements ASTVisitor
     Scope global_scope;
     Scope current_scope;
     Stack<Scope> scope_stack;
-    VartypeInt _standard_vartype_int;
-    VartypeBool _standard_vartype_bool;
-    VartypeString _standard_vartype_string;
-    VartypeVoid _standard_vartype_void;
-    VartypeClass _standard_vartype_class;
+    static VartypeInt _standard_vartype_int;
+    static VartypeBool _standard_vartype_bool;
+    static VartypeString _standard_vartype_string;
+    static VartypeVoid _standard_vartype_void;
+    static VartypeClass _standard_vartype_class;
+    public static VartypeInt get_standard_vartype_int()
+    {
+        return _standard_vartype_int;
+    }
+    public static VartypeBool get_standard_vartype_bool()
+    {
+        return _standard_vartype_bool;
+    }
+    public static VartypeString get_standard_vartype_string()
+    {
+        return _standard_vartype_string;
+    }
     public boolean put_into_type_table(String typename, Vartype vartp)
     {
         if(this.type_table.containsKey(typename))
@@ -69,7 +81,7 @@ public class SemanticChecker implements ASTVisitor
         _standard_vartype_string = new VartypeString();
         _standard_vartype_void = new VartypeVoid();
         _standard_vartype_class = new VartypeClass("_standard_vartype_class_for_this");
-        _standard_vartype_string.VartypeString_init();
+        VartypeString.VartypeString_init();
         put_into_type_table("int", _standard_vartype_int);
         put_into_type_table("bool", _standard_vartype_bool);
         put_into_type_table("String", _standard_vartype_string);
@@ -749,6 +761,7 @@ public class SemanticChecker implements ASTVisitor
         }
         else
         {
+//            System.out.println(type);
             if(!type.has_method(member))
                 throw new Error(expr.get_position(), "找不到此方法"+member);
             AST.set_type(new VartypeMethod(member, type));
