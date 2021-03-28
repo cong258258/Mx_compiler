@@ -136,21 +136,23 @@ public class SemanticChecker implements ASTVisitor
                 new_type_class_raw.set_members(tmp_scope.varname_to_vartype_copy());
 
                 FunctiondefAST constructor = ((ClassdefAST) i).get_constructor();
-                VarlistAST constructor_params = constructor.get_params();
-                ArrayList<Pair<Vartype, String>> constructor_var_arraylist = new ArrayList<>();
-                if(constructor_params != null)
+                if(constructor != null)
                 {
-                    ArrayList<VarAST> raw_var_list =  constructor_params.get_var_list();
-                    for(VarAST k: raw_var_list)
-                        constructor_var_arraylist.add(new Pair<>(get_vartype_in_type_table_with_typename(k.get_var_type().get_typename()), k.get_var_name()));
-//                        current_scope = new Scope(current_scope, function_scope_type);
-//                        params.accept(this);
-//                        var_arraylist = params.get_var_arraylist();
-//                        current_scope = scope_stack.peek();
+                    VarlistAST constructor_params = constructor.get_params();
+                    ArrayList<Pair<Vartype, String>> constructor_var_arraylist = new ArrayList<>();
+                    if(constructor_params != null)
+                    {
+                        ArrayList<VarAST> raw_var_list =  constructor_params.get_var_list();
+                        for(VarAST k: raw_var_list)
+                            constructor_var_arraylist.add(new Pair<>(get_vartype_in_type_table_with_typename(k.get_var_type().get_typename()), k.get_var_name()));
+    //                        current_scope = new Scope(current_scope, function_scope_type);
+    //                        params.accept(this);
+    //                        var_arraylist = params.get_var_arraylist();
+    //                        current_scope = scope_stack.peek();
+                    }
+                    tmp_scope.add_function(constructor.get_function_name(), _standard_vartype_void, constructor_var_arraylist, constructor.get_position());
+                    new_type_class_raw.copy_method_from_scope(constructor.get_function_name(), tmp_scope.get_function_entity_with_function_name(constructor.get_function_name()));
                 }
-                tmp_scope.add_function(constructor.get_function_name(), _standard_vartype_void, constructor_var_arraylist, constructor.get_position());
-                new_type_class_raw.copy_method_from_scope(constructor.get_function_name(), tmp_scope.get_function_entity_with_function_name(constructor.get_function_name()));
-
                 ArrayList<FunctiondefAST> functions = ((ClassdefAST) i).get_functions();
                 for(FunctiondefAST j: functions)
                 {
@@ -276,7 +278,8 @@ public class SemanticChecker implements ASTVisitor
         for(VardefStatementAST i: var_def_statements)
             i.accept(this);
         FunctiondefAST constructor = AST.get_constructor();
-        constructor.accept(this);
+        if(constructor != null)
+            constructor.accept(this);
         ArrayList<FunctiondefAST> functions = AST.get_functions();
         for(FunctiondefAST i: functions)
         {
