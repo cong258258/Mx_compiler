@@ -30,6 +30,10 @@ public class ClassdefAST extends ProgramPartAST
     {
         return this.functions;
     }
+    public FunctiondefAST get_constructor()
+    {
+        return this.constructor;
+    }
 
     @Override
     public void accept(ASTVisitor visitor)

@@ -108,6 +108,8 @@ public class SemanticChecker implements ASTVisitor
                     throw new Error(i.get_position(), "类名重定义");
                 current_scope.add_varname(typename, new_type_class_raw, i.get_position());
             }
+
+
         for(ProgramPartAST i: program_parts)        //定义类的对外接口，类名，成员变量，成员函数原型
             if(i instanceof ClassdefAST)
             {
@@ -120,6 +122,23 @@ public class SemanticChecker implements ASTVisitor
                 for(VardefStatementAST j: var_def_statements)
                     j.accept(this);
                 new_type_class_raw.set_members(tmp_scope.varname_to_vartype_copy());
+
+                FunctiondefAST constructor = ((ClassdefAST) i).get_constructor();
+                VarlistAST constructor_params = constructor.get_params();
+                ArrayList<Pair<Vartype, String>> constructor_var_arraylist = new ArrayList<>();
+                if(constructor_params != null)
+                {
+                    ArrayList<VarAST> raw_var_list =  constructor_params.get_var_list();
+                    for(VarAST k: raw_var_list)
+                        constructor_var_arraylist.add(new Pair<>(get_vartype_in_type_table_with_typename(k.get_var_type().get_typename()), k.get_var_name()));
+//                        current_scope = new Scope(current_scope, function_scope_type);
+//                        params.accept(this);
+//                        var_arraylist = params.get_var_arraylist();
+//                        current_scope = scope_stack.peek();
+                }
+                tmp_scope.add_function(constructor.get_function_name(), _standard_vartype_void, constructor_var_arraylist, constructor.get_position());
+                new_type_class_raw.copy_method_from_scope(constructor.get_function_name(), tmp_scope.get_function_entity_with_function_name(constructor.get_function_name()));
+
                 ArrayList<FunctiondefAST> functions = ((ClassdefAST) i).get_functions();
                 for(FunctiondefAST j: functions)
                 {
@@ -149,6 +168,7 @@ public class SemanticChecker implements ASTVisitor
                 scope_stack.pop();
                 current_scope = scope_stack.peek();
             }
+
         for(ProgramPartAST i: program_parts)        //定义函数的对外接口
             if(i instanceof FunctiondefAST)
             {
@@ -173,13 +193,9 @@ public class SemanticChecker implements ASTVisitor
                     var_arraylist = new ArrayList<>();
                 current_scope.add_function(function_name, function_return_type, var_arraylist, i.get_position());
             }
+
         for(ProgramPartAST i: program_parts)//层级访问
             i.accept(this);
-
-//        for(ProgramPartAST i: program_parts)
-//            if(i instanceof GlobalVardefAST)
-//                i.accept(this);
-
 
         if(!(global_scope.contain_object("main", false)))
             throw new Error(new Position(0, 0), "找不到main函数");
@@ -247,6 +263,8 @@ public class SemanticChecker implements ASTVisitor
         ArrayList<VardefStatementAST> var_def_statements = AST.get_var_def_statements();
         for(VardefStatementAST i: var_def_statements)
             i.accept(this);
+        FunctiondefAST constructor = AST.get_constructor();
+        constructor.accept(this);
         ArrayList<FunctiondefAST> functions = AST.get_functions();
         for(FunctiondefAST i: functions)
         {
@@ -289,6 +307,7 @@ public class SemanticChecker implements ASTVisitor
     @Override
     public void visit(ReturnStatementAST AST)
     {
+//        System.out.println(AST.get_position().get_row());
         if(!current_scope.check_scope(function_scope_type))
         {
 //            System.out.println(current_scope.get_scope_type());
@@ -781,7 +800,6 @@ public class SemanticChecker implements ASTVisitor
         String function_name = AST.get_function_name();
         current_scope.copy_scope_from_function_entity(current_scope.get_parent_scope().get_function_entity_with_function_name(function_name));
         TypeAST return_vartype = AST.get_return_vartype();
-
 //        VarlistAST params = AST.get_params();
         StatementAST statements = AST.get_statements();
 //        return_vartype.accept(this);
