@@ -142,13 +142,13 @@ public class SemanticChecker implements ASTVisitor
                     ArrayList<Pair<Vartype, String>> constructor_var_arraylist = new ArrayList<>();
                     if(constructor_params != null)
                     {
-                        ArrayList<VarAST> raw_var_list =  constructor_params.get_var_list();
-                        for(VarAST k: raw_var_list)
-                            constructor_var_arraylist.add(new Pair<>(get_vartype_in_type_table_with_typename(k.get_var_type().get_typename()), k.get_var_name()));
-    //                        current_scope = new Scope(current_scope, function_scope_type);
-    //                        params.accept(this);
-    //                        var_arraylist = params.get_var_arraylist();
-    //                        current_scope = scope_stack.peek();
+//                        ArrayList<VarAST> raw_var_list =  constructor_params.get_var_list();
+//                        for(VarAST k: raw_var_list)
+//                            constructor_var_arraylist.add(new Pair<>(get_vartype_in_type_table_with_typename(k.get_var_type().get_typename()), k.get_var_name()));
+                            current_scope = new Scope(current_scope, function_scope_type);
+                            constructor_params.accept(this);
+                            constructor_var_arraylist = constructor_params.get_var_arraylist();
+                            current_scope = scope_stack.peek();
                     }
                     tmp_scope.add_function(constructor.get_function_name(), _standard_vartype_void, constructor_var_arraylist, constructor.get_position());
                     new_type_class_raw.copy_method_from_scope(constructor.get_function_name(), tmp_scope.get_function_entity_with_function_name(constructor.get_function_name()));
@@ -168,13 +168,13 @@ public class SemanticChecker implements ASTVisitor
                     ArrayList<Pair<Vartype, String>> var_arraylist = new ArrayList<>();
                     if(params != null)
                     {
-                        ArrayList<VarAST> raw_var_list =  params.get_var_list();
-                        for(VarAST k: raw_var_list)
-                            var_arraylist.add(new Pair<>(get_vartype_in_type_table_with_typename(k.get_var_type().get_typename()), k.get_var_name()));
-//                        current_scope = new Scope(current_scope, function_scope_type);
-//                        params.accept(this);
-//                        var_arraylist = params.get_var_arraylist();
-//                        current_scope = scope_stack.peek();
+//                        ArrayList<VarAST> raw_var_list =  params.get_var_list();
+//                        for(VarAST k: raw_var_list)
+//                            var_arraylist.add(new Pair<>(get_vartype_in_type_table_with_typename(k.get_var_type().get_typename()), k.get_var_name()));
+                        current_scope = new Scope(current_scope, function_scope_type);
+                        params.accept(this);
+                        var_arraylist = params.get_var_arraylist();
+                        current_scope = scope_stack.peek();
                     }
                     tmp_scope.add_function(j.get_function_name(), function_return_type, var_arraylist, j.get_position());
                     new_type_class_raw.copy_method_from_scope(j.get_function_name(), tmp_scope.get_function_entity_with_function_name(j.get_function_name()));
@@ -339,7 +339,7 @@ public class SemanticChecker implements ASTVisitor
             else
             {
 //                System.out.println(return_expr.get_type());
-                if(!is_same_type(return_type, return_expr.get_type()))
+                if(!is_assignable(return_type, return_expr.get_type()))
                   throw new Error(AST.get_position(), "函数类型与返回类型不同") ;
             }
         }
@@ -596,7 +596,7 @@ public class SemanticChecker implements ASTVisitor
         }
         else if(binop == op_equal || binop == op_not_equal)
         {
-//            System.out.println(rtype);
+//            System.out.println(ltype);
             if(((ltype instanceof VartypeInt) && (rtype instanceof VartypeInt))
                 ||((ltype instanceof VartypeString) && (rtype instanceof VartypeString))
                 ||((ltype instanceof VartypeBool) && (rtype instanceof VartypeBool))
