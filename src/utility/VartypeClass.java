@@ -29,28 +29,17 @@ public class VartypeClass extends Vartype
     }
     public void add_member(String varname, Vartype vartp, Position pos)
     {
-//        System.out.println(varname);
         if(this.members.containsKey(varname))
-        {
-//            System.out.println("Error: 变量重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
             throw new Error(pos, "变量重定义");
-        }
         else if(has_method(varname))
-        {
-//            System.out.println("Error: 与函数重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
             throw new Error(pos, "与函数重定义");
-        }
         else
             this.members.put(varname, vartp);
     }
     public void add_method(String function_name, Vartype vartp, ArrayList<Pair<Vartype, String>> params, Position pos)
     {
-//        System.out.println(function_name+vartp.typename);
         if(this.methods.containsKey(function_name))
-        {
-//            System.out.println("Error: 函数名重定义,行 " + pos.get_row() + " 列 " + pos.get_col());
             throw new Error(pos, "函数名重定义");
-        }
         else
         {
             FunctionEntity new_function_entity = new FunctionEntity(function_name, vartp, params, pos);
@@ -61,16 +50,7 @@ public class VartypeClass extends Vartype
     {
         this.methods.put(function_name, func_entity);
     }
-//    public boolean has_method(String function_name)
-//    {
-//        return this.methods.containsKey(function_name);
-//    }
-//    public FunctionEntity get_function_entity_with_method_name(String function_name, Position pos)
-//    {
-//        if(!has_method(function_name))
-//            throw new Error(pos, "找不到" + function_name + "方法");
-//        return methods.get(function_name);
-//    }
+
     public void set_members(HashMap<String, Vartype> memberss)
     {
         this.members = memberss;

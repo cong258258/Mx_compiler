@@ -22,7 +22,6 @@ public class ASTBuilder extends MxBaseVisitor<AST>
     {
         Position tmp_pos = new Position(ctx);
         String tmp_val = ctx.getText();
-//        System.out.println("!!!!!test getText" + tmp_val);
         if(ctx.BOOL_CONST() != null)
         {
             if(tmp_val.equals("true"))
@@ -273,7 +272,6 @@ public class ASTBuilder extends MxBaseVisitor<AST>
             tmp_else_statement = (StatementAST) visit(ctx.statement(1));
         else
             tmp_else_statement = null;
-//        System.out.println((tmp_todo_statement == null) + "   " + (tmp_else_statement == null));
         return new IfStatementAST(tmp_pos, tmp_condition, tmp_todo_statement, tmp_else_statement);
     }
 
@@ -520,7 +518,6 @@ public class ASTBuilder extends MxBaseVisitor<AST>
         TypeAST tmp_vartype = (TypeAST) visit(ctx.basictype_for_array());
         int tmp_dimension_all = ctx.LEFT_BRACKET().size();
         int tmp_dimension_with_init = ctx.expression().size();
-//        System.out.println("!!!dimension all:" + tmp_dimension_all + " dimension init:" +tmp_dimension_with_init);
         ArrayList<ExprAST> tmp_init_expr;
         if(tmp_dimension_with_init == 0)
             tmp_init_expr = null;

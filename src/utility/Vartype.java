@@ -1,7 +1,6 @@
 package utility;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public abstract class Vartype
 {
@@ -19,7 +18,6 @@ public abstract class Vartype
     }
     public static boolean is_same_type(Vartype a, Vartype b)
     {
-//        System.out.println(((VartypeArray) a).get_basetype() + " " + ((VartypeArray) a).get_dimension() + "     " + ((VartypeArray) b).get_basetype() + " " + ((VartypeArray) b).get_dimension());
         if(a instanceof VartypeArray)
         {
             if (!(b instanceof VartypeArray))
