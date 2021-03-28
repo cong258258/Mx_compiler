@@ -20,7 +20,7 @@ public class Mxcompiler
 {
     public static void main(String[] args) throws IOException
     {
-//        File file = new File("testcases/class-8.mx");
+//        File file = new File("testcases/function-4.mx");
 //        FileInputStream file_input_stream = new FileInputStream(file);
         InputStream file_input_stream = System.in;
         CharStream filename_charstream = CharStreams.fromStream(file_input_stream);

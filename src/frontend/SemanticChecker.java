@@ -138,6 +138,10 @@ public class SemanticChecker implements ASTVisitor
                         ArrayList<VarAST> raw_var_list =  params.get_var_list();
                         for(VarAST k: raw_var_list)
                             var_arraylist.add(new Pair<>(get_vartype_in_type_table_with_typename(k.get_var_type().get_typename()), k.get_var_name()));
+//                        current_scope = new Scope(current_scope, function_scope_type);
+//                        params.accept(this);
+//                        var_arraylist = params.get_var_arraylist();
+//                        current_scope = scope_stack.peek();
                     }
                     tmp_scope.add_function(j.get_function_name(), function_return_type, var_arraylist, j.get_position());
                     new_type_class_raw.copy_method_from_scope(j.get_function_name(), tmp_scope.get_function_entity_with_function_name(j.get_function_name()));
@@ -162,6 +166,7 @@ public class SemanticChecker implements ASTVisitor
                     current_scope = new Scope(current_scope, function_scope_type);
                     params.accept(this);
                     var_arraylist = params.get_var_arraylist();
+//                    System.out.println(var_arraylist.get(0));
                     current_scope = scope_stack.peek();
                 }
                 else
@@ -201,6 +206,7 @@ public class SemanticChecker implements ASTVisitor
         else
             real_vartype = new VartypeArray(get_vartype_in_type_table_with_typename(var_typename), var_type_dimension);
         current_scope.add_varname(AST.get_var_name(), real_vartype, AST.get_position());
+        AST.set_var_type_converted(real_vartype);
     }
 
     @Override
@@ -210,7 +216,7 @@ public class SemanticChecker implements ASTVisitor
         for(VarAST i: var_list)
         {
             i.accept(this);
-            AST.add_into_var_arraylist(get_vartype_in_type_table_with_typename(i.get_var_type().get_typename()), i.get_var_name());
+            AST.add_into_var_arraylist(i.get_var_type_converted(), i.get_var_name());
         }
     }
 
@@ -298,6 +304,7 @@ public class SemanticChecker implements ASTVisitor
                 throw new Error(return_expr.get_position(), "void返回类型函数不应有返回值");
             else
             {
+//                System.out.println(return_expr.get_type());
                 if(!is_same_type(return_type, return_expr.get_type()))
                   throw new Error(AST.get_position(), "函数类型与返回类型不同") ;
             }

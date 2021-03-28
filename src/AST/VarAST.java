@@ -7,6 +7,7 @@ public class VarAST extends AST
 {
     TypeAST var_type;
     String var_name;
+    Vartype var_type_converted;
     public VarAST(Position positionn, TypeAST typee, String var_namee)
     {
         super(positionn);
@@ -22,7 +23,14 @@ public class VarAST extends AST
     {
         return this.var_name;
     }
-
+    public void set_var_type_converted(Vartype vartp)
+    {
+        this.var_type_converted = vartp;
+    }
+    public Vartype get_var_type_converted()
+    {
+        return this.var_type_converted;
+    }
     @Override
     public void accept(ASTVisitor visitor)
     {
