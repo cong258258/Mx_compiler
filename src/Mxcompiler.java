@@ -1,4 +1,5 @@
 import AST.ProgramAST;
+import IR.IRBuilder;
 import frontend.ASTBuilder;
 import frontend.SemanticChecker;
 import utility.Error;
@@ -38,6 +39,9 @@ public class Mxcompiler
             ProgramAST mx_AST_root = (ProgramAST) mx_ASTBuilder.visit(mx_parse_tree_root);
             SemanticChecker mx_semantic_checker = new SemanticChecker();
             mx_AST_root.accept(mx_semantic_checker);
+            IRBuilder mx_irbuilder = new IRBuilder();
+            mx_AST_root.accept(mx_irbuilder);
+
         }
         catch(Error mx_semantic_error)
         {

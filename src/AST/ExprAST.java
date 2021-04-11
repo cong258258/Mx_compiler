@@ -1,5 +1,6 @@
 package AST;
 
+import IR.operand.Operand;
 import utility.Position;
 import utility.Vartype;
 
@@ -7,6 +8,8 @@ public abstract class ExprAST extends AST
 {
     Vartype type;
     boolean left_value;
+    Operand left_value_operand;
+    Operand right_value_operand;
     public ExprAST(Position positionn)
     {
         super(positionn);
@@ -28,5 +31,21 @@ public abstract class ExprAST extends AST
     public boolean is_left_value()
     {
         return this.left_value;
+    }
+    public void set_right_value_operand(Operand opr)
+    {
+        this.right_value_operand = opr;
+    }
+    public Operand get_right_value_operand()
+    {
+        return this.right_value_operand;
+    }
+    public void set_left_value_operand(Operand opr)
+    {
+        this.left_value_operand = opr;
+    }
+    public Operand get_left_value_operand()
+    {
+        return this.left_value_operand;
     }
 }
