@@ -12,9 +12,10 @@ import static AST.Optype.*;
 public class IRBuilder implements ASTVisitor
 {
     Block current_block;
+    Function current_function;
     public IRBuilder()
     {
-
+        
     }
     @Override
     public void visit(ProgramAST AST)
@@ -471,13 +472,35 @@ public class IRBuilder implements ASTVisitor
     @Override
     public void visit(IfStatementAST AST)
     {
+        Block todo_block = new Block("if_todo_block");
+        Block else_block = new Block("if_else_block");
+        Block terminal_block = new Block("if_terminal_block");
+        ExprAST if_cond = AST.get_condition();
+        if_cond.accept(this);
+        Operand if_cond_result = if_cond.get_right_value_operand();
+        current_block.add_instruction(new IRinstbr(if_cond_result, todo_block, else_block));
+
+        current_block = todo_block;
+        if(AST.todo_statement_exist())
+            AST.get_todo_statement().accept(this);
+        current_block.add_instruction(new IRinstbr(null, terminal_block, null));
+        current_function.add_block(todo_block);
+
+        current_block = else_block;
+        if(AST.else_statement_exist())
+            AST.get_else_statement().accept(this);
+        current_block.add_instruction(new IRinstbr(null, terminal_block, null));
+        current_function.add_block(else_block);
+
+        current_block = terminal_block;
+        current_function.add_block(terminal_block);
 
     }
 
     @Override
     public void visit(ForStatementAST AST)
     {
-
+        
     }
 
     @Override
